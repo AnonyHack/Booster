@@ -16,7 +16,6 @@ from dotenv import load_dotenv
 import logging
 from telebot import types
 from logging.handlers import RotatingFileHandler
-from telegram import ForceReply
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 from telebot.types import ForceReply, KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup, BotCommand
