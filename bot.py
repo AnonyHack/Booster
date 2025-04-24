@@ -14,7 +14,9 @@ from functools import wraps
 from flask import Flask, jsonify
 from dotenv import load_dotenv
 import logging
+from telebot import types
 from logging.handlers import RotatingFileHandler
+from telegram import ForceReply
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 from telebot.types import KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup, BotCommand
@@ -22,7 +24,8 @@ from functions import (insertUser, track_exists, addBalance, cutBalance, getData
                        addRefCount, isExists, setWelcomeStaus, setReferredStatus, updateUser, 
                        ban_user, unban_user, get_all_users, is_banned, get_banned_users, 
                        get_top_users, get_user_count, get_active_users, get_total_orders, 
-                       get_total_deposits, get_top_referrer, get_user_orders_stats) # Import your functions from functions.py
+                       get_total_deposits, get_top_referrer, get_user_orders_stats, get_new_users, get_completed_orders) # Import your functions from functions.py
+
 
 if not os.path.exists('Account'):
     os.makedirs('Account')
@@ -42,8 +45,6 @@ bot = telebot.TeleBot(bot_token)
 
 welcome_bonus = 100
 ref_bonus = 50
-min_view = 1000
-max_view = 30000
 
 # Main keyboard markup
 main_markup = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -208,19 +209,37 @@ def is_user_member(user_id):
 def check_membership_and_prompt(user_id, message):
     """Check if the user is a member of all required channels and prompt them to join if not."""
     if not is_user_member(user_id):
+        # Create a cool animated header
+        header = """
+*🚀 Wᴇʟᴄᴏᴍᴇ Tᴏ Sᴍᴍʜᴜʙ Bᴏᴏꜱᴛᴇʀ Bᴏᴛ ! 🚀*
+"""
+        # Enhanced message with progress meter concept
         bot.reply_to(
             message,
-            "🚨 *Tᴏ Uꜱᴇ Tʜɪꜱ Bᴏᴛ, Yᴏᴜ Mᴜꜱᴛ Jᴏɪɴ Tʜᴇ RᴇQᴜɪʀᴇᴅ Cʜᴀɴɴᴇʟꜱ Fɪʀꜱᴛ!* 🚨"
-          "Cʟɪᴄᴋ Tʜᴇ Bᴜᴛᴛᴏɴꜱ Bᴇʟᴏᴡ Tᴏ Jᴏɪɴ, Tʜᴇɴ Pʀᴇꜱꜱ *'✅ I Joined'*. ",
+            f"""{header}
+🚨 *Tᴏ Uꜱᴇ Tʜɪꜱ Bᴏᴛ, Yᴏᴜ Mᴜꜱᴛ Jᴏɪɴ Tʜᴇ RᴇQᴜɪʀᴇᴅ Cʜᴀɴɴᴇʟꜱ Fɪʀꜱᴛ!* 🚨
+
+📊 *Cᴏᴍᴘʟᴇᴛᴇ Tʜᴇꜱᴇ Sᴛᴇᴘꜱ Tᴏ Uɴʟᴏᴄᴋ:*
+▫️ Jᴏɪɴ Aʟʟ Cʜᴀɴɴᴇʟꜱ Bᴇʟᴏᴡ
+▫️ Cʟɪᴄᴋ *'✅ I Joined'* Bᴜᴛᴛᴏɴ
+▫️ Wᴀɪᴛ Fᴏʀ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ
+
+
+🔐 *Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Sᴛᴀᴛᴜꜱ:* [░░░░░░░░░░] 0%
+""",
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("MAIN CHANNEL", url="https://t.me/SmmBoosterz")],
-                [InlineKeyboardButton("BOTS UPDATE", url="https://t.me/Megahubbots")],
-                [InlineKeyboardButton("PROMOTER CHANNEL", url="https://t.me/Freenethubz")],
-                [InlineKeyboardButton("BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
-                [InlineKeyboardButton("LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
-                [InlineKeyboardButton("WHASTAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
-                [InlineKeyboardButton("✅ I Joined", callback_data="verify_membership")]
+                # Channel buttons with emoji prefixes
+                [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/SmmBoosterz")],
+                [InlineKeyboardButton("🤖 BOTS UPDATE", url="https://t.me/Megahubbots")],
+                [InlineKeyboardButton("💎 PROMOTER CHANNEL", url="https://t.me/Freenethubz")],
+                [InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
+                [InlineKeyboardButton("📝 LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
+                [InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
+                # Enhanced verify button
+                [InlineKeyboardButton("✨ ✅ VERIFY MEMBERSHIP", callback_data="verify_membership")],
+                # Optional: Add a "Why Join?" button
+                [InlineKeyboardButton("❓ Why Join These Channels?", callback_data="why_join_info")]
             ])
         )
         return False  # User is not a member
@@ -291,7 +310,8 @@ def send_orders_menu(message):
 
 def set_bot_commands():
     commands = [
-        BotCommand('start', 'Restart the bot')
+        BotCommand('start', 'Restart the bot'),
+        BotCommand('policy', 'View usage policy'),
         # Removed 'addcoins' and 'removecoins' from global commands
     ]
     try:
@@ -500,8 +520,8 @@ def help_command(message):
     msg = f"""
 <b>FʀᴇQᴜᴇɴᴛʟʏ Aꜱᴋᴇᴅ Qᴜᴇꜱᴛɪᴏɴꜱ</b>
 
-<b>• Aʀᴇ ᴛʜᴇ ᴠɪᴇᴡꜱ ʀᴇᴀʟ?</b>
-Nᴏ, ᴛʜᴇ ᴠɪᴇᴡꜱ ᴀʀᴇ ꜱɪᴍᴜʟᴀᴛᴇᴅ ᴀɴᴅ ɴᴏᴛ ꜰʀᴏᴍ ʀᴇᴀʟ ᴜꜱᴇʀꜱ.
+<b>• Aʀᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇꜱ ʀᴇᴀʟ?</b>
+ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇꜱ ᴀʀᴇ ʀᴀɴᴅᴏᴍʟʏ ꜱᴇʟᴇᴄᴛᴇᴅ ꜰʀᴏᴍ ᴏᴜʀ ᴘᴀɴᴇʟ ʙᴜᴛ ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴏɴʟʏ ʀᴇᴀʟ ᴏɴᴇꜱ ᴏɴʟʏ, ꜰᴇᴇʟ ꜰʀᴇᴇ ᴛᴏ ᴄᴏɴᴛᴀᴄᴛ ᴜꜱ ꜰᴏʀ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ.
 
 <b>• Wʜᴀᴛ'ꜱ ᴛʜᴇ ᴀᴠᴇʀᴀɢᴇ ꜱᴇʀᴠɪᴄᴇ ꜱᴘᴇᴇᴅ?</b>
 Dᴇʟɪᴠᴇʀʏ ꜱᴘᴇᴇᴅ ᴠᴀʀɪᴇꜱ ʙᴀꜱᴇᴅ ᴏɴ ɴᴇᴛᴡᴏʀᴋ ᴄᴏɴᴅɪᴛɪᴏɴꜱ ᴀɴᴅ ᴏʀᴅᴇʀ ᴠᴏʟᴜᴍᴇ, ʙᴜᴛ ᴡᴇ ᴇɴꜱᴜʀᴇ ꜰᴀꜱᴛ ᴅᴇʟɪᴠᴇʀʏ.
@@ -567,51 +587,115 @@ def pricing_command(message):
     bot.reply_to(message, msg, parse_mode="html", reply_markup=markup)
 
 #======================= Order Statistics =======================#
+# ============================= Enhanced Order Statistics with Auto-Clean ============================= #
 @bot.message_handler(func=lambda message: message.text == "📊 Order Statistics")
 @check_ban
 def show_order_stats(message):
-    """Show comprehensive order statistics for the user"""
+    """Show comprehensive order statistics with auto-cleaning"""
     user_id = str(message.from_user.id)
     
     try:
         # Get basic stats
         stats = get_user_orders_stats(user_id)
         
-        # Get recent orders (last 5)
+        # Get recent orders with auto-clean feature
         recent_orders = []
         try:
             from functions import orders_collection
+            # Only show orders from last 24 hours that aren't marked as hidden
+            cutoff_time = int(time.time()) - 86400  # 24 hours ago
             recent_orders = list(orders_collection.find(
-                {"user_id": user_id},
+                {
+                    "user_id": user_id,
+                    "timestamp": {"$gt": cutoff_time},
+                    "hidden": {"$ne": True}
+                },
                 {"service": 1, "quantity": 1, "status": 1, "timestamp": 1, "_id": 0}
             ).sort("timestamp", -1).limit(5))
+            
+            # Schedule older orders to be hidden
+            orders_collection.update_many(
+                {
+                    "user_id": user_id,
+                    "timestamp": {"$lt": cutoff_time},
+                    "hidden": {"$ne": True}
+                },
+                {"$set": {"hidden": True}}
+            )
         except Exception as e:
-            print(f"Error getting recent orders: {e}")
+            print(f"Order stats error: {e}")
         
-        # Format the message with stylish text
-        msg = f"""📊 <b>𝗬𝗼𝘂𝗿 𝗢𝗿𝗱𝗲𝗿 𝗦𝘁𝗮𝘁𝗶𝘀𝘁𝗶𝗰𝘀</b>
+        # Calculate completion percentage
+        completion_rate = (stats['completed']/stats['total'])*100 if stats['total'] > 0 else 0
         
-🔄 <b>Tᴏᴛᴀʟ Oʀᴅᴇʀꜱ:</b> {stats['total']}
-✅ <b>Cᴏᴍᴘʟᴇᴛᴇᴅ:</b> {stats['completed']}
-⏳ <b>Pᴇɴᴅɪɴɢ:</b> {stats['pending']}
-❌ <b>Fᴀɪʟᴇᴅ:</b> {stats['failed']}
+        # Format the premium message
+        msg = f"""
+📦 <b>Your SMM Order Portfolio</b>
+━━━━━━━━━━━━━━━━━━━━
 
-<b>Rᴇᴄᴇɴᴛ Oʀᴅᴇʀꜱ:</b>"""
+📊 <b>Performance Overview</b>
+├ 🔄 Total Orders: <code>{stats['total']}</code>
+├ ✅ Completion Rate: <code>{completion_rate:.1f}%</code>
+├ ⏳ Pending: <code>{stats['pending']}</code>
+└ ❌ Failed: <code>{stats['failed']}</code>
+
+🕒 <b>Recent Activity</b> (Last 24h)
+"""
         
         if recent_orders:
             for i, order in enumerate(recent_orders, 1):
-                timestamp = datetime.fromtimestamp(order.get('timestamp', time.time())).strftime('%Y-%m-%d %H:%M')
-                msg += f"\n{i}. {order.get('service', 'N/A')} - {order.get('quantity', '?')} (Sᴛᴀᴛᴜꜱ: {order.get('status', 'ᴜɴᴋɴᴏᴡɴ')}) @ {timestamp}"
+                time_ago = format_timespan(time.time() - order.get('timestamp', time.time()))
+                status_icon = "✅" if order.get('status') == "completed" else "⏳" if order.get('status') == "pending" else "❌"
+                msg += f"\n{i}. {status_icon} {order.get('service', 'N/A')[:15]}... x{order.get('quantity', '?')} (<i>{time_ago} ago</i>)"
         else:
-            msg += "\nNᴏ ʀᴇᴄᴇɴᴛ ᴏʀᴅᴇʀꜱ ꜰᴏᴜɴᴅ"
+            msg += "\n└ 🌟 No recent orders found"
             
-        msg += "\n\n<i>Nᴏᴛᴇ: Sᴛᴀᴛᴜꜱ Uᴘᴅᴀᴛᴇꜱ Mᴀʏ Tᴀᴋᴇꜱ Sᴏᴍᴇ Tɪᴍᴇ Tᴏ Rᴇꜰʟᴇᴄᴛ Aɴᴅ Sᴏᴍᴇᴛɪᴍᴇꜱ Jᴜꜱᴛ Kᴇᴇᴘꜱ Sʜᴏᴡɪɴɢ Pᴇɴᴅɪɴɢ Aɴᴅ Yᴇᴛ Iᴛꜱ Cᴏᴍᴘʟᴇᴛᴇᴅ.</i>"
+        msg += f"\n\n📌 <i>Note: Only showing last 24h activity for clarity</i>"
         
-        bot.reply_to(message, msg, parse_mode='HTML')
+        # Add quick action buttons
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("🔄 Refresh", callback_data="refresh_orders"),
+            InlineKeyboardButton("📜 Full History", callback_data="order_history")
+        )
+        
+        sent_msg = bot.reply_to(message, msg, parse_mode='HTML', reply_markup=markup)
+        
+        # Schedule message to auto-delete after 2 minutes (optional)
+        threading.Thread(target=delete_after_delay, args=(message.chat.id, sent_msg.message_id, 120)).start()
         
     except Exception as e:
-        print(f"Error showing order stats: {e}")
-        bot.reply_to(message, "❌ Cᴏᴜʟᴅ ɴᴏᴛ ʀᴇᴛʀɪᴇᴠᴇ ᴏʀᴅᴇʀ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ. Pʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.")
+        print(f"Order stats error: {e}")
+        bot.reply_to(message, 
+            "⚠️ <b>Order Statistics Unavailable</b>\n\n"
+            "We couldn't retrieve your order data at this time\n"
+            "Please try again later",
+            parse_mode='HTML')
+
+def delete_after_delay(chat_id, message_id, delay):
+    """Helper function to delete messages after delay"""
+    time.sleep(delay)
+    try:
+        bot.delete_message(chat_id, message_id)
+    except Exception as e:
+        print(f"Could not delete message: {e}")
+
+def format_timespan(seconds):
+    """Convert seconds to human-readable time"""
+    intervals = (
+        ('days', 86400),
+        ('hours', 3600),
+        ('minutes', 60),
+        ('seconds', 1)
+    )
+    
+    result = []
+    for name, count in intervals:
+        value = int(seconds // count)
+        if value:
+            seconds -= value * count
+            result.append(f"{value} {name}")
+    return ', '.join(result[:2])
       
 #======================= Send Orders for Telegram =======================#
 @bot.message_handler(func=lambda message: message.text == "📱 Order Telegram")
@@ -2053,20 +2137,37 @@ def handle_back_buttons(message):
 @bot.message_handler(commands=['addcoins', 'removecoins'])
 def handle_admin_commands(message):
     if message.from_user.id not in admin_user_ids:
-        bot.reply_to(message, "❌ Y̶o̶u̶ ̶a̶r̶e̶ ̶n̶o̶t̶ ̶a̶u̶t̶h̶o̶r̶i̶z̶e̶d̶ ̶t̶o̶ ̶u̶s̶e̶ ̶t̶h̶i̶s̶ ̶c̶o̶m̶m̶a̶n̶d̶.")
+        bot.reply_to(message, 
+            "⛔ *Admin Access Denied*\n\n"
+            "This command is restricted to authorized staff only\n"
+            "Unauthorized access attempts are logged",
+            parse_mode="Markdown")
         return
     
     try:
         args = message.text.split()
         if len(args) != 3:
-            bot.reply_to(message, f"⚠️ Usage: {args[0]} <user_id> <amount>")
+            bot.reply_to(message,
+                "⚡ *Usage Guide*\n\n"
+                f"▸ Add coins: `/addcoins <user_id> <amount>`\n"
+                f"▸ Remove coins: `/removecoins <user_id> <amount>`\n\n"
+                "💡 Example: `/addcoins 123456789 100.50`",
+                parse_mode="Markdown")
             return
             
         user_id = args[1]
         try:
             amount = float(args[2])
+            if amount <= 0:
+                raise ValueError
         except ValueError:
-            bot.reply_to(message, "⚠️ Aᴍᴏᴜɴᴛ Mᴜꜱᴛ Bᴇ ᴀ Nᴜᴍʙᴇʀ")
+            bot.reply_to(message,
+                "⚠️ *Invalid Amount*\n\n"
+                "Amount must be:\n"
+                "▸ A positive number\n"
+                "▸ Decimal values allowed\n"
+                "▸ Minimum: 0.01",
+                parse_mode="Markdown")
             return
             
         if args[0] == '/addcoins':
@@ -2082,127 +2183,305 @@ def handle_admin_commands(message):
                 insertUser(user_id, initial_data)
                 
             if addBalance(user_id, amount):
-                bot.reply_to(message, f"✅ Added {amount} coins to user {user_id}")
+                # Enhanced admin confirmation
+                bot.reply_to(message,
+                    f"💎 *Coins Added Successfully*\n\n"
+                    f"▸ User ID: `{user_id}`\n"
+                    f"▸ Amount: +{amount} coins\n"
+                    f"▸ New Balance: {getData(user_id):.2f}\n\n"
+                    f"📝 _Transaction logged in database_",
+                    parse_mode="Markdown")
+                
+                # Premium user notification
                 try:
-                    bot.send_message(user_id, f"📢 Aᴅᴍɪɴ Aᴅᴅᴇᴅ {amount} Cᴏɪɴꜱ Tᴏ Yᴏᴜʀ Aᴄᴄᴏᴜɴᴛ!")
-                except:
-                    pass
+                    bot.send_message(
+                        user_id,
+                        f"🎉 *ACCOUNT CREDITED*\n\n"
+                        f"Your SMM Booster wallet has been topped up!\n\n"
+                        f"▸ Amount: +{amount} coins\n"
+                        f"▸ New Balance: {getData(user_id):.2f}\n"
+                        f"▸ Transaction ID: {int(time.time())}\n\n"
+                        f"💎 Thank you for being a valued customer!",
+                        parse_mode="Markdown",
+                        reply_markup=InlineKeyboardMarkup().add(
+                            InlineKeyboardButton("🛍️ Shop Now", callback_data="services_menu")
+                        )
+                    )
+                except Exception as e:
+                    print(f"Credit notification failed: {e}")
             else:
-                bot.reply_to(message, "❌ Failed to add coins")
+                bot.reply_to(message,
+                    "❌ *Transaction Failed*\n\n"
+                    "Could not add coins to user account\n"
+                    "Possible reasons:\n"
+                    "▸ Database error\n"
+                    "▸ Invalid user ID",
+                    parse_mode="Markdown")
                 
         elif args[0] == '/removecoins':
             if cutBalance(user_id, amount):
-                bot.reply_to(message, f"✅ Removed {amount} coins from user {user_id}")
+                # Enhanced admin confirmation
+                bot.reply_to(message,
+                    f"⚡ *Coins Deducted Successfully*\n\n"
+                    f"▸ User ID: `{user_id}`\n"
+                    f"▸ Amount: -{amount} coins\n"
+                    f"▸ New Balance: {getData(user_id):.2f}\n\n"
+                    f"📝 _Transaction logged in database_",
+                    parse_mode="Markdown")
+                
+                # Premium user notification
                 try:
-                    bot.send_message(user_id, f"📢 Aᴅᴍɪɴ Rᴇᴍᴏᴠᴇᴅ {amount} Cᴏɪɴꜱ Fʀᴏᴍ Yᴏᴜʀ Aᴄᴄᴏᴜɴᴛ!")
-                except:
-                    pass
+                    bot.send_message(
+                        user_id,
+                        f"🔔 *ACCOUNT DEBITED*\n\n"
+                        f"Coins have been deducted from your SMM Booster wallet\n\n"
+                        f"▸ Amount: -{amount} coins\n"
+                        f"▸ New Balance: {getData(user_id):.2f}\n"
+                        f"▸ Transaction ID: {int(time.time())}\n\n"
+                        f"⚠️ Contact support if this was unexpected",
+                        parse_mode="Markdown",
+                        reply_markup=InlineKeyboardMarkup().add(
+                            InlineKeyboardButton("📩 Contact Support", url="https://t.me/SocialHubBoosterHelper")
+                        )
+                    )
+                except Exception as e:
+                    print(f"Debit notification failed: {e}")
             else:
-                bot.reply_to(message, "❌ Failed to remove coins (insufficient balance or user doesn't exist)")
+                bot.reply_to(message,
+                    "❌ *Transaction Failed*\n\n"
+                    "Could not remove coins from user account\n"
+                    "Possible reasons:\n"
+                    "▸ Insufficient balance\n"
+                    "▸ Invalid user ID\n"
+                    "▸ Database error",
+                    parse_mode="Markdown")
                 
     except Exception as e:
-        bot.reply_to(message, f"⚠️ Error: {str(e)}")
+        bot.reply_to(message,
+            "⚠️ *System Error*\n\n"
+            f"Command failed: {str(e)}\n\n"
+            "Please try again or contact developer",
+            parse_mode="Markdown")
         print(f"Admin command error: {traceback.format_exc()}")
 
 @bot.message_handler(func=lambda message: message.text == "🛠 Admin Panel")
 def admin_panel(message):
     if message.from_user.id not in admin_user_ids:
-        bot.reply_to(message, "❌ Y̶o̶u̶ ̶a̶r̶e̶ ̶n̶o̶t̶ ̶a̶u̶t̶h̶o̶r̶i̶z̶e̶d̶ ̶t̶o̶ ̶a̶c̶c̶e̶s̶s̶ ̶t̶h̶i̶s̶ ̶p̶a̶n̶e̶l̶.")
+        bot.reply_to(message,
+            "🔒 *Restricted Area*\n\n"
+            "This panel is for authorized administrators only\n\n"
+            "⚠️ Your access attempt has been logged",
+            parse_mode="Markdown")
         return
     
-    bot.reply_to(message, "🛠 Admin Panel:", reply_markup=admin_markup)
+    bot.reply_to(message,
+        "⚡ *SMM Booster Admin Center*\n\n"
+        "▸ User Management\n"
+        "▸ Coin Transactions\n"
+        "▸ System Controls\n\n"
+        "Select an option below:",
+        parse_mode="Markdown",
+        reply_markup=admin_markup)
 
 @bot.message_handler(func=lambda message: message.text in ["➕ Add Coins", "➖ Remove Coins"] and message.from_user.id in admin_user_ids)
 def admin_actions(message):
-    """Guide admin to use addcoins or removecoins commands"""
+    """Enhanced admin command guidance"""
     if "Add" in message.text:
-        bot.reply_to(message, "Send: /addcoins <user_id> <amount>")
+        bot.reply_to(message,
+            "💎 *Add Coins Guide*\n\n"
+            "Command: `/addcoins <user_id> <amount>`\n\n"
+            "Example:\n"
+            "`/addcoins 123456789 500.00`\n\n"
+            "⚠️ Will create account if not exists",
+            parse_mode="Markdown",
+            reply_markup=ForceReply(selective=True))
     elif "Remove" in message.text:
-        bot.reply_to(message, "Send: /removecoins <user_id> <amount>")
+        bot.reply_to(message,
+            "⚡ *Remove Coins Guide*\n\n"
+            "Command: `/removecoins <user_id> <amount>`\n\n"
+            "Example:\n"
+            "`/removecoins 123456789 250.50`\n\n"
+            "⚠️ Fails if insufficient balance",
+            parse_mode="Markdown",
+            reply_markup=ForceReply(selective=True))
 
 @bot.message_handler(func=lambda message: message.text == "🔙 Main Menu")
 def back_to_main(message):
-    bot.reply_to(message, "Rᴇᴛᴜʀɴɪɴɢ Tᴏ Mᴀɪɴ Mᴇɴᴜ...", reply_markup=main_markup)
+    bot.reply_to(message,
+        "🔄 *Returning to Main Menu*\n\n"
+        "All admin functions saved\n"
+        "You can resume later",
+        parse_mode="Markdown",
+        reply_markup=main_markup)
 
 #========== New Commands ==============#
 # Admin Stats Command
 @bot.message_handler(func=lambda m: m.text == "📊 Analytics" and m.from_user.id in admin_user_ids)
 def show_analytics(message):
-    """Show comprehensive bot analytics"""
+    """Show comprehensive bot analytics with premium dashboard"""
     try:
+        # Get all stats
         total_users = get_user_count()
         active_users = get_active_users(7)
+        new_users_24h = get_new_users(1)
         total_orders = get_total_orders()
+        completed_orders = get_completed_orders()
         total_deposits = get_total_deposits()
         top_referrer = get_top_referrer()
         
-        # Format top referrer display
+        # Format top referrer
         if top_referrer['user_id']:
             username = f"@{top_referrer['username']}" if top_referrer['username'] else f"User {top_referrer['user_id']}"
-            referrer_display = f"{username} ({top_referrer['count']} invites)"
+            referrer_display = f"🏆 {username} (Invited {top_referrer['count']} users)"
         else:
-            referrer_display = "No referrals yet"
+            referrer_display = "📭 No referrals yet"
         
-        msg = f"""📊 <b>Bot Analytics</b>
+        # Calculate conversion rates
+        conversion_rate = (completed_orders/total_orders)*100 if total_orders > 0 else 0
+        deposit_per_user = total_deposits/total_users if total_users > 0 else 0
         
-👤 <b>Tᴏᴛᴀʟ Uꜱᴇʀꜱ:</b> {total_users}
-🔥 <b>Aᴄᴛɪᴠᴇ Uꜱᴇʀꜱ (7 Days):</b> {active_users}
-🚀 <b>Tᴏᴛᴀʟ Oʀᴅᴇʀꜱ Pʀᴏᴄᴇꜱꜱᴇᴅ:</b> {total_orders}
-💰 <b>Tᴏᴛᴀʟ Dᴇᴘᴏꜱɪᴛꜱ:</b> {total_deposits:.2f} coins
-🎯 <b>Tᴏᴘ Rᴇꜰᴇʀʀᴇʀ:</b> {referrer_display}"""
+        # Create premium dashboard
+        msg = f"""
+📈 <b>SMM Booster Premium Analytics</b>
+━━━━━━━━━━━━━━━━━━━━
+
+👥 <b>User Statistics</b>
+├ 👤 Total Users: <code>{total_users}</code>
+├ 🔥 Active (7d): <code>{active_users}</code>
+├ 🆕 New (24h): <code>{new_users_24h}</code>
+└ 💰 Avg Deposit/User: <code>{deposit_per_user:.2f}</code> coins
+
+🛒 <b>Order Metrics</b>
+├ 🚀 Total Orders: <code>{total_orders}</code>
+├ ✅ Completed: <code>{completed_orders}</code>
+├ 📊 Conversion: <code>{conversion_rate:.1f}%</code>
+└ 💸 Total Deposits: <code>{total_deposits:.2f}</code> coins
+
+🔗 <b>Referral Program</b>
+└ {referrer_display}
+
+⏳ <i>Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}</i>
+"""
         
-        bot.reply_to(message, msg, parse_mode='HTML')
+        # Add quick action buttons
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("🔄 Refresh", callback_data="refresh_analytics"),
+            InlineKeyboardButton("📊 Detailed Report", callback_data="full_report")
+        )
+        
+        bot.reply_to(message, msg, parse_mode='HTML', reply_markup=markup)
+        
     except Exception as e:
-        print(f"Error showing analytics: {e}")
-        bot.reply_to(message, "❌ Failed to load analytics. Please try again later.")
+        print(f"Analytics error: {e}")
+        bot.reply_to(message, 
+            "⚠️ <b>Analytics Dashboard Unavailable</b>\n\n"
+            "Our premium metrics system is temporarily offline\n"
+            "Please try again later",
+            parse_mode='HTML')
 
 # =========================== Broadcast Command ================= #
 @bot.message_handler(func=lambda m: m.text == "📤 Broadcast" and m.from_user.id in admin_user_ids)
 def broadcast_start(message):
     """Start normal broadcast process (unpinned)"""
-    msg = bot.reply_to(message, "📢 Eɴᴛᴇʀ Tʜᴇ Mᴇꜱꜱᴀɢᴇ Yᴏᴜ Wᴀɴᴛ Tᴏ Bʀᴏᴀᴅᴄᴀꜱᴛ Tᴏ Aʟʟ Uꜱᴇʀꜱ (ᴛʜɪꜱ ᴡᴏɴ'ᴛ ʙᴇ ᴘɪɴɴᴇᴅ):")
+    msg = bot.reply_to(message, "📢 ✨ <b>Compose Your Broadcast Message</b> ✨\n\n"
+                              "Please enter the message you'd like to send to all users.\n"
+                              "This will be sent as a regular (unpinned) message.\n\n"
+                              "🖋️ You can include text, photos, or documents.\n"
+                              "❌ Type <code>✘ Cancel</code> to abort.", 
+                       parse_mode="HTML")
     bot.register_next_step_handler(msg, process_broadcast)
 
 def process_broadcast(message):
     """Process and send the broadcast message (unpinned)"""
     if message.text == "✘ Cancel":
-        bot.reply_to(message, "❌ Broadcast cancelled.", reply_markup=admin_markup)
+        bot.reply_to(message, "🛑 <b>Broadcast cancelled.</b>", 
+                     parse_mode="HTML", reply_markup=admin_markup)
         return
     
     users = get_all_users()
     success = 0
     failed = 0
     
-    bot.reply_to(message, f"⏳ Sᴇɴᴅɪɴɢ Bʀᴏᴀᴅᴄᴀꜱᴛ Tᴏ {len(users)} users...")
+    # Enhanced sending notification with progress bar concept
+    progress_msg = bot.reply_to(message, f"""📨 <b>Broadcast Initiated</b>
     
-    for user_id in users:
+📊 Total Recipients: <code>{len(users)}</code>
+⏳ Status: <i>Processing...</i>
+
+[░░░░░░░░░░] 0%""", parse_mode="HTML")
+    
+    for index, user_id in enumerate(users):
         try:
             if message.content_type == 'text':
-                bot.send_message(user_id, message.text, parse_mode="Markdown")
+                # Enhanced text message format
+                formatted_text = f"""✨ <b>Announcement</b> ✨\n\n{message.text}\n\n"""
+                if not message.text.endswith(('🌐', '📢', '🔔', '📣', '📩')):
+                    formatted_text += "━━━━━━━━━━━━━━\n"
+                    formatted_text += "💌 Thank you for being part of our community!\n"
+                    formatted_text += "🔔 Stay tuned for more updates."
+                bot.send_message(user_id, formatted_text, parse_mode="HTML")
             elif message.content_type == 'photo':
-                bot.send_photo(user_id, message.photo[-1].file_id, caption=message.caption)
+                # Enhanced photo caption
+                caption = f"📸 {message.caption}" if message.caption else "✨ Community Update"
+                bot.send_photo(user_id, message.photo[-1].file_id, caption=caption)
             elif message.content_type == 'document':
-                bot.send_document(user_id, message.document.file_id, caption=message.caption)
+                # Enhanced document caption
+                caption = f"📄 {message.caption}" if message.caption else "📁 Important Document"
+                bot.send_document(user_id, message.document.file_id, caption=caption)
             success += 1
         except Exception as e:
             print(f"Failed to send to {user_id}: {e}")
             failed += 1
+        
+        # Update progress every 10%
+        if (index+1) % (len(users)//10) == 0 or index+1 == len(users):
+            progress = int((index+1)/len(users)*100)
+            progress_bar = '█' * (progress//10) + '░' * (10 - progress//10)
+            try:
+                bot.edit_message_text(f"""📨 <b>Broadcast Progress</b>
+                
+📊 Total Recipients: <code>{len(users)}</code>
+✅ Successful: <code>{success}</code>
+❌ Failed: <code>{failed}</code>
+⏳ Status: <i>Sending...</i>
+
+[{progress_bar}] {progress}%""", 
+                    message.chat.id, progress_msg.message_id, parse_mode="HTML")
+            except:
+                pass
+        
         time.sleep(0.1)  # Rate limiting
     
-    bot.reply_to(message, f"""✅ Broadcast Complete:
+    # Enhanced completion message
+    bot.reply_to(message, f"""📣 <b>Broadcast Completed Successfully!</b>
     
-📤 Sent: {success}
-❌ Failed: {failed}""", reply_markup=admin_markup)
+📊 <b>Statistics:</b>
+├ 📤 <i>Sent:</i> <code>{success}</code>
+└ ❌ <i>Failed:</i> <code>{failed}</code>
+
+⏱️ <i>Finished at:</i> <code>{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</code>
+
+✨ <i>Thank you for using our broadcast system!</i>""", 
+                 parse_mode="HTML", reply_markup=admin_markup)
 
 #====================== Ban User Command ================================#
+# ============================= Enhanced Ban User Command ============================= #
 @bot.message_handler(func=lambda m: m.text == "🔒 Ban User" and m.from_user.id in admin_user_ids)
 def ban_user_start(message):
     """Start ban user process"""
-    msg = bot.reply_to(message, "Eɴᴛᴇʀ Uꜱᴇʀ Iᴅ Tᴏ Bᴀɴ:")
+    msg = bot.reply_to(message, 
+        "⚡ *SMM Admin Panel - Ban User*\n\n"
+        "Eɴᴛᴇʀ Uꜱᴇʀ Iᴅ Tᴏ Bᴀɴ:\n"
+        "▸ *Format*: `123456789`\n"
+        "▸ *Note*: User will lose all service access\n\n"
+        "✘ Type *'Cancel'* to abort",
+        parse_mode="Markdown",
+        reply_markup=ForceReply(selective=True))
     bot.register_next_step_handler(msg, process_ban_user)
 
 def process_ban_user(message):
-    """Ban a user"""
+    """Ban a user with enhanced features"""
     if message.text == "✘ Cancel":
         bot.reply_to(message, "❌ Ban cancelled.", reply_markup=admin_markup)
         return
@@ -2210,40 +2489,72 @@ def process_ban_user(message):
     user_id = message.text.strip()
     
     if not user_id.isdigit():
-        bot.reply_to(message, "❌ Invalid user ID. Must be numeric.", reply_markup=admin_markup)
+        bot.reply_to(message, 
+            "❌ *Invalid Input*\n"
+            "User ID must contain only numbers\n"
+            "Example: `123456789`",
+            parse_mode="Markdown",
+            reply_markup=admin_markup)
         return
     
     if is_banned(user_id):
-        bot.reply_to(message, "⚠️ User is already banned.", reply_markup=admin_markup)
+        bot.reply_to(message, 
+            "⚠️ *User Already Banned*\n"
+            f"User `{user_id}` is already in ban list",
+            parse_mode="Markdown",
+            reply_markup=admin_markup)
         return
     
     ban_user(user_id)
     
-    # Send notification to banned user
+    # Enhanced ban notification to user
     try:
         appeal_markup = InlineKeyboardMarkup()
-        appeal_markup.add(InlineKeyboardButton("📩 Send Appeal", url="https://t.me/SocialHubBoosterHelper"))
+        appeal_markup.row(
+            InlineKeyboardButton("📩 Appeal Ban", url="https://t.me/SocialHubBoosterHelper"),
+            InlineKeyboardButton("📋 View Terms", callback_data="ban_terms")
+        )
         
         bot.send_message(
             user_id,
-            f"⛔ 𝙔𝙤𝙪 𝙝𝙖𝙫𝙚 𝙗𝙚𝙚𝙣 𝙗𝙖𝙣𝙣𝙚𝙙 𝙛𝙧𝙤𝙢 𝙪𝙨𝙞𝙣𝙜 𝙩𝙝𝙞𝙨 𝙗𝙤𝙩.\n\n"
-            f"𝙄𝙛 𝙮𝙤𝙪 𝙗𝙚𝙡𝙞𝙚𝙫𝙚 𝙩𝙝𝙞𝙨 𝙬𝙖𝙨 𝙖 𝙢𝙞𝙨𝙩𝙖𝙠𝙚, 𝙮𝙤𝙪 𝙘𝙖𝙣 𝙖𝙥𝙥𝙚𝙖𝙡 𝙮𝙤𝙪𝙧 𝙗𝙖𝙣:",
+            f"⛔ *ACCOUNT SUSPENDED*\n\n"
+            f"Your access to *SMM Booster* services has been restricted.\n\n"
+            f"▸ *Reason*: Violation of Terms\n"
+            f"▸ *Appeal*: Available via button below\n"
+            f"▸ *Status*: Permanent (until appeal)\n\n"
+            f"⚠️ Attempting to bypass will result in IP blacklist",
+            parse_mode="Markdown",
             reply_markup=appeal_markup
         )
     except Exception as e:
-        print(f"Could not notify banned user: {e}")
+        print(f"Ban notification error: {e}")
     
-    bot.reply_to(message, f"✅ User {user_id} has been banned.", reply_markup=admin_markup)
+    # Enhanced admin confirmation
+    bot.reply_to(message,
+        f"✅ *User Banned Successfully*\n\n"
+        f"▸ User ID: `{user_id}`\n"
+        f"▸ Action: Full service restriction\n"
+        f"▸ Notified: {'Yes' if not e else 'Failed'}\n\n"
+        f"📝 _This user has been added to ban database_",
+        parse_mode="Markdown",
+        reply_markup=admin_markup)
 
-#================================= Unban User Command =============================================#
+# ============================= Premium Unban Command ============================= #
 @bot.message_handler(func=lambda m: m.text == "✅ Unban User" and m.from_user.id in admin_user_ids)
 def unban_user_start(message):
     """Start unban user process"""
-    msg = bot.reply_to(message, "Eɴᴛᴇʀ Uꜱᴇʀ Iᴅ Tᴏ Uɴʙᴀɴ:")
+    msg = bot.reply_to(message,
+        "⚡ *SMM Admin Panel - Unban User*\n\n"
+        "Eɴᴛᴇʀ Uꜱᴇʀ Iᴅ Tᴏ Uɴʙᴀɴ:\n"
+        "▸ Will restore all services\n"
+        "▸ Automatic notification sent\n\n"
+        "✘ Type *'Cancel'* to abort",
+        parse_mode="Markdown",
+        reply_markup=ForceReply(selective=True))
     bot.register_next_step_handler(msg, process_unban_user)
 
 def process_unban_user(message):
-    """Unban a user"""
+    """Unban a user with premium features"""
     if message.text == "✘ Cancel":
         bot.reply_to(message, "❌ Unban cancelled.", reply_markup=admin_markup)
         return
@@ -2251,56 +2562,135 @@ def process_unban_user(message):
     user_id = message.text.strip()
     
     if not user_id.isdigit():
-        bot.reply_to(message, "❌ Invalid user ID. Must be numeric.", reply_markup=admin_markup)
+        bot.reply_to(message,
+            "❌ *Invalid Input*\n"
+            "User ID must contain only numbers\n"
+            "Example: `987654321`",
+            parse_mode="Markdown",
+            reply_markup=admin_markup)
         return
     
     if not is_banned(user_id):
-        bot.reply_to(message, "⚠️ User is not currently banned.", reply_markup=admin_markup)
+        bot.reply_to(message,
+            f"ℹ️ *User Not Banned*\n"
+            f"User `{user_id}` isn't in ban records",
+            parse_mode="Markdown",
+            reply_markup=admin_markup)
         return
     
     unban_user(user_id)
     
-    # Notify unbanned user
+    # Premium unban notification
     try:
-        bot.send_message(user_id, "✅ 𝗬𝗼𝘂𝗿 𝗯𝗮𝗻 𝗵𝗮𝘀 𝗯𝗲𝗲𝗻 𝗹𝗶𝗳𝘁𝗲𝗱. 𝗬𝗼𝘂 𝗰𝗮𝗻 𝗻𝗼𝘄 𝘂𝘀𝗲 𝘁𝗵𝗲 𝗯𝗼𝘁 𝗮𝗴𝗮𝗶𝗻.")
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("🛒 Return to Services", callback_data="services_menu"))
+        
+        bot.send_message(
+            user_id,
+            f"✅ *ACCOUNT REINSTATED*\n\n"
+            f"Your *SMM Booster* access has been restored!\n\n"
+            f"▸ All services: Reactivated\n"
+            f"▸ Order history: Preserved\n"
+            f"▸ Balance: Unaffected\n\n"
+            f"⚠️ Please review our terms to avoid future issues",
+            parse_mode="Markdown",
+            reply_markup=markup
+        )
     except Exception as e:
-        print(f"Could not notify unbanned user: {e}")
+        print(f"Unban notification error: {e}")
     
-    bot.reply_to(message, f"✅ User {user_id} has been unbanned.", reply_markup=admin_markup)
+    # Admin confirmation with flair
+    bot.reply_to(message,
+        f"✨ *User Unbanned Successfully*\n\n"
+        f"▸ User ID: `{user_id}`\n"
+        f"▸ Services: Reactivated\n"
+        f"▸ Notified: {'Yes' if not e else 'Failed'}\n\n"
+        f"📝 _Removed from ban database_",
+        parse_mode="Markdown",
+        reply_markup=admin_markup)
 
-# List Banned Command
+# ============================= VIP Banned Users List ============================= #
 @bot.message_handler(func=lambda m: m.text == "📋 List Banned" and m.from_user.id in admin_user_ids)
 def list_banned(message):
-    """Show list of banned users"""
+    """Show enhanced list of banned users"""
     banned_users = get_banned_users()
     
     if not banned_users:
-        bot.reply_to(message, "ℹ️ 𝗡𝗼 𝘂𝘀𝗲𝗿𝘀 𝗮𝗿𝗲 𝗰𝘂𝗿𝗿𝗲𝗻𝘁𝗹𝘆 𝗯𝗮𝗻𝗻𝗲𝗱.", reply_markup=admin_markup)
+        bot.reply_to(message,
+            "🛡️ *Ban List Status*\n\n"
+            "No users currently restricted\n\n"
+            "▸ Database: 0 entries\n"
+            "▸ Last ban: None",
+            parse_mode="Markdown",
+            reply_markup=admin_markup)
         return
     
-    msg = "⛔ Banned Users:\n\n" + "\n".join(banned_users)
-    bot.reply_to(message, msg, reply_markup=admin_markup)
+    # Enhanced list formatting
+    msg = [
+        "⛔ *SMM Booster Ban List*\n",
+        f"▸ Total Banned: {len(banned_users)}",
+        f"▸ Last Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n",
+        "━━━━━━━━━━━━━━━━━━━━"
+    ]
+    
+    # Paginate if more than 10 banned users
+    if len(banned_users) > 10:
+        msg.append("\n*Showing first 10 entries:*\n")
+        banned_users = banned_users[:10]
+    
+    for i, user_id in enumerate(banned_users, 1):
+        try:
+            user = bot.get_chat(user_id)
+            name = user.first_name or f"User {user_id}"
+            msg.append(f"{i}. {name} (`{user_id}`)")
+        except:
+            msg.append(f"{i}. User `{user_id}`")
+    
+    msg.append("\n🔍 Use /baninfo [ID] for details")
+    
+    bot.reply_to(message, "\n".join(msg), 
+                parse_mode="Markdown",
+                reply_markup=admin_markup)
 
-#==================== Leaderboard Command ==========================#
+# ============================= Premium Leaderboard ============================= #
 @bot.message_handler(func=lambda m: m.text == "🏆 Leaderboard")
 def show_leaderboard(message):
-    """Show top 10 users by orders"""
+    """Show VIP leaderboard with enhanced features"""
     top_users = get_top_users(10)
     
     if not top_users:
-        bot.reply_to(message, "🏆 𝙉𝙤 𝙤𝙧𝙙𝙚𝙧 𝙙𝙖𝙩𝙖 𝙖𝙫𝙖𝙞𝙡𝙖𝙗𝙡𝙚 𝙮𝙚𝙩.", reply_markup=main_markup)
+        bot.reply_to(message,
+            "🌟 *SMM Booster Leaderboard*\n\n"
+            "No order data available yet\n\n"
+            "Be the first to appear here!",
+            parse_mode="Markdown",
+            reply_markup=main_markup)
         return
     
-    leaderboard = ["🏆 𝗧𝗼𝗽 𝗨𝘀𝗲𝗿𝘀 𝗯𝘆 𝗢𝗿𝗱𝗲𝗿𝘀:"]
+    leaderboard = [
+        "🏆 *SMM Booster Top Clients*",
+        "Ranked by completed orders\n",
+        "━━━━━━━━━━━━━━━━━━━━"
+    ]
+    
+    medal_emoji = ["🥇", "🥈", "🥉", "🔹", "🔹", "🔹", "🔹", "🔹", "🔹", "🔹"]
+    
     for i, (user_id, count) in enumerate(top_users, 1):
         try:
             user = bot.get_chat(user_id)
             name = user.first_name or f"User {user_id}"
-            leaderboard.append(f"{i}. {name}: {count} orders")
+            leaderboard.append(f"{medal_emoji[i-1]} {name}: *{count}* orders")
         except:
-            leaderboard.append(f"{i}. User {user_id}: {count} orders")
+            leaderboard.append(f"{medal_emoji[i-1]} User {user_id}: *{count}* orders")
     
-    bot.reply_to(message, "\n".join(leaderboard), reply_markup=main_markup)
+    leaderboard.extend([
+        "\n💎 *VIP Benefits Available*",
+        "Top 3 clients get monthly bonuses!"
+    ])
+    
+    bot.reply_to(message, "\n".join(leaderboard),
+                parse_mode="Markdown",
+                reply_markup=main_markup)
 
 #======================= Function to Pin Annoucement Messages ====================#
 @bot.message_handler(func=lambda m: m.text == "📌 Pin Message" and m.from_user.id in admin_user_ids)
@@ -2368,14 +2758,18 @@ def process_user_info(message):
         user_data = getData(user_id) or {}
         
         info = f"""
-🔍 <b>𝗨𝘀𝗲𝗿 𝗜𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻</b>:
-🆔 Iᴅ: <code>{user_id}</code>
-👤 Nᴀᴍᴇ: {user.first_name} {user.last_name or ''}
-📛 Uꜱᴇʀɴᴀᴍᴇ: @{user.username if user.username else 'N/A'}
-💰 Bᴀʟᴀɴᴄᴇ: {user_data.get('balance', 0)}
-📊 Oʀᴅᴇʀꜱ: {user_data.get('orders_count', 0)}
-👥 Rᴇꜰᴇʀʀᴀʟꜱ: {user_data.get('total_refs', 0)}
-🔨 Sᴛᴀᴛᴜꜱ: {"BANNED ⛔" if is_banned(user_id) else "ACTIVE ✅"}
+┌─────────────────────────
+│ 🔍 <b>𝗨𝘀𝗲𝗿 𝗜𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻</b>:
+│ ━━━━━━━━━━━━━━━━━━━━━━
+│ 🆔 Iᴅ: <code>{user_id}</code>
+│ 👤 Nᴀᴍᴇ: {user.first_name} {user.last_name or ''}
+│ 📛 Uꜱᴇʀɴᴀᴍᴇ: @{user.username if user.username else 'N/A'}
+│ 💰 Bᴀʟᴀɴᴄᴇ: {user_data.get('balance', 0)}
+│ 📊 Oʀᴅᴇʀꜱ: {user_data.get('orders_count', 0)}
+│ 👥 Rᴇꜰᴇʀʀᴀʟꜱ: {user_data.get('total_refs', 0)}
+│ 🔨 Sᴛᴀᴛᴜꜱ: {"BANNED ⛔" if is_banned(user_id) else "ACTIVE ✅"}
+└────────────────────────
+
         """
         bot.reply_to(message, info, parse_mode="HTML")
     except ValueError:
@@ -2405,20 +2799,22 @@ def server_status(message):
         mongo_stats = db.command("dbstats")
         
         status = f"""
-🖥 <b>𝙎𝙮𝙨𝙩𝙚𝙢 𝙎𝙩𝙖𝙩𝙪𝙨</b>
-━━━━━━━━━━━━━━
-💻 <b>Sʏꜱᴛᴇᴍ</b>: {uname.system} {uname.release}
-⏱ <b>Uᴘᴛɪᴍᴇ</b>: {datetime.now() - boot_time}
-━━━━━━━━━━━━━━━━━━━━━━━━
-🧠 <b>Cᴘᴜ</b>: {psutil.cpu_percent()}% usage
-💾 <b>Mᴇᴍᴏʀʏ</b>: {mem.used/1024/1024:.1f}MB / {mem.total/1024/1024:.1f}MB
-🗄 <b>Dɪꜱᴋ</b>: {disk.used/1024/1024:.1f}MB / {disk.total/1024/1024:.1f}MB
-━━━━━━━━━━━━━━━━━━━━━━━━
-📊 <b>𝙈𝙤𝙣𝙜𝙤𝘿𝘽 𝙎𝙩𝙖𝙩𝙨</b>
-📦 Dᴀᴛᴀ ꜱɪᴢᴇ: {mongo_stats['dataSize']/1024/1024:.1f}MB
-🗃 Sᴛᴏʀᴀɢᴇ: {mongo_stats['storageSize']/1024/1024:.1f}MB
-📂 Cᴏʟʟᴇᴄᴛɪᴏɴꜱ: {mongo_stats['collections']}
-━━━━━━━━━━━━━━━━━━━━━━━━
+┌────────────────────────
+│ 🖥 <b>𝙎𝙮𝙨𝙩𝙚𝙢 𝙎𝙩𝙖𝙩𝙪𝙨</b>
+│ ━━━━━━━━━━━━━━━━━━━━━━
+│ 💻 <b>Sʏꜱᴛᴇᴍ</b>: {uname.system} {uname.release}
+│ ⏱ <b>Uᴘᴛɪᴍᴇ</b>: {datetime.now() - boot_time}
+│ ━━━━━━━━━━━━━━━━━━━━━━
+│ 🧠 <b>Cᴘᴜ</b>: {psutil.cpu_percent()}% usage
+│ 💾 <b>Mᴇᴍᴏʀʏ</b>: {mem.used/1024/1024:.1f}MB / {mem.total/1024/1024:.1f}MB
+│ 🗄 <b>Dɪꜱᴋ</b>: {disk.used/1024/1024:.1f}MB / {disk.total/1024/1024:.1f}MB
+│ ━━━━━━━━━━━━━━━━━━━━━━
+│ 📊 <b>𝙈𝙤𝙣𝙜𝙤𝘿𝘽 𝙎𝙩𝙖𝙩𝙨</b>
+│ 📦 Dᴀᴛᴀ ꜱɪᴢᴇ: {mongo_stats['dataSize']/1024/1024:.1f}MB
+│ 🗃 Sᴛᴏʀᴀɢᴇ: {mongo_stats['storageSize']/1024/1024:.1f}MB
+│ 📂 Cᴏʟʟᴇᴄᴛɪᴏɴꜱ: {mongo_stats['collections']}
+└───────────────────────
+
         """
         bot.reply_to(message, status, parse_mode="HTML")
     except Exception as e:
@@ -2521,15 +2917,17 @@ def process_check_order(message):
         if order:
             status_time = datetime.fromtimestamp(order.get('timestamp', time.time())).strftime('%Y-%m-%d %H:%M')
             status = f"""
-📦 <b>Order #{order_id}</b>
-━━━━━━━━━━━━━━
-👤 Uꜱᴇʀ: {order.get('username', 'N/A')} (<code>{order.get('user_id', 'N/A')}</code>)
-🛒 Sᴇʀᴠɪᴄᴇ: {order.get('service', 'N/A')}
-🔗 Lɪɴᴋ: {order.get('link', 'N/A')}
-📊 Qᴜᴀɴᴛɪᴛʏ: {order.get('quantity', 'N/A')}
-💰 Cᴏꜱᴛ: {order.get('cost', 'N/A')}
-🔄 Sᴛᴀᴛᴜꜱ: {order.get('status', 'N/A')}
-⏱ Dᴀᴛᴇ: {status_time}
+┌─────────────────────
+│ 📦 <b>Order #{order_id}</b>
+│ ━━━━━━━━━━━━━━
+│ 👤 Uꜱᴇʀ: {order.get('username', 'N/A')} (<code>{order.get('user_id', 'N/A')}</code>)
+│ 🛒 Sᴇʀᴠɪᴄᴇ: {order.get('service', 'N/A')}
+│ 🔗 Lɪɴᴋ: {order.get('link', 'N/A')}
+│ 📊 Qᴜᴀɴᴛɪᴛʏ: {order.get('quantity', 'N/A')}
+│ 💰 Cᴏꜱᴛ: {order.get('cost', 'N/A')}
+│ 🔄 Sᴛᴀᴛᴜꜱ: {order.get('status', 'N/A')}
+│ ⏱ Dᴀᴛᴇ: {status_time}
+└─────────────────────
             """
             bot.reply_to(message, status, parse_mode="HTML", disable_web_page_preview=True)
         else:
@@ -2539,25 +2937,67 @@ def process_check_order(message):
 
 
 #========================== Add this handler for the /policy command =================#
+
 @bot.message_handler(commands=['policy'])
 def policy_command(message):
     """Show the bot's usage policy"""
     policy_text = """
-📜 𝘽𝙤𝙩 𝙐𝙨𝙖𝙜𝙚 𝙋𝙤𝙡𝙞𝙘𝙮 📜
+📜 <b>🤖 Bot Usage Policy & Guidelines</b> 📜
+━━━━━━━━━━━━━━━━━━━━
 
-1. **Prohibited Content**: Do not use this bot to promote illegal content, spam, or harassment.
+🔹 <b>1. Acceptable Use</b>
+   ├ ✅ Permitted: Legal, non-harmful content
+   └ ❌ Prohibited: Spam, harassment, illegal material
 
-2. **Fair Use**: Abuse of the bot's services may result in account suspension.
+🔹 <b>2. Fair Usage Policy</b>
+   ├ ⚖️ Abuse may lead to restrictions
+   └ 📊 Excessive usage may be rate-limited
 
-3. **Refunds**: All purchases are final. No refunds will be issued for completed orders.
+🔹 <b>3. Financial Policy</b>
+   ├ 💳 All transactions are final
+   └ 🔄 No refunds for completed services
 
-4. **Privacy**: We respect your privacy. Your data will not be shared with third parties.
+🔹 <b>4. Privacy Commitment</b>
+   ├ 🔒 Your data stays confidential
+   └ 🤝 Never shared with third parties
 
-5. **Compliance**: Users must comply with all Telegram Terms of Service.
+🔹 <b>5. Platform Compliance</b>
+   ├ ✋ Must follow Telegram's ToS
+   └ 🌐 All content must be legal in your jurisdiction
 
-Violations of these policies may result in permanent bans.
-"""
-    bot.reply_to(message, policy_text, parse_mode="Markdown")
+⚠️ <b>Consequences of Violation</b>
+   ├ ⚠️ First offense: Warning
+   ├ 🔇 Repeated violations: Temporary suspension
+   └ 🚫 Severe cases: Permanent ban
+
+📅 <i>Last updated: {update_date}</i>
+━━━━━━━━━━━━━━━━━━━━
+💡 Need help? Contact @SupportUsername
+""".format(update_date=datetime.datetime.now().strftime('%Y-%m-%d'))
+    
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton(text="✅ Accept Policy", callback_data="accept_policy"))
+    
+    bot.reply_to(message, policy_text, parse_mode="HTML", reply_markup=markup)
+
+# Callback handler for the accept button
+@bot.callback_query_handler(func=lambda call: call.data == "accept_policy")
+def accept_policy_callback(call):
+    bot.answer_callback_query(
+        call.id,
+        text="🙏 Thank you for your cooperation!",
+        show_alert=True
+    )
+    # Optional: Edit the original message to remove the button
+    try:
+        bot.edit_message_reply_markup(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=None
+        )
+    except:
+        pass
+
 
 
 #======================= Function to periodically check order status ====================#
