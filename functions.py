@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 from dotenv import load_dotenv
 import logging
+from datetime import datetime, timedelta
 
 
 # Load environment variables
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 # Initialize MongoDB connection
 try:
     client = MongoClient(MONGO_URI)
-    db = client.get_database("smmhubbooster")
+    db = client.get_database("smmhubboosterv2")
     users_collection = db.users
     orders_collection = db.orders
     logger.info("Connected to MongoDB successfully")
@@ -37,10 +38,22 @@ def insertUser(user_id, data):
     """Insert user data if user doesn't exist."""
     try:
         user_id = str(user_id)
+        
         # Ensure balance is stored as float, not string
         if 'balance' in data:
             data['balance'] = float(data['balance'])
+        
+        # Add default fields for new users
         data['user_id'] = user_id
+        data['join_date'] = data.get('join_date', datetime.now())  # Add join_date if not provided
+        data['total_deposits'] = data.get('total_deposits', 0.0)  # Default total deposits
+        data['orders_count'] = data.get('orders_count', 0)  # Default order count
+        data['total_refs'] = data.get('total_refs', 0)  # Default referral count
+        data['welcome_bonus'] = data.get('welcome_bonus', 0)  # Default welcome bonus status
+        data['referred'] = data.get('referred', 0)  # Default referral status
+        data['banned'] = data.get('banned', False)  # Default banned status
+        
+        # Insert the user into the database
         result = users_collection.insert_one(data)
         return result.inserted_id is not None
     except PyMongoError as e:
@@ -378,5 +391,25 @@ def get_top_referrer():
         logger.error(f"Error getting top referrer: {e}")
         return {'user_id': None, 'username': None, 'count': 0}
 
+def get_completed_orders():
+    """Get the total number of completed orders."""
+    try:
+        return orders_collection.count_documents({"status": "completed"})
+    except PyMongoError as e:
+        logger.error(f"Error getting completed orders: {e}")
+        return 0
+
+
+def get_new_users(days=1):
+    """Get the number of new users who joined within the last `days`."""
+    try:
+        # Calculate the cutoff date
+        cutoff_date = datetime.now() - timedelta(days=days)
+        
+        # Query the database for users who joined after the cutoff date
+        return users_collection.count_documents({"join_date": {"$gte": cutoff_date}})
+    except PyMongoError as e:
+        logger.error(f"Error getting new users: {e}")
+        return 0
 
 print("functions.py loaded with MongoDB support")
