@@ -2188,7 +2188,7 @@ def handle_admin_commands(message):
                     f"💎 *Coins Added Successfully*\n\n"
                     f"▸ User ID: `{user_id}`\n"
                     f"▸ Amount: +{amount} coins\n"
-                    f"▸ New Balance: {getBalance(user_id):.2f}\n\n"
+                    f"▸ New Balance: {getData(user_id):.2f}\n\n"
                     "📝 _Transaction logged in database_",
                     parse_mode="Markdown")
                 
@@ -2199,7 +2199,7 @@ def handle_admin_commands(message):
                         f"🎉 *ACCOUNT CREDITED*\n\n"
                         f"Your SMM Booster wallet has been topped up!\n\n"
                         f"▸ Amount: +{amount} coins\n"
-                        f"▸ New Balance: {getBalance(user_id):.2f}\n"
+                        f"▸ New Balance: {getData(user_id):.2f}\n"
                         f"▸ Transaction ID: {int(time.time())}\n\n"
                         "💎 Thank you for being a valued customer!",
                         parse_mode="Markdown",
@@ -2225,7 +2225,7 @@ def handle_admin_commands(message):
                     f"⚡ *Coins Deducted Successfully*\n\n"
                     f"▸ User ID: `{user_id}`\n"
                     f"▸ Amount: -{amount} coins\n"
-                    f"▸ New Balance: {getBalance(user_id):.2f}\n\n"
+                    f"▸ New Balance: {getData(user_id):.2f}\n\n"
                     "📝 _Transaction logged in database_",
                     parse_mode="Markdown")
                 
@@ -2236,7 +2236,7 @@ def handle_admin_commands(message):
                         f"🔔 *ACCOUNT DEBITED*\n\n"
                         f"Coins have been deducted from your SMM Booster wallet\n\n"
                         f"▸ Amount: -{amount} coins\n"
-                        f"▸ New Balance: {getBalance(user_id):.2f}\n"
+                        f"▸ New Balance: {getData(user_id):.2f}\n"
                         f"▸ Transaction ID: {int(time.time())}\n\n"
                         "⚠️ Contact support if this was unexpected",
                         parse_mode="Markdown",
