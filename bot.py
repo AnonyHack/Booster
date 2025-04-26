@@ -2156,7 +2156,8 @@ def handle_admin_commands(message):
             
         user_id = args[1]
         try:
-            amount = float(args[2])
+            # Handle both integer and float inputs
+            amount = float(args[2]) if '.' in args[2] else int(args[2])
             if amount <= 0:
                 raise ValueError
         except ValueError:
@@ -2182,13 +2183,13 @@ def handle_admin_commands(message):
                 insertUser(user_id, initial_data)
                 
             if addBalance(user_id, amount):
-                # Enhanced admin confirmation
+                # Fixed admin confirmation without .format()
                 bot.reply_to(message,
                     f"💎 *Coins Added Successfully*\n\n"
                     f"▸ User ID: `{user_id}`\n"
                     f"▸ Amount: +{amount} coins\n"
-                    f"▸ New Balance: {getData(user_id):.2f}\n\n"
-                    f"📝 _Transaction logged in database_",
+                    f"▸ New Balance: {getBalance(user_id):.2f}\n\n"
+                    "📝 _Transaction logged in database_",
                     parse_mode="Markdown")
                 
                 # Premium user notification
@@ -2198,9 +2199,9 @@ def handle_admin_commands(message):
                         f"🎉 *ACCOUNT CREDITED*\n\n"
                         f"Your SMM Booster wallet has been topped up!\n\n"
                         f"▸ Amount: +{amount} coins\n"
-                        f"▸ New Balance: {getData(user_id):.2f}\n"
+                        f"▸ New Balance: {getBalance(user_id):.2f}\n"
                         f"▸ Transaction ID: {int(time.time())}\n\n"
-                        f"💎 Thank you for being a valued customer!",
+                        "💎 Thank you for being a valued customer!",
                         parse_mode="Markdown",
                         reply_markup=InlineKeyboardMarkup().add(
                             InlineKeyboardButton("🛍️ Shop Now", callback_data="services_menu")
@@ -2219,13 +2220,13 @@ def handle_admin_commands(message):
                 
         elif args[0] == '/removecoins':
             if cutBalance(user_id, amount):
-                # Enhanced admin confirmation
+                # Fixed admin confirmation without .format()
                 bot.reply_to(message,
                     f"⚡ *Coins Deducted Successfully*\n\n"
                     f"▸ User ID: `{user_id}`\n"
                     f"▸ Amount: -{amount} coins\n"
-                    f"▸ New Balance: {getData(user_id):.2f}\n\n"
-                    f"📝 _Transaction logged in database_",
+                    f"▸ New Balance: {getBalance(user_id):.2f}\n\n"
+                    "📝 _Transaction logged in database_",
                     parse_mode="Markdown")
                 
                 # Premium user notification
@@ -2235,9 +2236,9 @@ def handle_admin_commands(message):
                         f"🔔 *ACCOUNT DEBITED*\n\n"
                         f"Coins have been deducted from your SMM Booster wallet\n\n"
                         f"▸ Amount: -{amount} coins\n"
-                        f"▸ New Balance: {getData(user_id):.2f}\n"
+                        f"▸ New Balance: {getBalance(user_id):.2f}\n"
                         f"▸ Transaction ID: {int(time.time())}\n\n"
-                        f"⚠️ Contact support if this was unexpected",
+                        "⚠️ Contact support if this was unexpected",
                         parse_mode="Markdown",
                         reply_markup=InlineKeyboardMarkup().add(
                             InlineKeyboardButton("📩 Contact Support", url="https://t.me/SocialHubBoosterHelper")
@@ -2257,7 +2258,7 @@ def handle_admin_commands(message):
                 
     except Exception as e:
         bot.reply_to(message,
-            "⚠️ *System Error*\n\n"
+            f"⚠️ *System Error*\n\n"
             f"Command failed: {str(e)}\n\n"
             "Please try again or contact developer",
             parse_mode="Markdown")
