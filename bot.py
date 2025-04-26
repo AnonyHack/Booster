@@ -244,6 +244,20 @@ def check_membership_and_prompt(user_id, message):
         return False  # User is not a member
     return True  # User is a member
 
+@bot.callback_query_handler(func=lambda call: call.data == "why_join_info")
+def handle_why_join(call):
+    """Send the privileges info when user clicks 'Why Join?' button"""
+    perks_text = """
+🛡️ *Pʀɪᴠɪʟᴇɢᴇꜱ Yᴏᴜ'ʟʟ Gᴇᴛ:*
+✓ Fᴜʟʟ Bᴏᴛ Aᴄᴄᴇꜱꜱ  
+✓ Exᴄʟᴜꜱɪᴠᴇ Oғғᴇʀꜱ  
+✓ Pʀᴇᴍɪᴜᴍ Sᴜᴘᴘᴏʀᴛ  
+✓ Rᴇɢᴜʟᴀʀ Uᴘᴅᴀᴛᴇꜱ
+"""
+    bot.answer_callback_query(call.id)  # silently close the callback
+    bot.send_message(call.message.chat.id, perks_text, parse_mode="Markdown")
+
+
 @bot.callback_query_handler(func=lambda call: call.data == "verify_membership")
 def verify_membership(call):
     user_id = call.from_user.id
