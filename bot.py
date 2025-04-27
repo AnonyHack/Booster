@@ -2147,6 +2147,57 @@ def handle_back_buttons(message):
         bot.reply_to(message, "Oᴘᴇʀᴀᴛɪᴏɴ Cᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
 
 # ================= ADMIN COMMANDS ================== #
+@bot.message_handler(func=lambda message: message.text == "🛠 Admin Panel")
+def admin_panel(message):
+    if message.from_user.id not in admin_user_ids:
+        bot.reply_to(message,
+            "🔒 *Restricted Area*\n\n"
+            "This panel is for authorized administrators only\n\n"
+            "⚠️ Your access attempt has been logged",
+            parse_mode="Markdown")
+        return
+    
+    bot.reply_to(message,
+        "⚡ *SMM Booster Admin Center*\n\n"
+        "▸ User Management\n"
+        "▸ Coin Transactions\n"
+        "▸ System Controls\n\n"
+        "Select an option below:",
+        parse_mode="Markdown",
+        reply_markup=admin_markup)
+
+#============================= Add and Remove Coins ==============================================#
+@bot.message_handler(func=lambda message: message.text in ["➕ Add Coins", "➖ Remove Coins"] and message.from_user.id in admin_user_ids)
+def admin_actions(message):
+    """Enhanced admin command guidance"""
+    if "Add" in message.text:
+        bot.reply_to(message,
+            "💎 *Add Coins Guide*\n\n"
+            "Command: `/addcoins <user_id> <amount>`\n\n"
+            "Example:\n"
+            "`/addcoins 123456789 500.00`\n\n"
+            "⚠️ Will create account if not exists",
+            parse_mode="Markdown",
+            reply_markup=ForceReply(selective=True))
+    elif "Remove" in message.text:
+        bot.reply_to(message,
+            "⚡ *Remove Coins Guide*\n\n"
+            "Command: `/removecoins <user_id> <amount>`\n\n"
+            "Example:\n"
+            "`/removecoins 123456789 250.50`\n\n"
+            "⚠️ Fails if insufficient balance",
+            parse_mode="Markdown",
+            reply_markup=ForceReply(selective=True))
+
+@bot.message_handler(func=lambda message: message.text == "🔙 Main Menu")
+def back_to_main(message):
+    bot.reply_to(message,
+        "🔄 *Returning to Main Menu*\n\n"
+        "All admin functions saved\n"
+        "You can resume later",
+        parse_mode="Markdown",
+        reply_markup=main_markup)
+
 @bot.message_handler(commands=['addcoins', 'removecoins'])
 def handle_admin_commands(message):
     if message.from_user.id not in admin_user_ids:
@@ -2188,7 +2239,7 @@ def handle_admin_commands(message):
             if not isExists(user_id):
                 initial_data = {
                     "user_id": user_id,
-                    "balance": "0.00",
+                    "balance": 0.00,  # Changed from string to float
                     "ref_by": "none",
                     "referred": 0,
                     "welcome_bonus": 0,
@@ -2197,12 +2248,14 @@ def handle_admin_commands(message):
                 insertUser(user_id, initial_data)
                 
             if addBalance(user_id, amount):
-                # Fixed admin confirmation without .format()
+                user_data = getData(user_id)
+                new_balance = user_data.get('balance', 0) if user_data else 0
+                
                 bot.reply_to(message,
                     f"💎 *Coins Added Successfully*\n\n"
                     f"▸ User ID: `{user_id}`\n"
-                    f"▸ Amount: +{amount} coins\n"
-                    f"▸ New Balance: {getData(user_id):.2f}\n\n"
+                    f"▸ Amount: +{amount:.2f} coins\n"
+                    f"▸ New Balance: {new_balance:.2f}\n\n"
                     "📝 _Transaction logged in database_",
                     parse_mode="Markdown")
                 
@@ -2212,8 +2265,8 @@ def handle_admin_commands(message):
                         user_id,
                         f"🎉 *ACCOUNT CREDITED*\n\n"
                         f"Your SMM Booster wallet has been topped up!\n\n"
-                        f"▸ Amount: +{amount} coins\n"
-                        f"▸ New Balance: {getData(user_id):.2f}\n"
+                        f"▸ Amount: +{amount:.2f} coins\n"
+                        f"▸ New Balance: {new_balance:.2f}\n"
                         f"▸ Transaction ID: {int(time.time())}\n\n"
                         "💎 Thank you for being a valued customer!",
                         parse_mode="Markdown",
@@ -2234,12 +2287,14 @@ def handle_admin_commands(message):
                 
         elif args[0] == '/removecoins':
             if cutBalance(user_id, amount):
-                # Fixed admin confirmation without .format()
+                user_data = getData(user_id)
+                new_balance = user_data.get('balance', 0) if user_data else 0
+                
                 bot.reply_to(message,
                     f"⚡ *Coins Deducted Successfully*\n\n"
                     f"▸ User ID: `{user_id}`\n"
-                    f"▸ Amount: -{amount} coins\n"
-                    f"▸ New Balance: {getData(user_id):.2f}\n\n"
+                    f"▸ Amount: -{amount:.2f} coins\n"
+                    f"▸ New Balance: {new_balance:.2f}\n\n"
                     "📝 _Transaction logged in database_",
                     parse_mode="Markdown")
                 
@@ -2249,8 +2304,8 @@ def handle_admin_commands(message):
                         user_id,
                         f"🔔 *ACCOUNT DEBITED*\n\n"
                         f"Coins have been deducted from your SMM Booster wallet\n\n"
-                        f"▸ Amount: -{amount} coins\n"
-                        f"▸ New Balance: {getData(user_id):.2f}\n"
+                        f"▸ Amount: -{amount:.2f} coins\n"
+                        f"▸ New Balance: {new_balance:.2f}\n"
                         f"▸ Transaction ID: {int(time.time())}\n\n"
                         "⚠️ Contact support if this was unexpected",
                         parse_mode="Markdown",
@@ -2277,56 +2332,6 @@ def handle_admin_commands(message):
             "Please try again or contact developer",
             parse_mode="Markdown")
         print(f"Admin command error: {traceback.format_exc()}")
-
-@bot.message_handler(func=lambda message: message.text == "🛠 Admin Panel")
-def admin_panel(message):
-    if message.from_user.id not in admin_user_ids:
-        bot.reply_to(message,
-            "🔒 *Restricted Area*\n\n"
-            "This panel is for authorized administrators only\n\n"
-            "⚠️ Your access attempt has been logged",
-            parse_mode="Markdown")
-        return
-    
-    bot.reply_to(message,
-        "⚡ *SMM Booster Admin Center*\n\n"
-        "▸ User Management\n"
-        "▸ Coin Transactions\n"
-        "▸ System Controls\n\n"
-        "Select an option below:",
-        parse_mode="Markdown",
-        reply_markup=admin_markup)
-
-@bot.message_handler(func=lambda message: message.text in ["➕ Add Coins", "➖ Remove Coins"] and message.from_user.id in admin_user_ids)
-def admin_actions(message):
-    """Enhanced admin command guidance"""
-    if "Add" in message.text:
-        bot.reply_to(message,
-            "💎 *Add Coins Guide*\n\n"
-            "Command: `/addcoins <user_id> <amount>`\n\n"
-            "Example:\n"
-            "`/addcoins 123456789 500.00`\n\n"
-            "⚠️ Will create account if not exists",
-            parse_mode="Markdown",
-            reply_markup=ForceReply(selective=True))
-    elif "Remove" in message.text:
-        bot.reply_to(message,
-            "⚡ *Remove Coins Guide*\n\n"
-            "Command: `/removecoins <user_id> <amount>`\n\n"
-            "Example:\n"
-            "`/removecoins 123456789 250.50`\n\n"
-            "⚠️ Fails if insufficient balance",
-            parse_mode="Markdown",
-            reply_markup=ForceReply(selective=True))
-
-@bot.message_handler(func=lambda message: message.text == "🔙 Main Menu")
-def back_to_main(message):
-    bot.reply_to(message,
-        "🔄 *Returning to Main Menu*\n\n"
-        "All admin functions saved\n"
-        "You can resume later",
-        parse_mode="Markdown",
-        reply_markup=main_markup)
 
 #========== New Commands ==============#
 # Admin Stats Command
