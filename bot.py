@@ -8,6 +8,7 @@ import traceback
 import logging
 import psutil
 import threading
+import datetime
 from datetime import datetime
 import pytz
 from functools import wraps
@@ -228,7 +229,8 @@ def check_membership_and_prompt(user_id, message):
 ▫️ Wᴀɪᴛ Fᴏʀ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ
 
 
-🔐 *Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Sᴛᴀᴛᴜꜱ:* [░░░░░░░░░░] 0%""",
+🔐 *Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Sᴛᴀᴛᴜꜱ:* 𝘕𝘰𝘵 𝘝𝘦𝘳𝘪𝘧𝘪𝘦𝘥
+━━━━━━━━━━━━━━━━━━━━""",
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/smmserviceslogs")],
@@ -2984,8 +2986,8 @@ def policy_command(message):
 
 📅 <i>Last updated: {update_date}</i>
 ━━━━━━━━━━━━━━━━━━━━
-💡 Need help? Contact @SupportUsername
-""".format(update_date=datetime.datetime.now().strftime('%Y-%m-%d'))
+💡 Need help? Contact @SocialBoosterAdmin
+""".format(update_date=datetime.now().strftime('%Y-%m-%d'))  # Fixed datetime reference
     
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(text="✅ Accept Policy", callback_data="accept_policy"))
@@ -3009,7 +3011,6 @@ def accept_policy_callback(call):
         )
     except:
         pass
-
 
 
 #======================= Function to periodically check order status ====================#
