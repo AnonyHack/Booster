@@ -2310,7 +2310,7 @@ def handle_admin_commands(message):
                         "⚠️ Contact support if this was unexpected",
                         parse_mode="Markdown",
                         reply_markup=InlineKeyboardMarkup().add(
-                            InlineKeyboardButton("📩 Contact Support", url="https://t.me/SocialHubBoosterHelper")
+                            InlineKeyboardButton("📩 Contact Support", url="https://t.me/SocialHubBoosterTMbot")
                         )
                     )
                 except Exception as e:
@@ -2419,6 +2419,10 @@ def process_broadcast(message):
         return
     
     users = get_all_users()
+    if not users:
+        bot.reply_to(message, "❌ No users found to broadcast to", reply_markup=admin_markup)
+        return
+    
     success = 0
     failed = 0
     
@@ -2429,6 +2433,9 @@ def process_broadcast(message):
 ⏳ Status: <i>Processing...</i>
 
 [░░░░░░░░░░] 0%""", parse_mode="HTML")
+    
+    # Calculate update interval (at least 1)
+    update_interval = max(1, len(users) // 10)
     
     for index, user_id in enumerate(users):
         try:
@@ -2453,8 +2460,8 @@ def process_broadcast(message):
             print(f"Failed to send to {user_id}: {e}")
             failed += 1
         
-        # Update progress every 10%
-        if (index+1) % (len(users)//10) == 0 or index+1 == len(users):
+        # Update progress periodically
+        if (index+1) % update_interval == 0 or index+1 == len(users):
             progress = int((index+1)/len(users)*100)
             progress_bar = '█' * (progress//10) + '░' * (10 - progress//10)
             try:
@@ -2467,8 +2474,8 @@ def process_broadcast(message):
 
 [{progress_bar}] {progress}%""", 
                     message.chat.id, progress_msg.message_id, parse_mode="HTML")
-            except:
-                pass
+            except Exception as e:
+                print(f"Failed to update progress: {e}")
         
         time.sleep(0.1)  # Rate limiting
     
@@ -2479,7 +2486,7 @@ def process_broadcast(message):
 ├ 📤 <i>Sent:</i> <code>{success}</code>
 └ ❌ <i>Failed:</i> <code>{failed}</code>
 
-⏱️ <i>Finished at:</i> <code>{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</code>
+⏱️ <i>Finished at:</i> <code>{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</code>
 
 ✨ <i>Thank you for using our broadcast system!</i>""", 
                  parse_mode="HTML", reply_markup=admin_markup)
