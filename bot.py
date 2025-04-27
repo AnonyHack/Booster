@@ -199,23 +199,27 @@ def is_user_member(user_id):
                 return False
         except Exception as e:
             print(f"Error checking channel membership for {channel}: {e}")
-            # Consider implementing a retry mechanism here
-            time.sleep(1)  # Add delay between checks
-            continue
+            # If there's an error checking, assume user is not member
+            return False
     return True
-
 
 def check_membership_and_prompt(user_id, message):
     """Check if the user is a member of all required channels and prompt them to join if not."""
     if not is_user_member(user_id):
-        # Create a cool animated header
-        header = """
-*🚀 Wᴇʟᴄᴏᴍᴇ Tᴏ Sᴍᴍʜᴜʙ Bᴏᴏꜱᴛᴇʀ Bᴏᴛ ! 🚀*
-"""
-        # Enhanced message with progress meter concept
-        bot.reply_to(
-            message,
-            f"""{header}
+        # First, check if this is a callback query or regular message
+        if hasattr(message, 'message_id'):
+            chat_id = message.chat.id
+            reply_to_message_id = message.message_id
+        else:
+            chat_id = message.chat.id
+            reply_to_message_id = None
+        
+        # Send the join message
+        bot.send_message(
+            chat_id=chat_id,
+            reply_to_message_id=reply_to_message_id,
+            text="""*🚀 Wᴇʟᴄᴏᴍᴇ Tᴏ Sᴍᴍʜᴜʙ Bᴏᴏꜱᴛᴇʀ Bᴏᴛ ! 🚀*
+
 🚨 *Tᴏ Uꜱᴇ Tʜɪꜱ Bᴏᴛ, Yᴏᴜ Mᴜꜱᴛ Jᴏɪɴ Tʜᴇ RᴇQᴜɪʀᴇᴅ Cʜᴀɴɴᴇʟꜱ Fɪʀꜱᴛ!* 🚨
 
 📊 *Cᴏᴍᴘʟᴇᴛᴇ Tʜᴇꜱᴇ Sᴛᴇᴘꜱ Tᴏ Uɴʟᴏᴄᴋ:*
@@ -224,25 +228,21 @@ def check_membership_and_prompt(user_id, message):
 ▫️ Wᴀɪᴛ Fᴏʀ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ
 
 
-🔐 *Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Sᴛᴀᴛᴜꜱ:* [░░░░░░░░░░] 0%
-""",
+🔐 *Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Sᴛᴀᴛᴜꜱ:* [░░░░░░░░░░] 0%""",
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup([
-                # Channel buttons with emoji prefixes
-                [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/SmmBoosterz")],
-                [InlineKeyboardButton("🤖 BOTS UPDATE", url="https://t.me/Megahubbots")],
-                [InlineKeyboardButton("💎 PROMOTER CHANNEL", url="https://t.me/Freenethubz")],
-                [InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
-                [InlineKeyboardButton("📝 LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
-                [InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
-                # Enhanced verify button
+                [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/smmserviceslogs")],
+                #[InlineKeyboardButton("🤖 BOTS UPDATE", url="https://t.me/Megahubbots")],
+               # [InlineKeyboardButton("💎 PROMOTER CHANNEL", url="https://t.me/Freenethubz")],
+              #  [InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
+             #   [InlineKeyboardButton("📝 LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
+             #   [InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
                 [InlineKeyboardButton("✨ ✅ VERIFY MEMBERSHIP", callback_data="verify_membership")],
-                # Optional: Add a "Why Join?" button
                 [InlineKeyboardButton("❓ Why Join These Channels?", callback_data="why_join_info")]
             ])
         )
-        return False  # User is not a member
-    return True  # User is a member
+        return False
+    return True
 
 @bot.callback_query_handler(func=lambda call: call.data == "why_join_info")
 def handle_why_join(call):
@@ -254,9 +254,8 @@ def handle_why_join(call):
 ✓ Pʀᴇᴍɪᴜᴍ Sᴜᴘᴘᴏʀᴛ  
 ✓ Rᴇɢᴜʟᴀʀ Uᴘᴅᴀᴛᴇꜱ
 """
-    bot.answer_callback_query(call.id)  # silently close the callback
+    bot.answer_callback_query(call.id)
     bot.send_message(call.message.chat.id, perks_text, parse_mode="Markdown")
-
 
 @bot.callback_query_handler(func=lambda call: call.data == "verify_membership")
 def verify_membership(call):
@@ -264,19 +263,18 @@ def verify_membership(call):
     
     if is_user_member(user_id):
         try:
-            bot.edit_message_text(
-                chat_id=call.message.chat.id,
-                message_id=call.message.message_id,
-                text="✅ 𝐘𝐨𝐮 𝐚𝐫𝐞 𝐯𝐞𝐫𝐢𝐟𝐢𝐞𝐝! 𝐘𝐨𝐮 𝐜𝐚𝐧 𝐧𝐨𝐰 𝐮𝐬𝐞 𝐭𝐡𝐞 𝐛𝐨𝐭. 𝐂𝐥𝐢𝐜𝐤 /start 𝐚𝐠𝐚𝐢𝐧"
-            )
-            # Only send welcome if the user is not a bot
-            if not call.from_user.is_bot:
-                send_welcome(call.message)
+            bot.delete_message(call.message.chat.id, call.message.message_id)
+            send_welcome(call.message)
         except Exception as e:
             print(f"Error in verify_membership: {e}")
+            bot.answer_callback_query(
+                call.id,
+                text="✅ 𝐘𝐨𝐮 𝐚𝐫𝐞 𝐯𝐞𝐫𝐢𝐟𝐢𝐞𝐝! 𝐘𝐨𝐮 𝐜𝐚𝐧 𝐧𝐨𝐰 𝐮𝐬𝐞 𝐭𝐡𝐞 𝐛𝐨𝐭. 𝐂𝐥𝐢𝐜𝐤 /start 𝐚𝐠𝐚𝐢𝐧",
+                show_alert=True
+            )
     else:
         bot.answer_callback_query(
-            callback_query_id=call.id,
+            call.id,
             text="❌ Y̶o̶u̶ ̶h̶a̶v̶e̶n̶'̶t̶ ̶j̶o̶i̶n̶e̶d̶ ̶a̶l̶l̶ ̶t̶h̶e̶ ̶r̶e̶q̶u̶i̶r̶e̶d̶ ̶c̶h̶a̶n̶n̶e̶l̶s̶ ̶y̶e̶t̶!",
             show_alert=True
         )
