@@ -227,7 +227,7 @@ def check_membership_and_prompt(user_id, message):
 
 📊 *Cᴏᴍᴘʟᴇᴛᴇ Tʜᴇꜱᴇ Sᴛᴇᴘꜱ Tᴏ Uɴʟᴏᴄᴋ:*
 ▫️ Jᴏɪɴ Aʟʟ Cʜᴀɴɴᴇʟꜱ Bᴇʟᴏᴡ
-▫️ Cʟɪᴄᴋ *'✅ I Joined'* Bᴜᴛᴛᴏɴ
+▫️ Cʟɪᴄᴋ *'✅ VERIFY MEMBERSHIP'* Bᴜᴛᴛᴏɴ
 ▫️ Wᴀɪᴛ Fᴏʀ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ
 
 
@@ -241,8 +241,8 @@ def check_membership_and_prompt(user_id, message):
                 #[InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
                 #[InlineKeyboardButton("📝 LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
                 #[InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
-                #[InlineKeyboardButton("✨ ✅ VERIFY MEMBERSHIP", callback_data="verify_membership")],
-                #[InlineKeyboardButton("❓ Why Join These Channels?", callback_data="why_join_info")]
+                [InlineKeyboardButton("✅ VERIFY MEMBERSHIP", callback_data="verify_membership")],
+                [InlineKeyboardButton("❓ Why Join These Channels?", callback_data="why_join_info")]
             ])
         )
         return False
