@@ -984,7 +984,7 @@ def handle_tiktok_order(message):
             "max": 100000,
             "price": 200,
             "unit": "1k views",
-            "service_id": "18170"
+            "service_id": "18625"
         },
         "❤️ Tiktok Likes": {
             "name": "TikTok Likes",
