@@ -2827,10 +2827,26 @@ def process_pin_message(message):
 @bot.message_handler(func=lambda m: m.text == "📍 Unpin" and m.from_user.id in admin_user_ids)
 def unpin_and_delete_all(message):
     """Unpin and delete pinned messages for all users"""
+    
+    # Give guidance first
+    confirm_msg = bot.reply_to(
+        message,
+        "📍 You are about to unpin and delete pinned messages from ALL users.\n\n"
+        "⚠️ This action cannot be undone.\n\n"
+        "➤ Type 'CONFIRM' to proceed or 'Cancel' to abort."
+    )
+    bot.register_next_step_handler(confirm_msg, confirm_unpin_process)
+
+def confirm_unpin_process(message):
+    """Confirm and perform the unpinning"""
+    if message.text.strip().lower() != "confirm":
+        bot.reply_to(message, "❌ Unpin cancelled.", reply_markup=admin_markup)
+        return
+    
     users_pins = get_all_pinned_messages()
     success, failed = 0, 0
     
-    bot.reply_to(message, "⏳ Uɴᴘɪɴɴɪɴɢ ᴀɴᴅ Dᴇʟᴇᴛɪɴɢ...")
+    bot.reply_to(message, "⏳ Unpinning and deleting pinned messages...")
     
     for user_id, message_id in users_pins.items():
         try:
