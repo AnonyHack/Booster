@@ -417,7 +417,6 @@ def get_new_users(days=1):
 def save_pinned_message(user_id, message_id):
     """Save pinned message ID for a user"""
     try:
-        from . import users_collection  # If needed, based on your structure
         users_collection.update_one(
             {"user_id": str(user_id)},
             {"$set": {"pinned_message_id": message_id}},
