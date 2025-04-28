@@ -2722,6 +2722,15 @@ def process_ban_user(message):
     reply_markup=admin_markup)
   
 # Add this callback handler for the terms button
+@bot.callback_query_handler(func=lambda call: call.data == "ban_terms")
+def show_ban_terms(call):
+    """Show the policy message when View Terms is clicked"""
+    try:
+        # Get the policy message from the policy_command function
+        policy_text = """
+📜 <b>🤖 Bot Usage Policy & Guidelines</b> 📜
+━━━━━━━━━━━━━━━━━━━━
+
 🔹 <b>1. Acceptable Use</b>
    ├ ✅ Permitted: Legal, non-harmful content
    └ ❌ Prohibited: Spam, harassment, illegal material
@@ -2751,7 +2760,6 @@ def process_ban_user(message):
 ━━━━━━━━━━━━━━━━━━━━
 💡 Need help? Contact @SocialHubBoosterTMbot
 """.format(update_date=datetime.now().strftime('%Y-%m-%d'))
-
         
         # Answer the callback first
         bot.answer_callback_query(call.id)
@@ -2766,7 +2774,6 @@ def process_ban_user(message):
     except Exception as e:
         print(f"Error showing ban terms: {e}")
         bot.answer_callback_query(call.id, "⚠️ Failed to load terms", show_alert=True)
-
 # ============================= Premium Unban Command ============================= #
 @bot.message_handler(func=lambda m: m.text == "✅ Unban User" and m.from_user.id in admin_user_ids)
 def unban_user_start(message):
