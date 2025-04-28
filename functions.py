@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 # Initialize MongoDB connection
 try:
     client = MongoClient(MONGO_URI)
-    db = client.get_database("smmhubboosterv2")
+    db = client.get_database("smmhubbooster")
     users_collection = db.users
     orders_collection = db.orders
     logger.info("Connected to MongoDB successfully")
@@ -411,5 +411,43 @@ def get_new_users(days=1):
     except PyMongoError as e:
         logger.error(f"Error getting new users: {e}")
         return 0
+
+# -- Pinned messages MongoDB -- #
+
+def save_pinned_message(user_id, message_id):
+    """Save pinned message ID for a user"""
+    try:
+        from . import users_collection  # If needed, based on your structure
+        users_collection.update_one(
+            {"user_id": str(user_id)},
+            {"$set": {"pinned_message_id": message_id}},
+            upsert=True
+        )
+    except Exception as e:
+        print(f"Error saving pinned message for {user_id}: {e}")
+
+def get_all_pinned_messages():
+    """Get all users with pinned message IDs"""
+    from . import users_collection
+    pinned = {}
+    try:
+        users = users_collection.find({"pinned_message_id": {"$exists": True}})
+        for user in users:
+            pinned[user['user_id']] = user['pinned_message_id']
+    except Exception as e:
+        print(f"Error loading pinned messages: {e}")
+    return pinned
+
+def clear_all_pinned_messages():
+    """Clear pinned message IDs from all users"""
+    from . import users_collection
+    try:
+        users_collection.update_many(
+            {"pinned_message_id": {"$exists": True}},
+            {"$unset": {"pinned_message_id": ""}}
+        )
+    except Exception as e:
+        print(f"Error clearing pinned messages: {e}")
+
 
 print("functions.py loaded with MongoDB support")
