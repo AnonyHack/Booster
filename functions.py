@@ -427,7 +427,6 @@ def save_pinned_message(user_id, message_id):
 
 def get_all_pinned_messages():
     """Get all users with pinned message IDs"""
-    from . import users_collection
     pinned = {}
     try:
         users = users_collection.find({"pinned_message_id": {"$exists": True}})
@@ -439,7 +438,6 @@ def get_all_pinned_messages():
 
 def clear_all_pinned_messages():
     """Clear pinned message IDs from all users"""
-    from . import users_collection
     try:
         users_collection.update_many(
             {"pinned_message_id": {"$exists": True}},
