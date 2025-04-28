@@ -9,7 +9,6 @@ import logging
 import psutil
 import threading
 import datetime
-from datetime import datetime
 import pytz
 from functools import wraps
 from flask import Flask, jsonify
@@ -24,7 +23,8 @@ from functions import (insertUser, track_exists, addBalance, cutBalance, getData
                        addRefCount, isExists, setWelcomeStaus, setReferredStatus, updateUser, 
                        ban_user, unban_user, get_all_users, is_banned, get_banned_users, 
                        get_top_users, get_user_count, get_active_users, get_total_orders, 
-                       get_total_deposits, get_top_referrer, get_user_orders_stats, get_new_users, get_completed_orders) # Import your functions from functions.py
+                       get_total_deposits, get_top_referrer, get_user_orders_stats, get_new_users,
+                       get_completed_orders, get_all_users, save_pinned_message, get_all_pinned_messages, clear_all_pinned_messages) # Import your functions from functions.py
 
 
 if not os.path.exists('Account'):
@@ -42,6 +42,7 @@ SmmPanelApiUrl = os.getenv("SMM_PANEL_API_URL")
 admin_user_ids = [int(id.strip()) for id in os.getenv("ADMIN_USER_IDS", "").split(",") if id.strip()]
 
 bot = telebot.TeleBot(bot_token)
+
 
 welcome_bonus = 100
 ref_bonus = 50
@@ -66,12 +67,12 @@ main_markup.add(button8)
 # Admin keyboard markup
 admin_markup = ReplyKeyboardMarkup(resize_keyboard=True)
 admin_markup.row("➕ Add Coins", "➖ Remove Coins")
-admin_markup.row("📌 Pin Message", "📤 Broadcast")
+admin_markup.row("📌 Pin Message", "📍 Unpin")
 admin_markup.row("🔒 Ban User", "✅ Unban User")
 admin_markup.row("📋 List Banned", "👤 User Info")  # New
 admin_markup.row("🖥 Server Status", "📤 Export Data")  # New
 admin_markup.row("📦 Order Manager", "📊 Analytics")  # New
-admin_markup.row("🔧 Maintenance")
+admin_markup.row("🔧 Maintenance", "📤 Broadcast")
 admin_markup.row("🔙 Main Menu")
 #======================= Send Orders main menu =======================#
 send_orders_markup = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -188,7 +189,8 @@ def add_order(user_id, order_data):
         return False
 #==================================== Channel Membership Check =======================#
 #================================== Force Join Method =======================================#
-required_channels = ["smmserviceslogs"]  # Channel usernames without "@"
+#================================== Force Join Method =======================================#
+required_channels = ["SmmBoosterz", "Megahubbots", "Freenethubz", "Freenethubchannel", "smmserviceslogs"]  # Channel usernames without "@"
 payment_channel = "@smmserviceslogs"  # Channel for payment notifications
 
 def is_user_member(user_id):
@@ -233,12 +235,12 @@ def check_membership_and_prompt(user_id, message):
 ━━━━━━━━━━━━━━━━━━━━""",
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/smmserviceslogs")],
-                #[InlineKeyboardButton("🤖 BOTS UPDATE", url="https://t.me/Megahubbots")],
-               # [InlineKeyboardButton("💎 PROMOTER CHANNEL", url="https://t.me/Freenethubz")],
-              #  [InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
-             #   [InlineKeyboardButton("📝 LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
-             #   [InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
+                [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/SmmBoosterz")],
+                [InlineKeyboardButton("🤖 BOTS UPDATE", url="https://t.me/Megahubbots")],
+                [InlineKeyboardButton("💎 PROMOTER CHANNEL", url="https://t.me/Freenethubz")],
+                [InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
+                [InlineKeyboardButton("📝 LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
+                [InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
                 [InlineKeyboardButton("✨ ✅ VERIFY MEMBERSHIP", callback_data="verify_membership")],
                 [InlineKeyboardButton("❓ Why Join These Channels?", callback_data="why_join_info")]
             ])
@@ -281,6 +283,7 @@ def verify_membership(call):
             show_alert=True
         )
 #==============================================#
+
 #========================= utility function to check bans =================#
 # Enhanced check_ban decorator to include maintenance check
 def check_ban(func):
@@ -770,6 +773,7 @@ def handle_telegram_order(message):
     
     msg = f"""📊 Order {service['name']}:
     
+📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
@@ -1018,8 +1022,8 @@ def handle_tiktok_order(message):
 )
     
     msg = f"""📊 Order {service['name']}:
-
-📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}
+    
+📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
@@ -1255,6 +1259,7 @@ def handle_instagram_order(message):
     
     msg = f"""📊 Order {service['name']}:
     
+📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
@@ -1485,6 +1490,7 @@ def handle_youtube_order(message):
     
     msg = f"""📊 Order {service['name']}:
     
+📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
@@ -1725,6 +1731,7 @@ def handle_facebook_order(message):
     
     msg = f"""📊 Order {service['name']}:
     
+📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
@@ -1945,7 +1952,8 @@ def handle_whatsapp_order(message):
     )
     
     msg = f"""📊 Order {service['name']}:
-    
+
+📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
@@ -2148,6 +2156,7 @@ def handle_back_buttons(message):
         bot.reply_to(message, "Oᴘᴇʀᴀᴛɪᴏɴ Cᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
 
 # ================= ADMIN COMMANDS ================== #
+
 @bot.message_handler(func=lambda message: message.text == "🛠 Admin Panel")
 def admin_panel(message):
     if message.from_user.id not in admin_user_ids:
@@ -2166,6 +2175,7 @@ def admin_panel(message):
         "Select an option below:",
         parse_mode="Markdown",
         reply_markup=admin_markup)
+    
 
 #============================= Add and Remove Coins ==============================================#
 @bot.message_handler(func=lambda message: message.text in ["➕ Add Coins", "➖ Remove Coins"] and message.from_user.id in admin_user_ids)
@@ -2362,7 +2372,7 @@ def show_analytics(message):
         
         # Create premium dashboard
         msg = f"""
-📈 <b>SMM Booster Premium Analytics</b>
+📈 <b>SMM Booster Analytics</b>
 ━━━━━━━━━━━━━━━━━━━━
 
 👥 <b>User Statistics</b>
@@ -2399,6 +2409,53 @@ def show_analytics(message):
             "Our premium metrics system is temporarily offline\n"
             "Please try again later",
             parse_mode='HTML')
+        
+# Handle Refresh Analytics button
+@bot.callback_query_handler(func=lambda call: call.data == "refresh_analytics")
+def handle_refresh_analytics(call):
+    try:
+        # Delete the old message if you want (optional)
+        bot.delete_message(call.message.chat.id, call.message.message_id)
+        
+        # Re-run the analytics function
+        show_analytics(call.message)
+    except Exception as e:
+        print(f"Error refreshing analytics: {e}")
+        bot.answer_callback_query(call.id, "⚠️ Failed to refresh", show_alert=True)
+
+# Handle Full Report button
+@bot.callback_query_handler(func=lambda call: call.data == "full_report")
+def handle_full_report(call):
+    try:
+        from functions import get_user_count, get_total_orders, get_completed_orders, get_total_deposits
+        
+        # Create a more detailed report
+        total_users = get_user_count()
+        total_orders = get_total_orders()
+        completed_orders = get_completed_orders()
+        total_deposits = get_total_deposits()
+        
+        msg = f"""
+📊 <b>Full Analytics Report</b>
+━━━━━━━━━━━━━━━━━━━━
+
+👥 Total Users: <code>{total_users}</code>
+🛒 Total Orders: <code>{total_orders}</code>
+✅ Completed Orders: <code>{completed_orders}</code>
+💰 Total Deposits: <code>{total_deposits:.2f}</code> coins
+
+🚀 Performance:
+- Completion Rate: <code>{(completed_orders/total_orders)*100:.2f}%</code> if orders > 0 else "N/A"
+- Avg Deposit per User: <code>{(total_deposits/total_users):.2f}</code> coins if users > 0 else "N/A"
+
+📅 Generated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}
+"""
+        bot.answer_callback_query(call.id)
+        bot.send_message(call.message.chat.id, msg, parse_mode="HTML")
+        
+    except Exception as e:
+        print(f"Error sending full report: {e}")
+        bot.answer_callback_query(call.id, "⚠️ Failed to load full report", show_alert=True)
 
 # =========================== Broadcast Command ================= #
 @bot.message_handler(func=lambda m: m.text == "📤 Broadcast" and m.from_user.id in admin_user_ids)
@@ -2724,44 +2781,73 @@ def show_leaderboard(message):
 def pin_message_start(message):
     """Start pin message process"""
     msg = bot.reply_to(message, 
-                      "📌 Sᴇɴᴅ Tʜᴇ Mᴇꜱꜱᴀɢᴇ Yᴏᴜ Wᴀɴᴛ Tᴏ Pɪɴ Iɴ Aʟʟ Uꜱᴇʀ Cʜᴀᴛꜱ:\n"
-                      "(ᴛʜɪꜱ ᴡɪʟʟ ᴘɪɴ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ ᴀᴛ ᴛʜᴇ ᴛᴏᴘ ᴏꜰ ᴇᴀᴄʜ ᴜꜱᴇʀ'ꜱ ᴄʜᴀᴛ ᴡɪᴛʜ ᴛʜᴇ ʙᴏᴛ)\n\n"
-                      "Tʏᴘᴇ 'Cancel' Tᴏ Aʙᴏʀᴛ.")
+                      "📌 Sᴇɴᴅ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴘɪɴ ɪɴ ᴀʟʟ ᴜꜱᴇʀꜱ' ᴄʜᴀᴛꜱ:\n\n"
+                      "Tʏᴘᴇ 'Cancel' ᴛᴏ ᴀʙᴏʀᴛ.",
+                      reply_markup=admin_markup)
     bot.register_next_step_handler(msg, process_pin_message)
 
 def process_pin_message(message):
     """Process and send the pinned message to all users"""
-    if message.text == "Cancel":
-        bot.reply_to(message, "❌ Pɪɴ Cᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=admin_markup)
+    if message.text.lower() == "cancel":
+        bot.reply_to(message, "❌ Pin cancelled.", reply_markup=admin_markup)
         return
     
     users = get_all_users()
-    success = 0
-    failed = 0
+    success, failed = 0, 0
     
-    bot.reply_to(message, "⏳ Sᴛᴀʀᴛɪɴɢ Tᴏ Pɪɴ Mᴇꜱꜱᴀɢᴇꜱ Iɴ Uꜱᴇʀ Cʜᴀᴛꜱ...", reply_markup=admin_markup)
+    bot.reply_to(message, "⏳ Pɪɴɴɪɴɢ ᴍᴇꜱꜱᴀɢᴇꜱ...")
     
     for user_id in users:
         try:
-            # Send and pin the message based on content type
             if message.content_type == 'text':
-                sent_msg = bot.send_message(user_id, message.text, parse_mode="Markdown")
+                sent = bot.send_message(user_id, message.text, parse_mode="Markdown")
             elif message.content_type == 'photo':
-                sent_msg = bot.send_photo(user_id, message.photo[-1].file_id, caption=message.caption)
+                sent = bot.send_photo(user_id, message.photo[-1].file_id, caption=message.caption)
             elif message.content_type == 'document':
-                sent_msg = bot.send_document(user_id, message.document.file_id, caption=message.caption)
-            
-            # Pin the message in the user's chat
-            bot.pin_chat_message(user_id, sent_msg.message_id)
+                sent = bot.send_document(user_id, message.document.file_id, caption=message.caption)
+            else:
+                continue
+
+            bot.pin_chat_message(user_id, sent.message_id)
+            save_pinned_message(user_id, sent.message_id)  # Save in MongoDB
             success += 1
         except Exception as e:
-            print(f"Failed to pin message for {user_id}: {e}")
+            print(f"Error pinning for {user_id}: {e}")
             failed += 1
-        time.sleep(0.1)  # Rate limiting
-    
+        
+        time.sleep(0.1)
+
     bot.reply_to(message, 
                  f"📌 𝗣𝗶𝗻𝗻𝗶𝗻𝗴 𝗖𝗼𝗺𝗽𝗹𝗲𝘁𝗲:\n"
                  f"✅ Successfully pinned in {success} chats\n"
+                 f"❌ Failed in {failed} chats",
+                 reply_markup=admin_markup)
+
+# --- UNPIN Button Handler ---
+@bot.message_handler(func=lambda m: m.text == "📍 Unpin" and m.from_user.id in admin_user_ids)
+def unpin_and_delete_all(message):
+    """Unpin and delete pinned messages for all users"""
+    users_pins = get_all_pinned_messages()
+    success, failed = 0, 0
+    
+    bot.reply_to(message, "⏳ Uɴᴘɪɴɴɪɴɢ ᴀɴᴅ Dᴇʟᴇᴛɪɴɢ...")
+    
+    for user_id, message_id in users_pins.items():
+        try:
+            bot.unpin_chat_message(user_id, message_id=message_id)
+            bot.delete_message(user_id, message_id)
+            success += 1
+        except Exception as e:
+            print(f"Error unpinning for {user_id}: {e}")
+            failed += 1
+        
+        time.sleep(0.1)
+    
+    clear_all_pinned_messages()  # Clear from MongoDB
+    
+    bot.reply_to(message,
+                 f"📌 𝗨ɴᴘɪɴɴɪɴɢ 𝗖𝗼𝗺𝗽𝗹𝗲𝘁𝗲:\n"
+                 f"✅ Successfully unpinned and deleted in {success} chats\n"
                  f"❌ Failed in {failed} chats",
                  reply_markup=admin_markup)
 
@@ -2785,7 +2871,7 @@ def process_user_info(message):
         user_data = getData(user_id) or {}
         
         info = f"""
-┌───────────────────────
+┌──────────────────────
 │ 🔍 <b>𝗨𝘀𝗲𝗿 𝗜𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻</b>:
 │ ━━━━━━━━━━━━━━━━━━━━━━
 │ 🆔 Iᴅ: <code>{user_id}</code>
@@ -2795,7 +2881,7 @@ def process_user_info(message):
 │ 📊 Oʀᴅᴇʀꜱ: {user_data.get('orders_count', 0)}
 │ 👥 Rᴇꜰᴇʀʀᴀʟꜱ: {user_data.get('total_refs', 0)}
 │ 🔨 Sᴛᴀᴛᴜꜱ: {"BANNED ⛔" if is_banned(user_id) else "ACTIVE ✅"}
-└──────────────────────
+└─────────────────────
 
         """
         bot.reply_to(message, info, parse_mode="HTML")
@@ -2826,7 +2912,7 @@ def server_status(message):
         mongo_stats = db.command("dbstats")
         
         status = f"""
-┌────────────────────────
+┌───────────────────────
 │ 🖥 <b>𝙎𝙮𝙨𝙩𝙚𝙢 𝙎𝙩𝙖𝙩𝙪𝙨</b>
 │ ━━━━━━━━━━━━━━━━━━━━━━
 │ 💻 <b>Sʏꜱᴛᴇᴍ</b>: {uname.system} {uname.release}
@@ -2999,7 +3085,7 @@ def policy_command(message):
 
 📅 <i>Last updated: {update_date}</i>
 ━━━━━━━━━━━━━━━━━━━━
-💡 Need help? Contact @SocialBoosterAdmin
+💡 Need help? Contact @SocialHubBoosterTMbot
 """.format(update_date=datetime.now().strftime('%Y-%m-%d'))  # Fixed datetime reference
     
     markup = types.InlineKeyboardMarkup()
@@ -3024,6 +3110,7 @@ def accept_policy_callback(call):
         )
     except:
         pass
+
 
 
 #======================= Function to periodically check order status ====================#
