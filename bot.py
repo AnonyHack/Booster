@@ -984,7 +984,7 @@ def handle_tiktok_order(message):
             "max": 100000,
             "price": 200,
             "unit": "1k views",
-            "service_id": "18625"
+            "service_id": "18454"
         },
         "❤️ Tiktok Likes": {
             "name": "TikTok Likes",
@@ -1018,7 +1018,8 @@ def handle_tiktok_order(message):
 )
     
     msg = f"""📊 Order {service['name']}:
-    
+
+📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
