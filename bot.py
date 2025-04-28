@@ -2728,7 +2728,7 @@ def show_ban_terms(call):
     try:
         # Get the policy message from the policy_command function
         policy_text = """
-📜 <b>🤖 Bot Usage Policy & Guidelines</b> 📜
+📜 <b>🤖 Bot Usage Policy & Guidelines</b>
 ━━━━━━━━━━━━━━━━━━━━
 
 🔹 <b>1. Acceptable Use</b>
