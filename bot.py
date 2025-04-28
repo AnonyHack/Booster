@@ -190,7 +190,7 @@ def add_order(user_id, order_data):
 #==================================== Channel Membership Check =======================#
 #================================== Force Join Method =======================================#
 #================================== Force Join Method =======================================#
-required_channels = ["SmmBoosterz", "Megahubbots", "Freenethubz", "Freenethubchannel", "smmserviceslogs"]  # Channel usernames without "@"
+required_channels = ["smmserviceslogs"]  # Channel usernames without "@"
 payment_channel = "@smmserviceslogs"  # Channel for payment notifications
 
 def is_user_member(user_id):
@@ -235,14 +235,14 @@ def check_membership_and_prompt(user_id, message):
 ━━━━━━━━━━━━━━━━━━━━""",
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/SmmBoosterz")],
-                [InlineKeyboardButton("🤖 BOTS UPDATE", url="https://t.me/Megahubbots")],
-                [InlineKeyboardButton("💎 PROMOTER CHANNEL", url="https://t.me/Freenethubz")],
-                [InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
-                [InlineKeyboardButton("📝 LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
-                [InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
-                [InlineKeyboardButton("✨ ✅ VERIFY MEMBERSHIP", callback_data="verify_membership")],
-                [InlineKeyboardButton("❓ Why Join These Channels?", callback_data="why_join_info")]
+                [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/smmserviceslogs")],
+                #[InlineKeyboardButton("🤖 BOTS UPDATE", url="https://t.me/Megahubbots")],
+                #[InlineKeyboardButton("💎 PROMOTER CHANNEL", url="https://t.me/Freenethubz")],
+                #[InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
+                #[InlineKeyboardButton("📝 LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
+                #[InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
+                #[InlineKeyboardButton("✨ ✅ VERIFY MEMBERSHIP", callback_data="verify_membership")],
+                #[InlineKeyboardButton("❓ Why Join These Channels?", callback_data="why_join_info")]
             ])
         )
         return False
