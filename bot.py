@@ -9,6 +9,7 @@ import logging
 import psutil
 import threading
 import datetime
+from datetime import datetime
 import pytz
 from functools import wraps
 from flask import Flask, jsonify
@@ -2614,18 +2615,22 @@ def process_ban_user(message):
             parse_mode="Markdown",
             reply_markup=appeal_markup
         )
+        notified_success = True
     except Exception as e:
         print(f"Ban notification error: {e}")
+        notified_success = False
     
     # Enhanced admin confirmation
     bot.reply_to(message,
-        f"✅ *User Banned Successfully*\n\n"
-        f"▸ User ID: `{user_id}`\n"
-        f"▸ Action: Full service restriction\n"
-        f"▸ Notified: {'Yes' if not e else 'Failed'}\n\n"
-        f"📝 _This user has been added to ban database_",
-        parse_mode="Markdown",
-        reply_markup=admin_markup)
+    f"✅ *User Banned Successfully*\n\n"
+    f"▸ User ID: `{user_id}`\n"
+    f"▸ Action: Full service restriction\n"
+    f"▸ Notified: {'Yes' if notified_success else 'Failed'}\n\n"
+    f"📝 _This user has been added to ban database_",
+    parse_mode="Markdown",
+    reply_markup=admin_markup)
+    
+    
 
 # ============================= Premium Unban Command ============================= #
 @bot.message_handler(func=lambda m: m.text == "✅ Unban User" and m.from_user.id in admin_user_ids)
@@ -2684,15 +2689,17 @@ def process_unban_user(message):
             parse_mode="Markdown",
             reply_markup=markup
         )
+        notified_success = True
     except Exception as e:
         print(f"Unban notification error: {e}")
+        notified_success = False
     
     # Admin confirmation with flair
     bot.reply_to(message,
         f"✨ *User Unbanned Successfully*\n\n"
         f"▸ User ID: `{user_id}`\n"
         f"▸ Services: Reactivated\n"
-        f"▸ Notified: {'Yes' if not e else 'Failed'}\n\n"
+        f"▸ Notified: {'Yes' if notified_success else 'Failed'}\n\n"
         f"📝 _Removed from ban database_",
         parse_mode="Markdown",
         reply_markup=admin_markup)
