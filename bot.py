@@ -530,6 +530,7 @@ def invite_friends(message):
         disable_web_page_preview=True
     )
 
+#======================= Help =======================#
 @bot.message_handler(func=lambda message: message.text == "📜 Help")
 def help_command(message):
     user_id = message.chat.id
@@ -548,6 +549,9 @@ Dᴇʟɪᴠᴇʀʏ ꜱᴘᴇᴇᴅ ᴠᴀʀɪᴇꜱ ʙᴀꜱᴇᴅ ᴏɴ ɴᴇ�
    • Mᴏʙɪʟᴇ Mᴏɴᴇʏ
    • Cʀʏᴘᴛᴏᴄᴜʀʀᴇɴᴄɪᴇꜱ (BTC, USDT, ᴇᴛᴄ.)
    • WᴇʙMᴏɴᴇʏ & Pᴇʀꜰᴇᴄᴛ Mᴏɴᴇʏ
+   
+<b>• Bᴜɢꜱ Rᴇᴘᴏʀᴛ Rᴇᴡᴀʀᴅ:</b>
+Wᴇ ʀᴇᴡᴀʀᴅ ᴏᴜʀ Uꜱᴇʀꜱ Fʀᴇᴇ 100 ᴄᴏɪɴꜱ ꜰᴏʀ ᴇᴀᴄʜ Bᴜɢ ᴏʀ Eʀʀᴏʀ ᴛʜᴇʏ Rᴇᴘᴏʀᴛ ᴛᴏ Uꜱ. Jᴜꜱᴛ ᴄʟɪᴄᴋ ᴛʜᴇ Bᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ.
 
 <b>• Cᴀɴ I ᴛʀᴀɴꜱꜰᴇʀ ᴍʏ ʙᴀʟᴀɴᴄᴇ?</b>
 Yᴇꜱ! Fᴏʀ ʙᴀʟᴀɴᴄᴇꜱ ᴏᴠᴇʀ 10,000 ᴄᴏɪɴꜱ, ᴄᴏɴᴛᴀᴄᴛ ꜱᴜᴘᴘᴏʀᴛ.
@@ -555,7 +559,7 @@ Yᴇꜱ! Fᴏʀ ʙᴀʟᴀɴᴄᴇꜱ ᴏᴠᴇʀ 10,000 ᴄᴏɪɴꜱ, ᴄᴏɴ
 
     # Create inline button for support
     markup = InlineKeyboardMarkup()
-    support_button = InlineKeyboardButton("🆘 Contact Support", url="https://t.me/SocialBoosterAdmin")
+    support_button = InlineKeyboardButton("🆘 Contact Support", url="https://t.me/SocialHubBoosterHelper")
     markup.add(support_button)
 
     bot.reply_to(
@@ -564,7 +568,7 @@ Yᴇꜱ! Fᴏʀ ʙᴀʟᴀɴᴄᴇꜱ ᴏᴠᴇʀ 10,000 ᴄᴏɪɴꜱ, ᴄᴏɴ
         parse_mode="HTML",
         reply_markup=markup
     )
-
+#======================== Pricing Command =======================#
 @bot.message_handler(func=lambda message: message.text == "💳 Pricing")
 def pricing_command(message):
     user_id = message.chat.id
