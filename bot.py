@@ -2272,7 +2272,7 @@ def handle_admin_commands(message):
                         "💎 Thank you for being a valued customer!",
                         parse_mode="Markdown",
                         reply_markup=InlineKeyboardMarkup().add(
-                            InlineKeyboardButton("🛍️ Shop Now", callback_data="services_menu")
+                            InlineKeyboardButton("🛍️ Shop Now", callback_data="send_orders_menu")
                         )
                     )
                 except Exception as e:
@@ -2610,7 +2610,7 @@ def process_unban_user(message):
     # Premium unban notification
     try:
         markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("🛒 Return to Services", callback_data="services_menu"))
+        markup.add(InlineKeyboardButton("🛒 Return to Services", callback_data="send_orders_menu"))
         
         bot.send_message(
             user_id,
@@ -2785,7 +2785,7 @@ def process_user_info(message):
         user_data = getData(user_id) or {}
         
         info = f"""
-┌─────────────────────────
+┌───────────────────────
 │ 🔍 <b>𝗨𝘀𝗲𝗿 𝗜𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻</b>:
 │ ━━━━━━━━━━━━━━━━━━━━━━
 │ 🆔 Iᴅ: <code>{user_id}</code>
@@ -2795,7 +2795,7 @@ def process_user_info(message):
 │ 📊 Oʀᴅᴇʀꜱ: {user_data.get('orders_count', 0)}
 │ 👥 Rᴇꜰᴇʀʀᴀʟꜱ: {user_data.get('total_refs', 0)}
 │ 🔨 Sᴛᴀᴛᴜꜱ: {"BANNED ⛔" if is_banned(user_id) else "ACTIVE ✅"}
-└────────────────────────
+└──────────────────────
 
         """
         bot.reply_to(message, info, parse_mode="HTML")
