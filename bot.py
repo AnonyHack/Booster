@@ -228,7 +228,7 @@ def check_membership_and_prompt(user_id, message):
 
 📊 *Cᴏᴍᴘʟᴇᴛᴇ Tʜᴇꜱᴇ Sᴛᴇᴘꜱ Tᴏ Uɴʟᴏᴄᴋ:*
 ▫️ Jᴏɪɴ Aʟʟ Cʜᴀɴɴᴇʟꜱ Bᴇʟᴏᴡ
-▫️ Cʟɪᴄᴋ *'✅ VERIFY MEMBERSHIP'* Bᴜᴛᴛᴏɴ
+▫️ Cʟɪᴄᴋ *'✅ I Joined'* Bᴜᴛᴛᴏɴ
 ▫️ Wᴀɪᴛ Fᴏʀ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ
 
 
@@ -242,7 +242,7 @@ def check_membership_and_prompt(user_id, message):
                 #[InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
                 #[InlineKeyboardButton("📝 LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
                 #[InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
-                [InlineKeyboardButton("✅ VERIFY MEMBERSHIP", callback_data="verify_membership")],
+                [InlineKeyboardButton("✨ ✅ VERIFY MEMBERSHIP", callback_data="verify_membership")],
                 [InlineKeyboardButton("❓ Why Join These Channels?", callback_data="why_join_info")]
             ])
         )
@@ -569,6 +569,7 @@ Yᴇꜱ! Fᴏʀ ʙᴀʟᴀɴᴄᴇꜱ ᴏᴠᴇʀ 10,000 ᴄᴏɪɴꜱ, ᴄᴏɴ
         parse_mode="HTML",
         reply_markup=markup
     )
+
 #======================== Pricing Command =======================#
 @bot.message_handler(func=lambda message: message.text == "💳 Pricing")
 def pricing_command(message):
@@ -2405,7 +2406,12 @@ def show_analytics(message):
             InlineKeyboardButton("📊 Detailed Report", callback_data="full_report")
         )
         
-        bot.reply_to(message, msg, parse_mode='HTML', reply_markup=markup)
+        # Store the message for later editing
+        sent_msg = bot.send_message(message.chat.id, msg, parse_mode='HTML', reply_markup=markup)
+        
+        # Store message ID for callback handlers
+        bot.register_next_step_handler(message, lambda m: None)  # Clear any previous handlers
+        bot.register_next_step_handler_by_chat_id(message.chat.id, lambda m: None)
         
     except Exception as e:
         print(f"Analytics error: {e}")
@@ -2414,16 +2420,72 @@ def show_analytics(message):
             "Our premium metrics system is temporarily offline\n"
             "Please try again later",
             parse_mode='HTML')
-        
+
 # Handle Refresh Analytics button
 @bot.callback_query_handler(func=lambda call: call.data == "refresh_analytics")
 def handle_refresh_analytics(call):
     try:
-        # Delete the old message if you want (optional)
-        bot.delete_message(call.message.chat.id, call.message.message_id)
+        # Show loading indicator
+        bot.answer_callback_query(call.id, "🔄 Refreshing data...")
         
-        # Re-run the analytics function
-        show_analytics(call.message)
+        # Get fresh data
+        total_users = get_user_count()
+        active_users = get_active_users(7)
+        new_users_24h = get_new_users(1)
+        total_orders = get_total_orders()
+        completed_orders = get_completed_orders()
+        total_deposits = get_total_deposits()
+        top_referrer = get_top_referrer()
+        
+        # Format top referrer
+        if top_referrer['user_id']:
+            username = f"@{top_referrer['username']}" if top_referrer['username'] else f"User {top_referrer['user_id']}"
+            referrer_display = f"🏆 {username} (Invited {top_referrer['count']} users)"
+        else:
+            referrer_display = "📭 No referrals yet"
+        
+        # Calculate conversion rates
+        conversion_rate = (completed_orders/total_orders)*100 if total_orders > 0 else 0
+        deposit_per_user = total_deposits/total_users if total_users > 0 else 0
+        
+        # Create updated message
+        msg = f"""
+📈 <b>SMM Booster Analytics (Refreshed)</b>
+━━━━━━━━━━━━━━━━━━━━
+
+👥 <b>User Statistics</b>
+├ 👤 Total Users: <code>{total_users}</code>
+├ 🔥 Active (7d): <code>{active_users}</code>
+├ 🆕 New (24h): <code>{new_users_24h}</code>
+└ 💰 Avg Deposit/User: <code>{deposit_per_user:.2f}</code> coins
+
+🛒 <b>Order Metrics</b>
+├ 🚀 Total Orders: <code>{total_orders}</code>
+├ ✅ Completed: <code>{completed_orders}</code>
+├ 📊 Conversion: <code>{conversion_rate:.1f}%</code>
+└ 💸 Total Deposits: <code>{total_deposits:.2f}</code> coins
+
+🔗 <b>Referral Program</b>
+└ {referrer_display}
+
+⏳ <i>Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}</i>
+"""
+        
+        # Update the message with fresh data
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("🔄 Refresh", callback_data="refresh_analytics"),
+            InlineKeyboardButton("📊 Detailed Report", callback_data="full_report")
+        )
+        
+        bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            text=msg,
+            parse_mode='HTML',
+            reply_markup=markup
+        )
+        
     except Exception as e:
         print(f"Error refreshing analytics: {e}")
         bot.answer_callback_query(call.id, "⚠️ Failed to refresh", show_alert=True)
@@ -2432,30 +2494,59 @@ def handle_refresh_analytics(call):
 @bot.callback_query_handler(func=lambda call: call.data == "full_report")
 def handle_full_report(call):
     try:
-        from functions import get_user_count, get_total_orders, get_completed_orders, get_total_deposits
+        # Show loading indicator
+        bot.answer_callback_query(call.id, "📊 Generating report...")
         
-        # Create a more detailed report
+        # Get all stats including additional ones
         total_users = get_user_count()
+        active_users = get_active_users(7)
+        new_users_24h = get_new_users(1)
         total_orders = get_total_orders()
         completed_orders = get_completed_orders()
         total_deposits = get_total_deposits()
+        top_referrer = get_top_referrer()
+        banned_users = len(get_banned_users())
         
+        # Calculate rates
+        conversion_rate = (completed_orders/total_orders)*100 if total_orders > 0 else 0
+        deposit_per_user = total_deposits/total_users if total_users > 0 else 0
+        active_rate = (active_users/total_users)*100 if total_users > 0 else 0
+        
+        # Format top referrer
+        if top_referrer['user_id']:
+            username = f"@{top_referrer['username']}" if top_referrer['username'] else f"User {top_referrer['user_id']}"
+            referrer_display = f"🏆 {username} (Invited {top_referrer['count']} users)"
+        else:
+            referrer_display = "📭 No referrals yet"
+        
+        # Create detailed report
         msg = f"""
 📊 <b>Full Analytics Report</b>
 ━━━━━━━━━━━━━━━━━━━━
 
-👥 Total Users: <code>{total_users}</code>
-🛒 Total Orders: <code>{total_orders}</code>
-✅ Completed Orders: <code>{completed_orders}</code>
-💰 Total Deposits: <code>{total_deposits:.2f}</code> coins
+👥 <b>User Statistics</b>
+├ Total Users: <code>{total_users}</code>
+├ Active (7d): <code>{active_users}</code> ({active_rate:.1f}%)
+├ New (24h): <code>{new_users_24h}</code>
+├ Banned Users: <code>{banned_users}</code>
+└ Avg Deposit/User: <code>{deposit_per_user:.2f}</code> coins
 
-🚀 Performance:
-- Completion Rate: <code>{(completed_orders/total_orders)*100:.2f}%</code> if orders > 0 else "N/A"
-- Avg Deposit per User: <code>{(total_deposits/total_users):.2f}</code> coins if users > 0 else "N/A"
+🛒 <b>Order Metrics</b>
+├ Total Orders: <code>{total_orders}</code>
+├ Completed: <code>{completed_orders}</code>
+└ Conversion Rate: <code>{conversion_rate:.1f}%</code>
 
-📅 Generated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}
+💰 <b>Financials</b>
+├ Total Deposits: <code>{total_deposits:.2f}</code> coins
+└ Avg Order Value: <code>{(total_deposits/total_orders):.2f}</code> coins
+
+🔗 <b>Referral Program</b>
+└ {referrer_display}
+
+📅 Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}
 """
-        bot.answer_callback_query(call.id)
+        
+        # Send the detailed report as a new message
         bot.send_message(call.message.chat.id, msg, parse_mode="HTML")
         
     except Exception as e:
@@ -2600,7 +2691,7 @@ def process_ban_user(message):
     try:
         appeal_markup = InlineKeyboardMarkup()
         appeal_markup.row(
-            InlineKeyboardButton("📩 Appeal Ban", url="https://t.me/SocialHubBoosterHelper"),
+            InlineKeyboardButton("📩 Appeal Ban", url="https://t.me/SocialHubBoosterTMbot"),
             InlineKeyboardButton("📋 View Terms", callback_data="ban_terms")
         )
         
@@ -2629,8 +2720,30 @@ def process_ban_user(message):
     f"📝 _This user has been added to ban database_",
     parse_mode="Markdown",
     reply_markup=admin_markup)
-    
-    
+  
+# Add this callback handler for the terms button
+@bot.callback_query_handler(func=lambda call: call.data == "ban_terms")
+def show_ban_terms(call):
+    """Show the policy message when View Terms is clicked by calling the policy_command"""
+    try:
+        # Create a dummy message object to pass to policy_command
+        class DummyMessage:
+            def __init__(self, chat_id):
+                self.chat_id = chat_id
+                self.message_id = call.message.message_id
+                self.from_user = call.from_user
+                self.text = "/policy"
+                self.content_type = "text"
+        
+        # Call the existing policy_command with our dummy message
+        policy_command(DummyMessage(call.message.chat.id))
+        
+        # Answer the callback to remove loading state
+        bot.answer_callback_query(call.id)
+        
+    except Exception as e:
+        print(f"Error showing ban terms: {e}")
+        bot.answer_callback_query(call.id, "⚠️ Failed to load terms", show_alert=True)
 
 # ============================= Premium Unban Command ============================= #
 @bot.message_handler(func=lambda m: m.text == "✅ Unban User" and m.from_user.id in admin_user_ids)
@@ -2676,7 +2789,8 @@ def process_unban_user(message):
     # Premium unban notification
     try:
         markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("🛒 Return to Services", callback_data="send_orders_menu"))
+        # Changed callback_data to trigger the send_orders_menu directly
+        markup.add(InlineKeyboardButton("🛒 Return to Services", callback_data="show_send_orders"))
         
         bot.send_message(
             user_id,
@@ -2703,6 +2817,31 @@ def process_unban_user(message):
         f"📝 _Removed from ban database_",
         parse_mode="Markdown",
         reply_markup=admin_markup)
+
+# Add this new handler for showing send orders menu
+@bot.callback_query_handler(func=lambda call: call.data == "show_send_orders")
+def show_send_orders_menu(call):
+    """Show the send orders menu when 'Return to Services' is clicked"""
+    try:
+        # Delete the unban notification message
+        try:
+            bot.delete_message(call.message.chat.id, call.message.message_id)
+        except:
+            pass
+            
+        # Show the send orders menu
+        bot.send_message(
+            call.message.chat.id,
+            "📤 Sᴇʟᴇᴄᴛ Pʟᴀᴛꜰᴏʀᴍ Tᴏ Sᴇɴᴅ Oʀᴅᴇʀꜱ:",
+            reply_markup=send_orders_markup
+        )
+        
+        # Answer the callback
+        bot.answer_callback_query(call.id)
+        
+    except Exception as e:
+        print(f"Error showing send orders menu: {e}")
+        bot.answer_callback_query(call.id, "⚠️ Failed to load services", show_alert=True)
 
 # ============================= VIP Banned Users List ============================= #
 @bot.message_handler(func=lambda m: m.text == "📋 List Banned" and m.from_user.id in admin_user_ids)
@@ -2877,6 +3016,7 @@ def confirm_unpin_process(message):
                  f"✅ Successfully unpinned and deleted in {success} chats\n"
                  f"❌ Failed in {failed} chats",
                  reply_markup=admin_markup)
+
 
 
 #================= Check User Info by ID ===================================#
