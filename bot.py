@@ -2722,24 +2722,46 @@ def process_ban_user(message):
     reply_markup=admin_markup)
   
 # Add this callback handler for the terms button
-@bot.callback_query_handler(func=lambda call: call.data == "ban_terms")
-def show_ban_terms(call):
-    """Show the policy message when View Terms is clicked by calling the policy_command"""
-    try:
-        # Create a dummy message object to pass to policy_command
-        class DummyMessage:
-            def __init__(self, chat_id):
-                self.chat_id = chat_id
-                self.message_id = call.message.message_id
-                self.from_user = call.from_user
-                self.text = "/policy"
-                self.content_type = "text"
+🔹 <b>1. Acceptable Use</b>
+   ├ ✅ Permitted: Legal, non-harmful content
+   └ ❌ Prohibited: Spam, harassment, illegal material
+
+🔹 <b>2. Fair Usage Policy</b>
+   ├ ⚖️ Abuse may lead to restrictions
+   └ 📊 Excessive usage may be rate-limited
+
+🔹 <b>3. Financial Policy</b>
+   ├ 💳 All transactions are final
+   └ 🔄 No refunds for completed services
+
+🔹 <b>4. Privacy Commitment</b>
+   ├ 🔒 Your data stays confidential
+   └ 🤝 Never shared with third parties
+
+🔹 <b>5. Platform Compliance</b>
+   ├ ✋ Must follow Telegram's ToS
+   └ 🌐 All content must be legal in your jurisdiction
+
+⚠️ <b>Consequences of Violation</b>
+   ├ ⚠️ First offense: Warning
+   ├ 🔇 Repeated violations: Temporary suspension
+   └ 🚫 Severe cases: Permanent ban
+
+📅 <i>Last updated: {update_date}</i>
+━━━━━━━━━━━━━━━━━━━━
+💡 Need help? Contact @SocialHubBoosterTMbot
+""".format(update_date=datetime.now().strftime('%Y-%m-%d'))
+
         
-        # Call the existing policy_command with our dummy message
-        policy_command(DummyMessage(call.message.chat.id))
-        
-        # Answer the callback to remove loading state
+        # Answer the callback first
         bot.answer_callback_query(call.id)
+        
+        # Send the policy message
+        bot.send_message(
+            call.message.chat.id,
+            policy_text,
+            parse_mode="HTML"
+        )
         
     except Exception as e:
         print(f"Error showing ban terms: {e}")
