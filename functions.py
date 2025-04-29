@@ -446,5 +446,18 @@ def clear_all_pinned_messages():
     except Exception as e:
         print(f"Error clearing pinned messages: {e}")
 
-
+#========= Show how much the user spent ==========#
+def get_total_spent(user_id):
+    try:
+        from . import orders_collection
+        pipeline = [
+            {"$match": {"user_id": str(user_id), "status": {"$in": ["completed", "partial"]}}},
+            {"$group": {"_id": None, "total": {"$sum": "$cost"}}}
+        ]
+        result = list(orders_collection.aggregate(pipeline))
+        return result[0]["total"] if result else 0.0
+    except Exception as e:
+        print(f"Error calculating total spent: {e}")
+        return 0.0
+        
 print("functions.py loaded with MongoDB support")
