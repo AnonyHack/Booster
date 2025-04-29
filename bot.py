@@ -25,7 +25,7 @@ from functions import (insertUser, track_exists, addBalance, cutBalance, getData
                        get_top_users, get_user_count, get_active_users, get_total_orders, 
                        get_total_deposits, get_top_referrer, get_user_orders_stats, get_new_users,
                        get_completed_orders, get_all_users, save_pinned_message, get_all_pinned_messages,
-                         clear_all_pinned_messages, orders_collection, get_total_spent) # Import your functions from functions.py
+                         clear_all_pinned_messages, orders_collection, get_confirmed_spent, get_pending_spent) # Import your functions from functions.py
 
 
 if not os.path.exists('Account'):
@@ -451,7 +451,8 @@ def my_account(message):
     user_id = str(message.chat.id)
     data = getData(user_id)
     
-    total_spent = get_total_spent(user_id)
+    confirmed_spent = get_confirmed_spent(user_id)
+    pending_spent = get_pending_spent(user_id)
 
     if not data:
         bot.reply_to(message, "❌ Account not found. Please /start again.")
@@ -481,7 +482,8 @@ def my_account(message):
 📅 Dᴀᴛᴇ: {current_date}
 
 🪙 Bᴀʟᴀɴᴄᴇ: <code>{data['balance']}</code> Cᴏɪɴꜱ
-💸 Tᴏᴛᴀʟ Sᴘᴇɴᴛ: <code>{total_spent:.2f}</code> Cᴏɪɴꜱ
+💸 Cᴏɴꜰɪʀᴍᴇᴅ Sᴘᴇɴᴛ: <code>{confirmed_spent:.2f}</code> Cᴏɪɴꜱ
+⏳ Pᴇɴᴅɪɴɢ Sᴘᴇɴᴅɪɴɢ: <code>{pending_spent:.2f}</code> Cᴏɪɴꜱ
 """
     
     if photos.photos:
