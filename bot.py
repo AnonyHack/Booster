@@ -2402,7 +2402,6 @@ def show_analytics(message):
         # Add quick action buttons
         markup = InlineKeyboardMarkup()
         markup.row(
-            InlineKeyboardButton("🔄 Refresh", callback_data="refresh_analytics"),
             InlineKeyboardButton("📊 Detailed Report", callback_data="full_report")
         )
         
@@ -2421,74 +2420,6 @@ def show_analytics(message):
             "Please try again later",
             parse_mode='HTML')
 
-# Handle Refresh Analytics button
-@bot.callback_query_handler(func=lambda call: call.data == "refresh_analytics")
-def handle_refresh_analytics(call):
-    try:
-        # Show loading indicator
-        bot.answer_callback_query(call.id, "🔄 Refreshing data...")
-        
-        # Get fresh data
-        total_users = get_user_count()
-        active_users = get_active_users(7)
-        new_users_24h = get_new_users(1)
-        total_orders = get_total_orders()
-        completed_orders = get_completed_orders()
-        total_deposits = get_total_deposits()
-        top_referrer = get_top_referrer()
-        
-        # Format top referrer
-        if top_referrer['user_id']:
-            username = f"@{top_referrer['username']}" if top_referrer['username'] else f"User {top_referrer['user_id']}"
-            referrer_display = f"🏆 {username} (Invited {top_referrer['count']} users)"
-        else:
-            referrer_display = "📭 No referrals yet"
-        
-        # Calculate conversion rates
-        conversion_rate = (completed_orders/total_orders)*100 if total_orders > 0 else 0
-        deposit_per_user = total_deposits/total_users if total_users > 0 else 0
-        
-        # Create updated message
-        msg = f"""
-📈 <b>SMM Booster Analytics (Refreshed)</b>
-━━━━━━━━━━━━━━━━━━━━
-
-👥 <b>User Statistics</b>
-├ 👤 Total Users: <code>{total_users}</code>
-├ 🔥 Active (7d): <code>{active_users}</code>
-├ 🆕 New (24h): <code>{new_users_24h}</code>
-└ 💰 Avg Deposit/User: <code>{deposit_per_user:.2f}</code> coins
-
-🛒 <b>Order Metrics</b>
-├ 🚀 Total Orders: <code>{total_orders}</code>
-├ ✅ Completed: <code>{completed_orders}</code>
-├ 📊 Conversion: <code>{conversion_rate:.1f}%</code>
-└ 💸 Total Deposits: <code>{total_deposits:.2f}</code> coins
-
-🔗 <b>Referral Program</b>
-└ {referrer_display}
-
-⏳ <i>Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}</i>
-"""
-        
-        # Update the message with fresh data
-        markup = InlineKeyboardMarkup()
-        markup.row(
-            InlineKeyboardButton("🔄 Refresh", callback_data="refresh_analytics"),
-            InlineKeyboardButton("📊 Detailed Report", callback_data="full_report")
-        )
-        
-        bot.edit_message_text(
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            text=msg,
-            parse_mode='HTML',
-            reply_markup=markup
-        )
-        
-    except Exception as e:
-        print(f"Error refreshing analytics: {e}")
-        bot.answer_callback_query(call.id, "⚠️ Failed to refresh", show_alert=True)
 
 # Handle Full Report button
 @bot.callback_query_handler(func=lambda call: call.data == "full_report")
@@ -2548,6 +2479,12 @@ def handle_full_report(call):
         
         # Send the detailed report as a new message
         bot.send_message(call.message.chat.id, msg, parse_mode="HTML")
+        bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            text=msg,
+            parse_mode="HTML"
+        )
         
     except Exception as e:
         print(f"Error sending full report: {e}")
