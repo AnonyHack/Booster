@@ -451,7 +451,7 @@ def get_total_spent(user_id):
     try:
         from . import orders_collection
         pipeline = [
-            {"$match": {"user_id": str(user_id), "status": {"$in": ["completed", "partial"]}}},
+            {"$match": {"user_id": str(user_id), "status": {"$nin": ["canceled", "failed"]}}},
             {"$group": {"_id": None, "total": {"$sum": "$cost"}}}
         ]
         result = list(orders_collection.aggregate(pipeline))
