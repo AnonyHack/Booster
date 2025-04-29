@@ -2234,7 +2234,28 @@ def admin_panel(message):
         parse_mode="Markdown",
         reply_markup=admin_markup)
     
-
+@bot.message_handler(func=lambda message: message.text == "🔙 Main Menu")
+def back_to_main(message):
+    if message.from_user.id in admin_user_ids:
+        # For admins, show both admin and user keyboards
+        combined_markup = ReplyKeyboardMarkup(resize_keyboard=True)
+        combined_markup.row("📤 Send Orders", "👤 My Account")
+        combined_markup.row("💳 Pricing", "📊 Order Statistics")
+        combined_markup.row("🗣 Invite Friends", "🏆 Leaderboard")
+        combined_markup.row("📜 Help", "🛠 Admin Panel")
+        
+        bot.reply_to(message,
+            "🔄 *Returning to Main Menu*\n\n"
+            "All admin functions saved\n"
+            "You can resume later",
+            parse_mode="Markdown",
+            reply_markup=combined_markup)
+    else:
+        # For regular users, show normal keyboard
+        bot.reply_to(message,
+            "🔄 *Returning to Main Menu*",
+            parse_mode="Markdown",
+            reply_markup=main_markup)
 #============================= Add and Remove Coins ==============================================#
 @bot.message_handler(func=lambda message: message.text in ["➕ Add Coins", "➖ Remove Coins"] and message.from_user.id in admin_user_ids)
 def admin_actions(message):
@@ -2257,15 +2278,6 @@ def admin_actions(message):
             "⚠️ Fails if insufficient balance",
             parse_mode="Markdown",
             reply_markup=ForceReply(selective=True))
-
-@bot.message_handler(func=lambda message: message.text == "🔙 Main Menu")
-def back_to_main(message):
-    bot.reply_to(message,
-        "🔄 *Returning to Main Menu*\n\n"
-        "All admin functions saved\n"
-        "You can resume later",
-        parse_mode="Markdown",
-        reply_markup=main_markup)
 
 @bot.message_handler(commands=['addcoins', 'removecoins'])
 def handle_admin_commands(message):
@@ -2408,6 +2420,23 @@ def handle_admin_commands(message):
 def show_analytics(message):
     """Show comprehensive bot analytics with premium dashboard"""
     try:
+        # Store the original message ID if this is a new request
+        if not hasattr(message, 'is_callback'):
+            message.original_message_id = message.message_id + 1  # Next message will be +1
+            
+        show_analytics_dashboard(message)
+        
+    except Exception as e:
+        print(f"Analytics error: {e}")
+        bot.reply_to(message, 
+            "⚠️ <b>Analytics Dashboard Unavailable</b>\n\n"
+            "Our premium metrics system is temporarily offline\n"
+            "Please try again later",
+            parse_mode='HTML')
+
+def show_analytics_dashboard(message, is_refresh=False):
+    """Show or update the analytics dashboard"""
+    try:
         # Get all stats
         total_users = get_user_count()
         active_users = get_active_users(7)
@@ -2454,24 +2483,54 @@ def show_analytics(message):
         # Add quick action buttons
         markup = InlineKeyboardMarkup()
         markup.row(
-            InlineKeyboardButton("📊 Detailed Report", callback_data="full_report")
+            InlineKeyboardButton("🔄 Refresh", callback_data="refresh_analytics"),
+            InlineKeyboardButton("📊 Full Report", callback_data="full_report"),
+            InlineKeyboardButton("🔙 Back", callback_data="analytics_back")
         )
         
-        # Store the message for later editing
-        sent_msg = bot.send_message(message.chat.id, msg, parse_mode='HTML', reply_markup=markup)
-        
-        # Store message ID for callback handlers
-        bot.register_next_step_handler(message, lambda m: None)  # Clear any previous handlers
-        bot.register_next_step_handler_by_chat_id(message.chat.id, lambda m: None)
+        if hasattr(message, 'is_callback') or is_refresh:
+            # Edit existing message
+            bot.edit_message_text(
+                chat_id=message.chat.id,
+                message_id=message.message_id,
+                text=msg,
+                parse_mode='HTML',
+                reply_markup=markup
+            )
+        else:
+            # Send new message
+            sent_msg = bot.send_message(
+                message.chat.id,
+                msg,
+                parse_mode='HTML',
+                reply_markup=markup
+            )
+            message.original_message_id = sent_msg.message_id
         
     except Exception as e:
-        print(f"Analytics error: {e}")
-        bot.reply_to(message, 
-            "⚠️ <b>Analytics Dashboard Unavailable</b>\n\n"
-            "Our premium metrics system is temporarily offline\n"
-            "Please try again later",
-            parse_mode='HTML')
+        print(f"Analytics dashboard error: {e}")
 
+# Handle Refresh Analytics button
+@bot.callback_query_handler(func=lambda call: call.data == "refresh_analytics")
+def handle_refresh_analytics(call):
+    try:
+        call.message.is_callback = True
+        show_analytics_dashboard(call.message, is_refresh=True)
+        bot.answer_callback_query(call.id, "🔄 Data refreshed")
+    except Exception as e:
+        print(f"Error refreshing analytics: {e}")
+        bot.answer_callback_query(call.id, "⚠️ Failed to refresh", show_alert=True)
+
+# Handle Back button in analytics
+@bot.callback_query_handler(func=lambda call: call.data == "analytics_back")
+def handle_analytics_back(call):
+    try:
+        call.message.is_callback = True
+        show_analytics_dashboard(call.message)
+        bot.answer_callback_query(call.id)
+    except Exception as e:
+        print(f"Error going back in analytics: {e}")
+        bot.answer_callback_query(call.id, "⚠️ Failed to go back", show_alert=True)
 
 # Handle Full Report button
 @bot.callback_query_handler(func=lambda call: call.data == "full_report")
@@ -2524,12 +2583,17 @@ def handle_full_report(call):
 📅 Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}
 """
 
+        # Add back button
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("🔙 Back to Overview", callback_data="analytics_back"))
+
         # Overwrite the current message
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
             text=msg,
-            parse_mode="HTML"
+            parse_mode="HTML",
+            reply_markup=markup
         )
 
     except Exception as e:
