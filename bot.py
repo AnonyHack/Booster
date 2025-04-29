@@ -57,13 +57,11 @@ button4 = KeyboardButton("📊 Order Statistics")
 button5 = KeyboardButton("🗣 Invite Friends")
 button6 = KeyboardButton("🏆 Leaderboard")
 button7 = KeyboardButton("📜 Help")
-button8 = KeyboardButton("🛠 Admin Panel")
 
 main_markup.add(button1, button2)
 main_markup.add(button3, button4)
 main_markup.add(button5, button6)
 main_markup.add(button7)
-main_markup.add(button8)
 
 # Admin keyboard markup
 admin_markup = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -329,15 +327,31 @@ def set_bot_commands():
     commands = [
         BotCommand('start', 'Restart the bot'),
         BotCommand('policy', 'View usage policy'),
-        # Removed 'addcoins' and 'removecoins' from global commands
     ]
+    
+    # Admin-only commands
+    admin_commands = [
+        BotCommand('adminpanel', 'Access admin controls'),
+    ]
+    
     try:
+        # Set basic commands for all users
         bot.set_my_commands(commands)
+        
+        # Set admin commands specifically for admin users
+        for admin_id in admin_user_ids:
+            try:
+                bot.set_chat_menu_button(
+                    chat_id=admin_id,
+                    menu_button=types.MenuButtonCommands()
+                )
+                bot.set_my_commands(admin_commands + commands, scope=types.BotCommandScopeChat(admin_id))
+            except Exception as e:
+                print(f"Error setting admin commands for {admin_id}: {e}")
+        
         print("Bot commands set successfully")
     except Exception as e:
         print(f"Error setting bot commands: {e}")
-# imports the updateUser function from functions.py
-print(updateUser) 
   
 #======================= Start Command =======================#
 @bot.message_handler(commands=['start'])
