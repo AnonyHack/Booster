@@ -3,7 +3,6 @@ import re
 import requests
 import time
 import os
-import json
 import traceback
 import logging
 import psutil
@@ -26,7 +25,7 @@ from functions import (insertUser, track_exists, addBalance, cutBalance, getData
                        get_top_users, get_user_count, get_active_users, get_total_orders, 
                        get_total_deposits, get_top_referrer, get_user_orders_stats, get_new_users,
                        get_completed_orders, get_all_users, save_pinned_message, get_all_pinned_messages,
-                         clear_all_pinned_messages) # Import your functions from functions.py
+                         clear_all_pinned_messages, orders_collection) # Import your functions from functions.py
 
 
 if not os.path.exists('Account'):
