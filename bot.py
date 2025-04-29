@@ -642,7 +642,7 @@ def show_order_stats(message):
         completion_rate = (stats['completed']/stats['total'])*100 if stats['total'] > 0 else 0
 
         msg = f"""
-📦 <b>Your SMM Order Portfolio</b>
+📦 <b>Your Orders Portfolio</b>
 ━━━━━━━━━━━━━━━━━━━━
 
 📊 <b>Performance Overview</b>
