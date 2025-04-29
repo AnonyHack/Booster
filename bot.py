@@ -613,33 +613,11 @@ def pricing_command(message):
 @bot.message_handler(func=lambda message: message.text == "📊 Order Statistics")
 @check_ban
 def show_order_stats(message):
-    """Show comprehensive order statistics with auto-cleaning"""
+    """Show basic order performance stats with button to view history"""
     user_id = str(message.from_user.id)
-
     try:
         stats = get_user_orders_stats(user_id)
-
-        from functions import orders_collection
-        cutoff_time = int(time.time()) - 86400  # 24 hours ago
-        recent_orders = list(orders_collection.find(
-            {
-                "user_id": user_id,
-                "timestamp": {"$gt": cutoff_time},
-                "hidden": {"$ne": True}
-            },
-            {"service": 1, "quantity": 1, "status": 1, "timestamp": 1, "_id": 0}
-        ).sort("timestamp", -1).limit(5))
-
-        orders_collection.update_many(
-            {
-                "user_id": user_id,
-                "timestamp": {"$lt": cutoff_time},
-                "hidden": {"$ne": True}
-            },
-            {"$set": {"hidden": True}}
-        )
-
-        completion_rate = (stats['completed']/stats['total'])*100 if stats['total'] > 0 else 0
+        completion_rate = (stats['completed'] / stats['total']) * 100 if stats['total'] > 0 else 0
 
         msg = f"""
 📦 <b>Your Orders Portfolio</b>
@@ -650,44 +628,29 @@ def show_order_stats(message):
 ├ ✅ Completion Rate: <code>{completion_rate:.1f}%</code>
 ├ ⏳ Pending: <code>{stats['pending']}</code>
 └ ❌ Failed: <code>{stats['failed']}</code>
-
-🕒 <b>Recent Activity</b> (Last 24h)
 """
-        if recent_orders:
-            for i, order in enumerate(recent_orders, 1):
-                time_ago = format_timespan(time.time() - order.get('timestamp', time.time()))
-                status_icon = "✅" if order.get('status') == "completed" else "⏳" if order.get('status') == "pending" else "❌"
-                msg += f"\n{i}. {status_icon} {order.get('service', 'N/A')[:15]}... x{order.get('quantity', '?')} (<i>{time_ago} ago</i>)"
-        else:
-            msg += "\n└ 🌟 No recent orders found"
-
-        msg += f"\n\n📌 <i>Note: Only showing last 24h activity for clarity</i>"
 
         markup = InlineKeyboardMarkup()
-        markup.row(
-            InlineKeyboardButton("🔄 Refresh", callback_data="refresh_orders"),
-            InlineKeyboardButton("📜 Full History", callback_data="order_history")
-        )
-        sent_msg = bot.reply_to(message, msg, parse_mode='HTML', reply_markup=markup)
+        markup.add(InlineKeyboardButton("📜 Full History", callback_data="order_full_history"))
 
-        threading.Thread(target=delete_after_delay, args=(message.chat.id, sent_msg.message_id, 120)).start()
+        bot.reply_to(message, msg.strip(), parse_mode='HTML', reply_markup=markup)
 
     except Exception as e:
         print(f"Order stats error: {e}")
-        bot.reply_to(message, 
+        bot.reply_to(message,
             "⚠️ <b>Order Statistics Unavailable</b>\n\n"
-            "We couldn't retrieve your order data at this time\n"
-            "Please try again later",
+            "We couldn't retrieve your order data at this time.\n"
+            "Please try again later.",
             parse_mode='HTML')
 
-@bot.callback_query_handler(func=lambda call: call.data == "order_history")
-def show_recent_orders(call):
-    """Shows the same 24h orders with Go Back button"""
+@bot.callback_query_handler(func=lambda call: call.data == "order_full_history")
+@check_ban
+def order_full_history(call):
+    """Show recent orders from the last 24h"""
     user_id = str(call.from_user.id)
+    cutoff_time = int(time.time()) - 86400  # 24 hours ago
 
     try:
-        from functions import orders_collection
-        cutoff_time = int(time.time()) - 86400
         recent_orders = list(orders_collection.find(
             {
                 "user_id": user_id,
@@ -695,7 +658,17 @@ def show_recent_orders(call):
                 "hidden": {"$ne": True}
             },
             {"service": 1, "quantity": 1, "status": 1, "timestamp": 1, "_id": 0}
-        ).sort("timestamp", -1))
+        ).sort("timestamp", -1).limit(5))
+
+        # Auto-hide old orders
+        orders_collection.update_many(
+            {
+                "user_id": user_id,
+                "timestamp": {"$lt": cutoff_time},
+                "hidden": {"$ne": True}
+            },
+            {"$set": {"hidden": True}}
+        )
 
         msg = "🕒 <b>Recent Orders (Last 24h)</b>\n"
 
@@ -710,33 +683,30 @@ def show_recent_orders(call):
         msg += "\n\n📌 <i>Note: Only showing last 24h orders</i>"
 
         markup = InlineKeyboardMarkup()
-        markup.row(
-            InlineKeyboardButton("🔙 Go Back", callback_data="refresh_orders")
+        markup.add(InlineKeyboardButton("🔙 Go Back", callback_data="order_stats_back"))
+
+        bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            text=msg,
+            parse_mode='HTML',
+            reply_markup=markup
         )
 
-        bot.edit_message_text(chat_id=call.message.chat.id,
-                              message_id=call.message.message_id,
-                              text=msg,
-                              parse_mode='HTML',
-                              reply_markup=markup)
     except Exception as e:
-        print(f"Full history error: {e}")
-        bot.answer_callback_query(call.id, "❌ Failed to load order history")
+        print(f"Order full history error: {e}")
+        bot.answer_callback_query(call.id, "⚠️ Failed to load history.")
 
-@bot.callback_query_handler(func=lambda call: call.data == "refresh_orders")
-def refresh_orders(call):
-    """Reload the main order statistics panel"""
-    class DummyMessage:
-        def __init__(self, chat, user):
-            self.chat = type("obj", (object,), {"id": chat})
-            self.from_user = type("obj", (object,), {"id": user})
-    try:
-        dummy = DummyMessage(call.message.chat.id, call.from_user.id)
-        show_order_stats(dummy)
-        bot.delete_message(call.message.chat.id, call.message.message_id)
-    except Exception as e:
-        print(f"Refresh error: {e}")
-        bot.answer_callback_query(call.id, "❌ Failed to refresh")
+@bot.callback_query_handler(func=lambda call: call.data == "order_stats_back")
+@check_ban
+def back_to_order_stats(call):
+    """Go back to main order stats page"""
+    from types import SimpleNamespace
+    fake_message = SimpleNamespace()
+    fake_message.chat = call.message.chat
+    fake_message.message_id = call.message.message_id
+    fake_message.from_user = call.from_user
+    show_order_stats(fake_message)
 
 def delete_after_delay(chat_id, message_id, delay):
     time.sleep(delay)
