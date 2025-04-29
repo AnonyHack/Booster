@@ -3484,63 +3484,51 @@ def accept_policy_callback(call):
 
 
 #======================= Function to periodically check order status ====================#
-def check_pending_orders():
-    """Periodically check and update status of pending orders"""
-    account_folder = 'Account'
-    if not os.path.exists(account_folder):
-        return
-    
-    for filename in os.listdir(account_folder):
-        if filename.endswith('.json'):
-            user_id = filename.split('.')[0]
-            filepath = os.path.join(account_folder, filename)
-            try:
-                with open(filepath, 'r') as f:
-                    data = json.load(f)
-                
-                if 'orders' in data:
-                    updated = False
-                    for order in data['orders']:
-                        if order.get('status') == 'pending':
-                            # Check with your SMM API for status
-                            try:
-                                response = requests.post(
-                                    SmmPanelApiUrl,
-                                    data={
-                                        'key': SmmPanelApi,
-                                        'action': 'status',
-                                        'order': order['order_id']
-                                    },
-                                    timeout=10
-                                )
-                                result = response.json()
-                                
-                                if result and 'status' in result:
-                                    new_status = result['status'].lower()
-                                    if new_status in ['completed', 'partial', 'processing', 'failed']:
-                                        if new_status != order['status']:
-                                            order['status'] = new_status
-                                            updated = True
-                            except:
-                                continue
-                    
-                    if updated:
-                        with open(filepath, 'w') as f:
-                            json.dump(data, f)
-            except:
+def update_order_statuses():
+
+    try:
+        pending_orders = list(orders_collection.find({"status": "pending"}))
+        if not pending_orders:
+            return
+
+        for order in pending_orders:
+            order_id = order.get("order_id")
+            if not order_id:
                 continue
 
-# Run this periodically (e.g., every hour)
-def order_status_checker():
-    while True:
-        check_pending_orders()
-        time.sleep(3600)  # Check every hour
+            response = requests.post(
+                SmmPanelApiUrl,
+                data={
+                    'key': SmmPanelApi,
+                    'action': 'status',
+                    'order': order_id
+                },
+                timeout=30
+            )
+            result = response.json()
 
-# Start the checker thread when bot starts
-import threading
-checker_thread = threading.Thread(target=order_status_checker)
-checker_thread.daemon = True
-checker_thread.start()
+            if result and result.get("status"):
+                new_status = result["status"].lower()
+                if new_status != "pending":
+                    orders_collection.update_one(
+                        {"order_id": order_id},
+                        {"$set": {
+                            "status": new_status,
+                            "status_update_time": time.time()
+                        }}
+                    )
+                    print(f"✅ Order {order_id} updated to {new_status}")
+
+    except Exception as e:
+        print(f"[Order Status Check Error] {e}")
+
+# Schedule it to run every 2 minutes
+def start_status_updater():
+    while True:
+        update_order_statuses()
+        time.sleep(120)  # every 2 minutes
+
+threading.Thread(target=start_status_updater, daemon=True).start()
 
 #======================== Logging Setup =====================#
 logging.basicConfig(
