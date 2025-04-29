@@ -2425,10 +2425,8 @@ def show_analytics(message):
 @bot.callback_query_handler(func=lambda call: call.data == "full_report")
 def handle_full_report(call):
     try:
-        # Show loading indicator
         bot.answer_callback_query(call.id, "📊 Generating report...")
-        
-        # Get all stats including additional ones
+
         total_users = get_user_count()
         active_users = get_active_users(7)
         new_users_24h = get_new_users(1)
@@ -2437,20 +2435,17 @@ def handle_full_report(call):
         total_deposits = get_total_deposits()
         top_referrer = get_top_referrer()
         banned_users = len(get_banned_users())
-        
-        # Calculate rates
+
         conversion_rate = (completed_orders/total_orders)*100 if total_orders > 0 else 0
         deposit_per_user = total_deposits/total_users if total_users > 0 else 0
         active_rate = (active_users/total_users)*100 if total_users > 0 else 0
-        
-        # Format top referrer
+
         if top_referrer['user_id']:
             username = f"@{top_referrer['username']}" if top_referrer['username'] else f"User {top_referrer['user_id']}"
             referrer_display = f"🏆 {username} (Invited {top_referrer['count']} users)"
         else:
             referrer_display = "📭 No referrals yet"
-        
-        # Create detailed report
+
         msg = f"""
 📊 <b>Full Analytics Report</b>
 ━━━━━━━━━━━━━━━━━━━━
@@ -2476,19 +2471,19 @@ def handle_full_report(call):
 
 📅 Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}
 """
-        
-        # Send the detailed report as a new message
-        bot.send_message(call.message.chat.id, msg, parse_mode="HTML")
+
+        # Overwrite the current message
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
             text=msg,
             parse_mode="HTML"
         )
-        
+
     except Exception as e:
         print(f"Error sending full report: {e}")
         bot.answer_callback_query(call.id, "⚠️ Failed to load full report", show_alert=True)
+
 
 # =========================== Broadcast Command ================= #
 @bot.message_handler(func=lambda m: m.text == "📤 Broadcast" and m.from_user.id in admin_user_ids)
