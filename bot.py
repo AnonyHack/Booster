@@ -2242,7 +2242,7 @@ def back_to_main(message):
         combined_markup.row("📤 Send Orders", "👤 My Account")
         combined_markup.row("💳 Pricing", "📊 Order Statistics")
         combined_markup.row("🗣 Invite Friends", "🏆 Leaderboard")
-        combined_markup.row("📜 Help", "🛠 Admin Panel")
+        combined_markup.row("📜 Help")
         
         bot.reply_to(message,
             "🔄 *Returning to Main Menu*\n\n"
@@ -2484,8 +2484,7 @@ def show_analytics_dashboard(message, is_refresh=False):
         markup = InlineKeyboardMarkup()
         markup.row(
             InlineKeyboardButton("🔄 Refresh", callback_data="refresh_analytics"),
-            InlineKeyboardButton("📊 Full Report", callback_data="full_report"),
-            InlineKeyboardButton("🔙 Back", callback_data="analytics_back")
+            InlineKeyboardButton("📊 Full Report", callback_data="full_report")
         )
         
         if hasattr(message, 'is_callback') or is_refresh:
