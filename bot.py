@@ -463,7 +463,6 @@ def my_account(message):
     updateUser(user_id, data)
     
     # Get current time and date
-    from datetime import datetime
     now = datetime.now()
     current_time = now.strftime("%I:%M %p")
     current_date = now.strftime("%Y-%m-%d")
