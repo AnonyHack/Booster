@@ -2215,7 +2215,7 @@ def handle_back_buttons(message):
 
 # ================= ADMIN COMMANDS ================== #
 
-@bot.message_handler(func=lambda message: message.text == "🛠 Admin Panel")
+@bot.message_handler(commands=['adminpanel'])
 def admin_panel(message):
     if message.from_user.id not in admin_user_ids:
         bot.reply_to(message,
