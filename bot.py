@@ -722,6 +722,18 @@ def show_recent_orders(call):
         print(f"Full history error: {e}")
         bot.answer_callback_query(call.id, "❌ Failed to load order history")
 
+@bot.callback_query_handler(func=lambda call: call.data == "show_order_stats")
+@check_ban
+def callback_show_order_stats(call):
+    """Go back to the SMM order portfolio page from history"""
+    from types import SimpleNamespace
+    fake_message = SimpleNamespace()
+    fake_message.chat = call.message.chat
+    fake_message.message_id = call.message.message_id
+    fake_message.from_user = call.from_user
+    show_order_stats(fake_message)
+
+
 def delete_after_delay(chat_id, message_id, delay):
     time.sleep(delay)
     try:
