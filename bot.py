@@ -25,7 +25,8 @@ from functions import (insertUser, track_exists, addBalance, cutBalance, getData
                        ban_user, unban_user, get_all_users, is_banned, get_banned_users, 
                        get_top_users, get_user_count, get_active_users, get_total_orders, 
                        get_total_deposits, get_top_referrer, get_user_orders_stats, get_new_users,
-                       get_completed_orders, get_all_users, save_pinned_message, get_all_pinned_messages, clear_all_pinned_messages) # Import your functions from functions.py
+                       get_completed_orders, get_all_users, save_pinned_message, get_all_pinned_messages,
+                         clear_all_pinned_messages) # Import your functions from functions.py
 
 
 if not os.path.exists('Account'):
@@ -682,9 +683,24 @@ def show_order_stats(message):
         markup.row(
             InlineKeyboardButton("📜 Full History", callback_data="order_history")
         )
-        sent_msg = bot.reply_to(message, msg, parse_mode='HTML', reply_markup=markup)
-
-        threading.Thread(target=delete_after_delay, args=(message.chat.id, sent_msg.message_id, 120)).start()
+        
+        # Check if this is a callback edit or new message
+        if hasattr(message, 'is_callback'):
+            bot.edit_message_text(
+                chat_id=message.chat.id,
+                message_id=message.message_id,
+                text=msg,
+                parse_mode='HTML',
+                reply_markup=markup
+            )
+        else:
+            sent_msg = bot.send_message(
+                message.chat.id,
+                msg,
+                parse_mode='HTML',
+                reply_markup=markup
+            )
+            threading.Thread(target=delete_after_delay, args=(message.chat.id, sent_msg.message_id, 120)).start()
 
     except Exception as e:
         print(f"Order stats error: {e}")
@@ -728,11 +744,13 @@ def show_recent_orders(call):
             InlineKeyboardButton("🔙 Go Back", callback_data="show_order_stats")
         )
 
-        bot.edit_message_text(chat_id=call.message.chat.id,
-                              message_id=call.message.message_id,
-                              text=msg,
-                              parse_mode='HTML',
-                              reply_markup=markup)
+        bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            text=msg,
+            parse_mode='HTML',
+            reply_markup=markup
+        )
     except Exception as e:
         print(f"Full history error: {e}")
         bot.answer_callback_query(call.id, "❌ Failed to load order history")
@@ -741,12 +759,14 @@ def show_recent_orders(call):
 @check_ban
 def callback_show_order_stats(call):
     """Go back to the SMM order portfolio page from history"""
-    from types import SimpleNamespace
-    fake_message = SimpleNamespace()
-    fake_message.chat = call.message.chat
-    fake_message.message_id = call.message.message_id
-    fake_message.from_user = call.from_user
-    show_order_stats(fake_message)
+    try:
+        # Mark the call as a callback to trigger edit_message behavior
+        call.message.is_callback = True
+        show_order_stats(call.message)
+        bot.answer_callback_query(call.id)
+    except Exception as e:
+        print(f"Error in callback_show_order_stats: {e}")
+        bot.answer_callback_query(call.id, "⚠️ Failed to go back", show_alert=True)
 
 
 def delete_after_delay(chat_id, message_id, delay):
@@ -771,7 +791,7 @@ def format_timespan(seconds):
             result.append(f"{value} {name}")
     return ', '.join(result[:2])
 
-      
+
 #======================= Send Orders for Telegram =======================#
 @bot.message_handler(func=lambda message: message.text == "📱 Order Telegram")
 def order_telegram_menu(message):
@@ -2214,27 +2234,7 @@ def handle_back_buttons(message):
         # Cancel goes straight to main menu
         bot.reply_to(message, "Oᴘᴇʀᴀᴛɪᴏɴ Cᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
 
-# ================= ADMIN COMMANDS ================== #
 
-@bot.message_handler(commands=['adminpanel'])
-def admin_panel(message):
-    if message.from_user.id not in admin_user_ids:
-        bot.reply_to(message,
-            "🔒 *Restricted Area*\n\n"
-            "This panel is for authorized administrators only\n\n"
-            "⚠️ Your access attempt has been logged",
-            parse_mode="Markdown")
-        return
-    
-    bot.reply_to(message,
-        "⚡ *SMM Booster Admin Center*\n\n"
-        "▸ User Management\n"
-        "▸ Coin Transactions\n"
-        "▸ System Controls\n\n"
-        "Select an option below:",
-        parse_mode="Markdown",
-        reply_markup=admin_markup)
-    
 @bot.message_handler(func=lambda message: message.text == "🔙 Main Menu")
 def back_to_main(message):
     if message.from_user.id in admin_user_ids:
@@ -2257,6 +2257,29 @@ def back_to_main(message):
             "🔄 *Returning to Main Menu*",
             parse_mode="Markdown",
             reply_markup=main_markup)
+
+# ================= ADMIN COMMANDS ================== #
+
+@bot.message_handler(commands=['adminpanel'])
+def admin_panel(message):
+    if message.from_user.id not in admin_user_ids:
+        bot.reply_to(message,
+            "🔒 *Restricted Area*\n\n"
+            "This panel is for authorized administrators only\n\n"
+            "⚠️ Your access attempt has been logged",
+            parse_mode="Markdown")
+        return
+    
+    bot.reply_to(message,
+        "⚡ *SMM Booster Admin Center*\n\n"
+        "▸ User Management\n"
+        "▸ Coin Transactions\n"
+        "▸ System Controls\n\n"
+        "Select an option below:",
+        parse_mode="Markdown",
+        reply_markup=admin_markup)
+    
+
 #============================= Add and Remove Coins ==============================================#
 @bot.message_handler(func=lambda message: message.text in ["➕ Add Coins", "➖ Remove Coins"] and message.from_user.id in admin_user_ids)
 def admin_actions(message):
@@ -2353,7 +2376,7 @@ def handle_admin_commands(message):
                         "💎 Thank you for being a valued customer!",
                         parse_mode="Markdown",
                         reply_markup=InlineKeyboardMarkup().add(
-                            InlineKeyboardButton("🛍️ Shop Now", callback_data="send_orders_menu")
+                            InlineKeyboardButton("🛍️ Shop Now", callback_data="show_send_orders")
                         )
                     )
                 except Exception as e:
@@ -2481,7 +2504,7 @@ def handle_batch_coins(message):
                         "💎 Thank you for being a valued customer!",
                         parse_mode="Markdown",
                         reply_markup=InlineKeyboardMarkup().add(
-                            InlineKeyboardButton("🛍️ Shop Now", callback_data="send_orders_menu")
+                            InlineKeyboardButton("🛍️ Shop Now", callback_data="show_send_orders")
                         )
                     )
                     success += 1
@@ -2515,7 +2538,8 @@ def handle_batch_coins(message):
         f"✅ Successful: {success}\n"
         f"❌ Failed: {failed}",
         parse_mode="Markdown")
-#=============================== Admin Stats Command ==============================================#
+
+#=============================== Admin Stats Command =====================================#
 @bot.message_handler(func=lambda m: m.text == "📊 Analytics" and m.from_user.id in admin_user_ids)
 def show_analytics(message):
     """Show comprehensive bot analytics with premium dashboard"""
@@ -2699,7 +2723,6 @@ def handle_full_report(call):
         print(f"Error sending full report: {e}")
         bot.answer_callback_query(call.id, "⚠️ Failed to load full report", show_alert=True)
 
-
 # =========================== Broadcast Command ================= #
 @bot.message_handler(func=lambda m: m.text == "📤 Broadcast" and m.from_user.id in admin_user_ids)
 def broadcast_start(message):
@@ -2841,6 +2864,7 @@ def process_ban_user(message):
             InlineKeyboardButton("📩 Appeal Ban", url="https://t.me/SocialHubBoosterTMbot"),
             InlineKeyboardButton("📋 View Terms", callback_data="ban_terms")
         )
+
         
         bot.send_message(
             user_id,
@@ -2867,15 +2891,15 @@ def process_ban_user(message):
     f"📝 _This user has been added to ban database_",
     parse_mode="Markdown",
     reply_markup=admin_markup)
-  
-# Add this callback handler for the terms button
+
+# Add this callback handler for the terms button 
 @bot.callback_query_handler(func=lambda call: call.data == "ban_terms")
 def show_ban_terms(call):
     """Show the policy message when View Terms is clicked"""
     try:
         # Get the policy message from the policy_command function
         policy_text = """
-📜 <b>🤖 Bot Usage Policy & Guidelines</b>
+📜 <b>🤖 Bot Usage Policy & Guidelines</b> 📜
 ━━━━━━━━━━━━━━━━━━━━
 
 🔹 <b>1. Acceptable Use</b>
@@ -2907,6 +2931,7 @@ def show_ban_terms(call):
 ━━━━━━━━━━━━━━━━━━━━
 💡 Need help? Contact @SocialHubBoosterTMbot
 """.format(update_date=datetime.now().strftime('%Y-%m-%d'))
+
         
         # Answer the callback first
         bot.answer_callback_query(call.id)
@@ -2921,6 +2946,8 @@ def show_ban_terms(call):
     except Exception as e:
         print(f"Error showing ban terms: {e}")
         bot.answer_callback_query(call.id, "⚠️ Failed to load terms", show_alert=True)
+    
+
 # ============================= Premium Unban Command ============================= #
 @bot.message_handler(func=lambda m: m.text == "✅ Unban User" and m.from_user.id in admin_user_ids)
 def unban_user_start(message):
@@ -3398,7 +3425,7 @@ def process_check_order(message):
 def policy_command(message):
     """Show the bot's usage policy"""
     policy_text = """
-📜 <b>🤖 Bot Usage Policy & Guidelines</b> 📜
+📜 <b>Bot Usage Policy & Guidelines</b>
 ━━━━━━━━━━━━━━━━━━━━
 
 🔹 <b>1. Acceptable Use</b>
