@@ -72,6 +72,7 @@ admin_markup.row("📋 List Banned", "👤 User Info")  # New
 admin_markup.row("🖥 Server Status", "📤 Export Data")  # New
 admin_markup.row("📦 Order Manager", "📊 Analytics")  # New
 admin_markup.row("🔧 Maintenance", "📤 Broadcast")
+admin_markup.row("📦 Batch Coins")
 admin_markup.row("🔙 Main Menu")
 #======================= Send Orders main menu =======================#
 send_orders_markup = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -2414,8 +2415,107 @@ def handle_admin_commands(message):
             parse_mode="Markdown")
         print(f"Admin command error: {traceback.format_exc()}")
 
-#========== New Commands ==============#
-# Admin Stats Command
+#=========================== Batch Coin Commands =================================#
+@bot.message_handler(func=lambda m: m.text == "📦 Batch Coins")
+def show_batch_coins_help(message):
+    if message.from_user.id not in admin_user_ids:
+        return
+    bot.reply_to(message,
+        "🧮 *Batch Coins Panel*\n\n"
+        "Use the following commands to add or remove coins for all users:\n\n"
+        "▸ `/alladdcoins <amount>`\n"
+        "▸ `/allremovecoins <amount>`\n\n"
+        "⚠️ *Note:* All users will be notified.",
+        parse_mode="Markdown")
+
+@bot.message_handler(commands=['alladdcoins', 'allremovecoins'])
+def handle_batch_coins(message):
+    if message.from_user.id not in admin_user_ids:
+        bot.reply_to(message,
+            "⛔ *Admin Access Denied*\n\n"
+            "This command is restricted to authorized staff only\n"
+            "Unauthorized access attempts are logged",
+            parse_mode="Markdown")
+        return
+
+    args = message.text.split()
+    if len(args) != 2:
+        bot.reply_to(message,
+            "⚡ *Usage Guide*\n\n"
+            "▸ Add coins: `/alladdcoins <amount>`\n"
+            "▸ Remove coins: `/allremovecoins <amount>`\n\n"
+            "💡 Example: `/alladdcoins 100`",
+            parse_mode="Markdown")
+        return
+
+    try:
+        amount = float(args[1]) if '.' in args[1] else int(args[1])
+        if amount <= 0:
+            raise ValueError
+    except ValueError:
+        bot.reply_to(message,
+            "⚠️ *Invalid Amount*\n\n"
+            "Amount must be:\n"
+            "▸ A positive number\n"
+            "▸ Decimal values allowed\n"
+            "▸ Minimum: 0.01",
+            parse_mode="Markdown")
+        return
+
+    users = get_all_users()
+    success = 0
+    failed = 0
+
+    for uid in users:
+        try:
+            if args[0] == '/alladdcoins':
+                if addBalance(uid, amount):
+                    data = getData(uid)
+                    bot.send_message(
+                        uid,
+                        f"🎉 *ACCOUNT CREDITED*\n\n"
+                        f"Your SMM Booster wallet has been topped up!\n\n"
+                        f"▸ Amount: +{amount:.2f} coins\n"
+                        f"▸ New Balance: {data['balance']:.2f}\n"
+                        f"▸ Transaction ID: {int(time.time())}\n\n"
+                        "💎 Thank you for being a valued customer!",
+                        parse_mode="Markdown",
+                        reply_markup=InlineKeyboardMarkup().add(
+                            InlineKeyboardButton("🛍️ Shop Now", callback_data="send_orders_menu")
+                        )
+                    )
+                    success += 1
+                else:
+                    failed += 1
+            elif args[0] == '/allremovecoins':
+                if cutBalance(uid, amount):
+                    data = getData(uid)
+                    bot.send_message(
+                        uid,
+                        f"🔔 *ACCOUNT DEBITED*\n\n"
+                        f"Coins have been deducted from your SMM Booster wallet\n\n"
+                        f"▸ Amount: -{amount:.2f} coins\n"
+                        f"▸ New Balance: {data['balance']:.2f}\n"
+                        f"▸ Transaction ID: {int(time.time())}\n\n"
+                        "⚠️ Contact support if this was unexpected",
+                        parse_mode="Markdown",
+                        reply_markup=InlineKeyboardMarkup().add(
+                            InlineKeyboardButton("📩 Contact Support", url="https://t.me/SocialHubBoosterTMbot")
+                        )
+                    )
+                    success += 1
+                else:
+                    failed += 1
+        except Exception as e:
+            print(f"Batch update failed for {uid}: {e}")
+            failed += 1
+
+    bot.reply_to(message,
+        f"📊 *Batch Operation Completed*\n\n"
+        f"✅ Successful: {success}\n"
+        f"❌ Failed: {failed}",
+        parse_mode="Markdown")
+#=============================== Admin Stats Command ==============================================#
 @bot.message_handler(func=lambda m: m.text == "📊 Analytics" and m.from_user.id in admin_user_ids)
 def show_analytics(message):
     """Show comprehensive bot analytics with premium dashboard"""
