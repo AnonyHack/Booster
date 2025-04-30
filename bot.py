@@ -429,14 +429,15 @@ Thank you for helping grow our community!
     welcome_image_url = "https://t.me/smmserviceslogs/20"  # Replace with your image URL
     bonus_text = f"\n\n🎁 ʏᴏᴜ ʀᴇᴄᴇɪᴠᴇᴅ <b>+{welcome_bonus} ᴄᴏɪɴs ᴡᴇʟᴄᴏᴍᴇ ʙᴏɴᴜs!</b>" if show_bonus_message else ""
     welcome_caption = f"""
+<blockquote>
 🎉 <b>Wᴇʟᴄᴏᴍᴇ ʙᴏᴀʀᴅ, {first_name}!</b> 🎉{bonus_text}
 
-🆔 <b>ᴜsᴇʀ ɪᴅ:</b> <code>{user_id}</code>
 👤 <b>ᴜsᴇʀɴᴀᴍᴇ:</b> {username}
 
 With our bot, you can boost your social media accounts & posts with just a few simple steps!
 
 👇 <b>ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ɢᴇᴛ sᴛᴀʀᴛᴇᴅ:</b>
+</blockquote>
 """
 
     try:
