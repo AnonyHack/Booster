@@ -392,32 +392,54 @@ def send_welcome(message):
 
     # Welcome bonus logic
     userData = getData(user_id)
+    show_bonus_message = False
     if userData['welcome_bonus'] == 0:
         addBalance(user_id, welcome_bonus)
         setWelcomeStaus(user_id)
+        show_bonus_message = True
 
-    # Referral bonus logic
+    # Professional Referral bonus logic
     data = getData(user_id)
     if data['ref_by'] != "none" and data['referred'] == 0:
-        bot.send_message(data['ref_by'], f"You referred {first_name} +{ref_bonus}")
+        referrer_data = getData(data['ref_by'])
+        referral_message = f"""
+🎉 <b>Referral Reward Notification</b> 🎉
+
+We're pleased to inform you that your referral <b>{first_name}</b> has successfully joined using your referral link.
+
+💰 <b>Reward Credited:</b> +{ref_bonus} coins
+📈 <b>Your Total Referrals:</b> {int(referrer_data.get('total_refs', 0)) + 1}
+💎 <b>Current Balance:</b> {float(referrer_data.get('balance', 0)) + float(ref_bonus):.2f} coins
+
+Keep sharing your referral link to earn more rewards!
+Your unique link: https://t.me/{bot.get_me().username}?start={data['ref_by']}
+
+Thank you for helping grow our community!
+"""
+        bot.send_message(
+            data['ref_by'],
+            referral_message,
+            parse_mode='HTML',
+            disable_web_page_preview=True
+        )
         addBalance(data['ref_by'], ref_bonus)
         setReferredStatus(user_id)
 
     # Send welcome image with caption
     welcome_image_url = "https://t.me/smmserviceslogs/20"  # Replace with your image URL
+    bonus_text = f"\n\n🎁 ʏᴏᴜ ʀᴇᴄᴇɪᴠᴇᴅ <b>+{welcome_bonus} ᴄᴏɪɴs ᴡᴇʟᴄᴏᴍᴇ ʙᴏɴᴜs!</b>" if show_bonus_message else ""
     welcome_caption = f"""
-🎉 <b>Welcome {first_name} !</b> 🎉
+🎉 <b>Wᴇʟᴄᴏᴍᴇ ʙᴏᴀʀᴅ, {first_name}!</b> 🎉{bonus_text}
 
-🆔 <b>User ID:</b> <code>{user_id}</code>
-👤 <b>Username:</b> {username}
+🆔 <b>ᴜsᴇʀ ɪᴅ:</b> <code>{user_id}</code>
+👤 <b>ᴜsᴇʀɴᴀᴍᴇ:</b> {username}
 
-Wɪᴛʜ Oᴜʀ Bᴏᴛ, Yᴏᴜ Cᴀɴ Bᴏᴏꜱᴛ Yᴏᴜʀ Sᴏᴄɪᴀʟ Mᴇᴅɪᴀ Aᴄᴄᴏᴜɴᴛꜱ & Pᴏꜱᴛꜱ Wɪᴛʜ Jᴜꜱᴛ A Fᴇᴡ Sɪᴍᴘʟᴇ Sᴛᴇᴘꜱ!
+With our bot, you can boost your social media accounts & posts with just a few simple steps!
 
-👇 <b>Cʜᴏᴏꜱᴇ Aɴ Oᴘᴛɪᴏɴ Bᴇʟᴏᴡ Tᴏ Gᴇᴛ Sᴛᴀʀᴛᴇᴅ:</b>
+👇 <b>ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ɢᴇᴛ sᴛᴀʀᴛᴇᴅ:</b>
 """
 
     try:
-        # Send photo with caption
         bot.send_photo(
             chat_id=user_id,
             photo=welcome_image_url,
@@ -425,24 +447,15 @@ Wɪᴛʜ Oᴜʀ Bᴏᴛ, Yᴏᴜ Cᴀɴ Bᴏᴏꜱᴛ Yᴏᴜʀ Sᴏᴄɪᴀʟ M
             parse_mode='HTML',
             reply_markup=main_markup
         )
-        
-        # Send welcome bonus message separately if applicable
-        if userData['welcome_bonus'] == 0:
-            bot.send_message(
-                user_id,
-                f"🎁 <b>Yᴏᴜ Rᴇᴄᴇɪᴠᴇᴅ +{welcome_bonus} Cᴏɪɴꜱ Wᴇʟᴄᴏᴍᴇ Bᴏɴᴜꜱ!</b>",
-                parse_mode='HTML'
-            )
-            
     except Exception as e:
         print(f"Error sending welcome message: {e}")
-        # Fallback to text message if image fails
         bot.send_message(
             user_id,
             welcome_caption,
             parse_mode='HTML',
             reply_markup=main_markup
         )
+
 #====================== My Account =====================#
 @bot.message_handler(func=lambda message: message.text == "👤 My Account")
 def my_account(message):
