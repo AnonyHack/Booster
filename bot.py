@@ -763,9 +763,21 @@ def show_recent_orders(call):
 def callback_show_order_stats(call):
     """Go back to the SMM order portfolio page from history"""
     try:
-        # Mark the call as a callback to trigger edit_message behavior
-        call.message.is_callback = True
-        show_order_stats(call.message)
+        # Create a message-like object with stored data
+        from types import SimpleNamespace
+        message = SimpleNamespace()
+        message.chat = call.message.chat
+        message.message_id = call.message.message_id
+        message.from_user = call.from_user
+        message.is_callback = True
+        
+        # Retrieve the stored stats if available
+        if hasattr(call.message, 'stats_data'):
+            message.stats_data = call.message.stats_data
+        if hasattr(call.message, 'recent_orders'):
+            message.recent_orders = call.message.recent_orders
+            
+        show_order_stats(message)
         bot.answer_callback_query(call.id)
     except Exception as e:
         print(f"Error in callback_show_order_stats: {e}")
