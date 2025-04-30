@@ -3449,7 +3449,6 @@ def policy_command(message):
     
     bot.reply_to(message, policy_text, parse_mode="HTML", reply_markup=markup)
 
-# Callback handler for the accept button
 @bot.callback_query_handler(func=lambda call: call.data == "accept_policy")
 def accept_policy_callback(call):
     bot.answer_callback_query(
@@ -3457,15 +3456,23 @@ def accept_policy_callback(call):
         text="🙏 Thank you for your cooperation!",
         show_alert=True
     )
-    # Optional: Edit the original message to remove the button
+
     try:
+        # Remove the button
         bot.edit_message_reply_markup(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
             reply_markup=None
         )
-    except:
-        pass
+
+        # Delete the message after a short delay (optional)
+        bot.delete_message(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id
+        )
+    except Exception as e:
+        print(f"Error deleting policy message: {e}")
+
 
 
 
