@@ -189,7 +189,6 @@ def add_order(user_id, order_data):
         return False
 #==================================== Channel Membership Check =======================#
 #================================== Force Join Method =======================================#
-#================================== Force Join Method =======================================#
 required_channels = ["smmserviceslogs"]  # Channel usernames without "@"
 payment_channel = "@smmserviceslogs"  # Channel for payment notifications
 
@@ -283,7 +282,31 @@ def verify_membership(call):
             show_alert=True
         )
 #==============================================#
+#===================== Function to auto delete =========================#
+from collections import defaultdict
 
+# Tracks user_id => list of (message_id, chat_id)
+user_message_log = defaultdict(list)
+AUTO_DELETE_AFTER = 1  # 10 minutes
+
+#================= Auto Delete Messages ==========================#
+def send_and_track_message(chat_id, send_func, *args, **kwargs):
+    """Wraps bot.send_message or bot.send_photo to track sent message for deletion."""
+    msg = send_func(chat_id, *args, **kwargs)
+    user_message_log[chat_id].append((msg.message_id, chat_id))
+    return msg
+
+def start_auto_delete_timer(chat_id):
+    def delete_after_delay():
+        time.sleep(AUTO_DELETE_AFTER)
+        for msg_id, cid in user_message_log[chat_id]:
+            try:
+                bot.delete_message(cid, msg_id)
+            except Exception as e:
+                print(f"Error deleting message {msg_id}: {e}")
+        user_message_log[chat_id].clear()
+    
+    threading.Thread(target=delete_after_delay, daemon=True).start()
 #========================= utility function to check bans =================#
 # Enhanced check_ban decorator to include maintenance check
 def check_ban(func):
@@ -367,7 +390,7 @@ def send_welcome(message):
     if not check_membership_and_prompt(user_id, message):
         return
 
-    # Referral system logic
+    # Referral logic
     if ref_by and int(ref_by) != int(user_id) and track_exists(ref_by):
         if not isExists(user_id):
             initial_data = {
@@ -392,21 +415,26 @@ def send_welcome(message):
         }
         insertUser(user_id, initial_data)
 
-    # Welcome bonus logic
+    # Welcome bonus
     userData = getData(user_id)
     if userData['welcome_bonus'] == 0:
         addBalance(user_id, welcome_bonus)
         setWelcomeStaus(user_id)
 
-    # Referral bonus logic
+    # Referral bonus
     data = getData(user_id)
     if data['ref_by'] != "none" and data['referred'] == 0:
-        bot.send_message(data['ref_by'], f"You referred {first_name} +{ref_bonus}")
+        send_and_track_message(
+            int(data['ref_by']),
+            bot.send_message,
+            text=f"You referred {first_name} +{ref_bonus}",
+            parse_mode='HTML'
+        )
         addBalance(data['ref_by'], ref_bonus)
         setReferredStatus(user_id)
 
-    # Send welcome image with caption
-    welcome_image_url = "https://t.me/smmserviceslogs/20"  # Replace with your image URL
+    # Welcome message
+    welcome_image_url = "https://t.me/smmserviceslogs/20"
     welcome_caption = f"""
 🎉 <b>Welcome {first_name} !</b> 🎉
 
@@ -419,32 +447,36 @@ Wɪᴛʜ Oᴜʀ Bᴏᴛ, Yᴏᴜ Cᴀɴ Bᴏᴏꜱᴛ Yᴏᴜʀ Sᴏᴄɪᴀʟ M
 """
 
     try:
-        # Send photo with caption
-        bot.send_photo(
-            chat_id=user_id,
+        send_and_track_message(
+            message.chat.id,
+            bot.send_photo,
             photo=welcome_image_url,
             caption=welcome_caption,
             parse_mode='HTML',
             reply_markup=main_markup
         )
-        
-        # Send welcome bonus message separately if applicable
+
         if userData['welcome_bonus'] == 0:
-            bot.send_message(
-                user_id,
-                f"🎁 <b>Yᴏᴜ Rᴇᴄᴇɪᴠᴇᴅ +{welcome_bonus} Cᴏɪɴꜱ Wᴇʟᴄᴏᴍᴇ Bᴏɴᴜꜱ!</b>",
+            send_and_track_message(
+                message.chat.id,
+                bot.send_message,
+                text=f"🎁 <b>Yᴏᴜ Rᴇᴄᴇɪᴠᴇᴅ +{welcome_bonus} Cᴏɪɴꜱ Wᴇʟᴄᴏᴍᴇ Bᴏɴᴜꜱ!</b>",
                 parse_mode='HTML'
             )
-            
+
     except Exception as e:
-        print(f"Error sending welcome message: {e}")
-        # Fallback to text message if image fails
-        bot.send_message(
-            user_id,
-            welcome_caption,
+        print(f"Error sending welcome image: {e}")
+        send_and_track_message(
+            message.chat.id,
+            bot.send_message,
+            text=welcome_caption,
             parse_mode='HTML',
             reply_markup=main_markup
         )
+
+    # Start delete timer
+    start_auto_delete_timer(message.chat.id)
+
 #====================== My Account =====================#
 @bot.message_handler(func=lambda message: message.text == "👤 My Account")
 def my_account(message):
