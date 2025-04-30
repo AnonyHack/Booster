@@ -632,23 +632,14 @@ def pricing_command(message):
 @bot.message_handler(func=lambda message: message.text == "📊 Order Statistics")
 @check_ban
 def show_order_stats(message):
-    """Show comprehensive order statistics with auto-cleaning"""
+    """Show only performance overview with option to check orders"""
     user_id = str(message.from_user.id)
 
     try:
         stats = get_user_orders_stats(user_id)
 
-        from functions import orders_collection
-        cutoff_time = int(time.time()) - 86400  # 24 hours ago
-        recent_orders = list(orders_collection.find(
-            {
-                "user_id": user_id,
-                "timestamp": {"$gt": cutoff_time},
-                "hidden": {"$ne": True}
-            },
-            {"service": 1, "quantity": 1, "status": 1, "timestamp": 1, "_id": 0}
-        ).sort("timestamp", -1).limit(5))
-
+        # Auto-hide orders older than 24 hours
+        cutoff_time = int(time.time()) - 86400
         orders_collection.update_many(
             {
                 "user_id": user_id,
@@ -658,7 +649,7 @@ def show_order_stats(message):
             {"$set": {"hidden": True}}
         )
 
-        completion_rate = (stats['completed']/stats['total'])*100 if stats['total'] > 0 else 0
+        completion_rate = (stats['completed'] / stats['total']) * 100 if stats['total'] > 0 else 0
 
         msg = f"""
 📦 <b>Your SMM Order Portfolio</b>
@@ -669,25 +660,14 @@ def show_order_stats(message):
 ├ ✅ Completion Rate: <code>{completion_rate:.1f}%</code>
 ├ ⏳ Pending: <code>{stats['pending']}</code>
 └ ❌ Failed: <code>{stats['failed']}</code>
-
-🕒 <b>Recent Activity</b> (Last 24h)
 """
-        if recent_orders:
-            for i, order in enumerate(recent_orders, 1):
-                time_ago = format_timespan(time.time() - order.get('timestamp', time.time()))
-                status_icon = "✅" if order.get('status') == "completed" else "⏳" if order.get('status') == "pending" else "❌"
-                msg += f"\n{i}. {status_icon} {order.get('service', 'N/A')[:15]}... x{order.get('quantity', '?')} (<i>{time_ago} ago</i>)"
-        else:
-            msg += "\n└ 🌟 No recent orders found"
-
-        msg += f"\n\n📌 <i>Note: Only showing last 24h activity for clarity</i>"
 
         markup = InlineKeyboardMarkup()
         markup.row(
-            InlineKeyboardButton("📜 Full History", callback_data="order_history")
+            InlineKeyboardButton("📜 Check Orders", callback_data="order_history")
         )
-        
-        # Check if this is a callback edit or new message
+
+        # Callback or fresh message
         if hasattr(message, 'is_callback'):
             bot.edit_message_text(
                 chat_id=message.chat.id,
@@ -707,19 +687,19 @@ def show_order_stats(message):
 
     except Exception as e:
         print(f"Order stats error: {e}")
-        bot.reply_to(message, 
+        bot.reply_to(message,
             "⚠️ <b>Order Statistics Unavailable</b>\n\n"
             "We couldn't retrieve your order data at this time\n"
             "Please try again later",
             parse_mode='HTML')
 
+
 @bot.callback_query_handler(func=lambda call: call.data == "order_history")
 def show_recent_orders(call):
-    """Shows the same 24h orders with Go Back button"""
+    """Show recent orders with back button"""
     user_id = str(call.from_user.id)
 
     try:
-        from functions import orders_collection
         cutoff_time = int(time.time()) - 86400
         recent_orders = list(orders_collection.find(
             {
@@ -758,30 +738,25 @@ def show_recent_orders(call):
         print(f"Full history error: {e}")
         bot.answer_callback_query(call.id, "❌ Failed to load order history")
 
+
 @bot.callback_query_handler(func=lambda call: call.data == "show_order_stats")
 @check_ban
 def callback_show_order_stats(call):
-    """Go back to the SMM order portfolio page from history"""
+    """Go back to Performance Overview from order history"""
     try:
-        # Create a message-like object with stored data
         from types import SimpleNamespace
         message = SimpleNamespace()
         message.chat = call.message.chat
         message.message_id = call.message.message_id
         message.from_user = call.from_user
         message.is_callback = True
-        
-        # Retrieve the stored stats if available
-        if hasattr(call.message, 'stats_data'):
-            message.stats_data = call.message.stats_data
-        if hasattr(call.message, 'recent_orders'):
-            message.recent_orders = call.message.recent_orders
-            
+
         show_order_stats(message)
         bot.answer_callback_query(call.id)
     except Exception as e:
         print(f"Error in callback_show_order_stats: {e}")
         bot.answer_callback_query(call.id, "⚠️ Failed to go back", show_alert=True)
+
 
 
 def delete_after_delay(chat_id, message_id, delay):
