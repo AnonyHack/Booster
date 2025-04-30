@@ -290,10 +290,17 @@ user_message_log = defaultdict(list)
 AUTO_DELETE_AFTER = 10  # 10 minutes
 
 #================= Auto Delete Messages ==========================#
-def send_and_track_message(chat_id, send_func, *args, **kwargs):
-    """Wraps bot.send_message or bot.send_photo to track sent message for deletion."""
+def send_and_track_message(chat_id, send_func, *args, user_msg_id=None, **kwargs):
+    """Wraps bot.send_message or bot.send_photo to track bot reply + user input."""
     msg = send_func(chat_id, *args, **kwargs)
+    
+    # Track bot's reply
     user_message_log[chat_id].append((msg.message_id, chat_id))
+
+    # Track user's message if provided
+    if user_msg_id:
+        user_message_log[chat_id].append((user_msg_id, chat_id))
+
     return msg
 
 def start_auto_delete_timer(chat_id):
@@ -305,7 +312,7 @@ def start_auto_delete_timer(chat_id):
             except Exception as e:
                 print(f"Error deleting message {msg_id}: {e}")
         user_message_log[chat_id].clear()
-    
+
     threading.Thread(target=delete_after_delay, daemon=True).start()
 #========================= utility function to check bans =================#
 # Enhanced check_ban decorator to include maintenance check
@@ -385,6 +392,7 @@ def send_welcome(message):
     first_name = message.from_user.first_name
     username = f"@{message.from_user.username}" if message.from_user.username else "No Username"
     ref_by = message.text.split()[1] if len(message.text.split()) > 1 and message.text.split()[1].isdigit() else None
+    user_msg_id = message.message_id
 
     # Check channel membership
     if not check_membership_and_prompt(user_id, message):
@@ -453,7 +461,8 @@ Wɪᴛʜ Oᴜʀ Bᴏᴛ, Yᴏᴜ Cᴀɴ Bᴏᴏꜱᴛ Yᴏᴜʀ Sᴏᴄɪᴀʟ M
             photo=welcome_image_url,
             caption=welcome_caption,
             parse_mode='HTML',
-            reply_markup=main_markup
+            reply_markup=main_markup,
+            user_msg_id=user_msg_id
         )
 
         if userData['welcome_bonus'] == 0:
@@ -461,7 +470,8 @@ Wɪᴛʜ Oᴜʀ Bᴏᴛ, Yᴏᴜ Cᴀɴ Bᴏᴏꜱᴛ Yᴏᴜʀ Sᴏᴄɪᴀʟ M
                 message.chat.id,
                 bot.send_message,
                 text=f"🎁 <b>Yᴏᴜ Rᴇᴄᴇɪᴠᴇᴅ +{welcome_bonus} Cᴏɪɴꜱ Wᴇʟᴄᴏᴍᴇ Bᴏɴᴜꜱ!</b>",
-                parse_mode='HTML'
+                parse_mode='HTML',
+                user_msg_id=user_msg_id
             )
 
     except Exception as e:
@@ -471,7 +481,8 @@ Wɪᴛʜ Oᴜʀ Bᴏᴛ, Yᴏᴜ Cᴀɴ Bᴏᴏꜱᴛ Yᴏᴜʀ Sᴏᴄɪᴀʟ M
             bot.send_message,
             text=welcome_caption,
             parse_mode='HTML',
-            reply_markup=main_markup
+            reply_markup=main_markup,
+            user_msg_id=user_msg_id
         )
 
     # Start delete timer
@@ -481,29 +492,35 @@ Wɪᴛʜ Oᴜʀ Bᴏᴛ, Yᴏᴜ Cᴀɴ Bᴏᴏꜱᴛ Yᴏᴜʀ Sᴏᴄɪᴀʟ M
 @bot.message_handler(func=lambda message: message.text == "👤 My Account")
 def my_account(message):
     user_id = str(message.chat.id)
+    chat_id = message.chat.id
+
+    # Track the user's command message for deletion
+    user_message_log[chat_id].append((message.message_id, chat_id))
+
     data = getData(user_id)
-    
     confirmed_spent = get_confirmed_spent(user_id)
     pending_spent = get_pending_spent(user_id)
 
     if not data:
-        bot.reply_to(message, "❌ Account not found. Please /start again.")
+        sent_msg = send_and_track_message(
+            chat_id,
+            bot.send_message,
+            chat_id,
+            "❌ Account not found. Please /start again."
+        )
+        start_auto_delete_timer(chat_id)
         return
-    
+
     # Update last activity and username
     data['last_activity'] = time.time()
     data['username'] = message.from_user.username
     updateUser(user_id, data)
-    
-    # Get current time and date
+
+    # Format the message
     now = datetime.now()
     current_time = now.strftime("%I:%M %p")
     current_date = now.strftime("%Y-%m-%d")
-    
-    # Get user profile photos
-    photos = bot.get_user_profile_photos(message.from_user.id, limit=1)
-    
-    # Format the message
+
     caption = f"""
 <b><u>𝗠𝘆 𝗔𝗰𝗰𝗼𝘂𝗻𝘁</u></b>
 
@@ -517,27 +534,33 @@ def my_account(message):
 💸 Cᴏɴꜰɪʀᴍᴇᴅ Sᴘᴇɴᴛ: <code>{confirmed_spent:.2f}</code> Cᴏɪɴꜱ
 ⏳ Pᴇɴᴅɪɴɢ Sᴘᴇɴᴅɪɴɢ: <code>{pending_spent:.2f}</code> Cᴏɪɴꜱ
 """
-    
-    if photos.photos:
-        # User has profile photo - get the largest available size
-        photo_file_id = photos.photos[0][-1].file_id
-        try:
-            bot.send_photo(
-                chat_id=user_id,
+
+    try:
+        photos = bot.get_user_profile_photos(message.from_user.id, limit=1)
+        if photos.photos:
+            photo_file_id = photos.photos[0][-1].file_id
+            send_and_track_message(
+                chat_id,
+                bot.send_photo,
+                chat_id,
                 photo=photo_file_id,
                 caption=caption,
                 parse_mode='HTML'
             )
-            return
-        except Exception as e:
-            print(f"Error sending profile photo: {e}")
-    
-    # Fallback if no profile photo or error
-    bot.send_message(
-        chat_id=user_id,
-        text=caption,
-        parse_mode='HTML'
-    )
+        else:
+            raise Exception("No profile photo")
+    except Exception as e:
+        print(f"Error sending profile photo: {e}")
+        send_and_track_message(
+            chat_id,
+            bot.send_message,
+            chat_id,
+            caption,
+            parse_mode='HTML'
+        )
+
+    # Start auto-delete timer for both user input and bot replies
+    start_auto_delete_timer(message.chat.id)
 
 #======================= Invite Friends =======================#
 @bot.message_handler(func=lambda message: message.text == "🗣 Invite Friends")
