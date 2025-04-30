@@ -287,7 +287,7 @@ from collections import defaultdict
 
 # Tracks user_id => list of (message_id, chat_id)
 user_message_log = defaultdict(list)
-AUTO_DELETE_AFTER = 1  # 10 minutes
+AUTO_DELETE_AFTER = 10  # 10 minutes
 
 #================= Auto Delete Messages ==========================#
 def send_and_track_message(chat_id, send_func, *args, **kwargs):
