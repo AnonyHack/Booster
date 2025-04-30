@@ -28,8 +28,6 @@ from functions import (insertUser, track_exists, addBalance, cutBalance, getData
                          clear_all_pinned_messages, orders_collection, get_confirmed_spent, get_pending_spent) # Import your functions from functions.py
 
 
-if not os.path.exists('Account'):
-    os.makedirs('Account')
 
 # Load environment variables from .env file
 load_dotenv()
@@ -50,11 +48,11 @@ ref_bonus = 50
 
 # Main keyboard markup
 main_markup = ReplyKeyboardMarkup(resize_keyboard=True)
-button1 = KeyboardButton("📤 Send Orders")  # Changed from "👁‍🗨 Order View"
+button1 = KeyboardButton("🛒 Buy Services")  # Changed from "👁‍🗨 Order View"
 button2 = KeyboardButton("👤 My Account")
 button3 = KeyboardButton("💳 Pricing")
-button4 = KeyboardButton("📊 Order Statistics")
-button5 = KeyboardButton("🗣 Invite Friends")
+button4 = KeyboardButton("📊 Order Stats")
+button5 = KeyboardButton("🗣 Invite")
 button6 = KeyboardButton("🏆 Leaderboard")
 button7 = KeyboardButton("📜 Help")
 
@@ -304,7 +302,7 @@ def check_ban(func):
         return func(message, *args, **kwargs)
     return wrapped
 #================== Send Orders Button ============================#
-@bot.message_handler(func=lambda message: message.text == "📤 Send Orders")
+@bot.message_handler(func=lambda message: message.text == "🛒 Buy Services")
 @check_ban
 def send_orders_menu(message):
     user_id = message.from_user.id
@@ -509,7 +507,7 @@ def my_account(message):
     )
 
 #======================= Invite Friends =======================#
-@bot.message_handler(func=lambda message: message.text == "🗣 Invite Friends")
+@bot.message_handler(func=lambda message: message.text == "🗣 Invite")
 @check_ban
 def invite_friends(message):
     user_id = str(message.chat.id)
@@ -630,7 +628,7 @@ def pricing_command(message):
 
 #======================= Order Statistics =======================#
 # ============================= Enhanced Order Statistics with Auto-Clean ============================= #
-@bot.message_handler(func=lambda message: message.text == "📊 Order Statistics")
+@bot.message_handler(func=lambda message: message.text == "📊 Order Stats")
 @check_ban
 def show_order_stats(message):
     """Show performance overview only. Hide completed/failed orders immediately."""
