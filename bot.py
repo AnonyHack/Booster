@@ -2237,9 +2237,9 @@ def back_to_main(message):
     if message.from_user.id in admin_user_ids:
         # For admins, show both admin and user keyboards
         combined_markup = ReplyKeyboardMarkup(resize_keyboard=True)
-        combined_markup.row("📤 Send Orders", "👤 My Account")
-        combined_markup.row("💳 Pricing", "📊 Order Statistics")
-        combined_markup.row("🗣 Invite Friends", "🏆 Leaderboard")
+        combined_markup.row("🛒 Buy Services", "👤 My Account")
+        combined_markup.row("💳 Pricing", "📊 Order Stats")
+        combined_markup.row("🗣 Invite", "🏆 Leaderboard")
         combined_markup.row("📜 Help")
         
         bot.reply_to(message,
