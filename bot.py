@@ -219,18 +219,21 @@ def check_membership_and_prompt(user_id, message):
         bot.send_message(
             chat_id=chat_id,
             reply_to_message_id=reply_to_message_id,
-            text="""*🚀 Wᴇʟᴄᴏᴍᴇ Tᴏ Sᴍᴍʜᴜʙ Bᴏᴏꜱᴛᴇʀ Bᴏᴛ ! 🚀*
+            text="""
+<blockquote>
+*🚀 Wᴇʟᴄᴏᴍᴇ Tᴏ Sᴍᴍʜᴜʙ Bᴏᴏꜱᴛᴇʀ Bᴏᴛ ! 🚀*
 
 🚨 *Tᴏ Uꜱᴇ Tʜɪꜱ Bᴏᴛ, Yᴏᴜ Mᴜꜱᴛ Jᴏɪɴ Tʜᴇ RᴇQᴜɪʀᴇᴅ Cʜᴀɴɴᴇʟꜱ Fɪʀꜱᴛ!* 🚨
 
 📊 *Cᴏᴍᴘʟᴇᴛᴇ Tʜᴇꜱᴇ Sᴛᴇᴘꜱ Tᴏ Uɴʟᴏᴄᴋ:*
 ▫️ Jᴏɪɴ Aʟʟ Cʜᴀɴɴᴇʟꜱ Bᴇʟᴏᴡ
-▫️ Cʟɪᴄᴋ *'✅ I Joined'* Bᴜᴛᴛᴏɴ
+▫️ Cʟɪᴄᴋ *'✅ VERIFY MEMBERSHIP'* Bᴜᴛᴛᴏɴ
 ▫️ Wᴀɪᴛ Fᴏʀ Vᴇʀɪғɪᴄᴀᴛɪᴏɴ
 
 
 🔐 *Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Sᴛᴀᴛᴜꜱ:* 𝘕𝘰𝘵 𝘝𝘦𝘳𝘪𝘧𝘪𝘦𝘥
-━━━━━━━━━━━━━━━━━━━━""",
+━━━━━━━━━━━━━━━━━━━━
+</blockquote>""",
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/smmserviceslogs")],
@@ -250,11 +253,14 @@ def check_membership_and_prompt(user_id, message):
 def handle_why_join(call):
     """Send the privileges info when user clicks 'Why Join?' button"""
     perks_text = """
-🛡️ *Pʀɪᴠɪʟᴇɢᴇꜱ Yᴏᴜ'ʟʟ Gᴇᴛ:*
+<blockquote>
+🛡️ *𝙋𝙧𝙞𝙫𝙞𝙡𝙚𝙜𝙚𝙨 𝙮𝙤𝙪'𝙡𝙡 𝙜𝙚𝙩:*
 ✓ Fᴜʟʟ Bᴏᴛ Aᴄᴄᴇꜱꜱ  
 ✓ Exᴄʟᴜꜱɪᴠᴇ Oғғᴇʀꜱ  
 ✓ Pʀᴇᴍɪᴜᴍ Sᴜᴘᴘᴏʀᴛ  
 ✓ Rᴇɢᴜʟᴀʀ Uᴘᴅᴀᴛᴇꜱ
+━━━━━━━━━━━━━━━━━━━━
+</blockquote>
 """
     bot.answer_callback_query(call.id)
     bot.send_message(call.message.chat.id, perks_text, parse_mode="Markdown")
@@ -271,13 +277,13 @@ def verify_membership(call):
             print(f"Error in verify_membership: {e}")
             bot.answer_callback_query(
                 call.id,
-                text="✅ 𝐘𝐨𝐮 𝐚𝐫𝐞 𝐯𝐞𝐫𝐢𝐟𝐢𝐞𝐝! 𝐘𝐨𝐮 𝐜𝐚𝐧 𝐧𝐨𝐰 𝐮𝐬𝐞 𝐭𝐡𝐞 𝐛𝐨𝐭. 𝐂𝐥𝐢𝐜𝐤 /start 𝐚𝐠𝐚𝐢𝐧",
+                text="✅ Hᴇʏ! Yᴏᴜ ᴀʀᴇ ᴠᴇʀɪꜰɪᴇᴅ! Yᴏᴜ ᴄᴀɴ ɴᴏᴡ ᴜꜱᴇ ᴛʜᴇ ʙᴏᴛ. Cʟɪᴄᴋ /start ᴀɢᴀɪɴ.",
                 show_alert=True
             )
     else:
         bot.answer_callback_query(
             call.id,
-            text="❌ Y̶o̶u̶ ̶h̶a̶v̶e̶n̶'̶t̶ ̶j̶o̶i̶n̶e̶d̶ ̶a̶l̶l̶ ̶t̶h̶e̶ ̶r̶e̶q̶u̶i̶r̶e̶d̶ ̶c̶h̶a̶n̶n̶e̶l̶s̶ ̶y̶e̶t̶!",
+            text="❌ Yᴏᴜ ʜᴀᴠᴇɴ'ᴛ ᴊᴏɪɴᴇᴅ ᴀʟʟ ᴛʜᴇ ʀᴇQᴜɪʀᴇᴅ ᴄʜᴀɴɴᴇʟꜱ ʏᴇᴛ!",
             show_alert=True
         )
 #==============================================#
@@ -296,7 +302,7 @@ def check_ban(func):
             
         # Check ban status
         if is_banned(user_id):
-            bot.reply_to(message, "⛔ ❝𝐘𝐨𝐮 𝐡𝐚𝐯𝐞 𝐛𝐞𝐞𝐧 𝐛𝐚𝐧𝐧𝐞𝐝 𝐟𝐫𝐨𝐦 𝐮𝐬𝐢𝐧𝐠 𝐭𝐡𝐢𝐬 𝐛𝐨𝐭❞.")
+            bot.reply_to(message, "⛔ ❝Yᴏᴜ ʜᴀᴠᴇ ʙᴇᴇɴ ʙᴀɴɴᴇᴅ ꜰʀᴏᴍ ᴜꜱɪɴɢ ᴛʜɪꜱ ʙᴏᴛ❞.")
             return
             
         return func(message, *args, **kwargs)
@@ -392,32 +398,32 @@ def send_welcome(message):
 
     # Welcome bonus logic
     userData = getData(user_id)
-    show_bonus_message = False
     if userData['welcome_bonus'] == 0:
         addBalance(user_id, welcome_bonus)
         setWelcomeStaus(user_id)
-        show_bonus_message = True
 
     # Professional Referral bonus logic
     data = getData(user_id)
     if data['ref_by'] != "none" and data['referred'] == 0:
         referrer_data = getData(data['ref_by'])
         referral_message = f"""
-🎉 <b>Referral Reward Notification</b> 🎉
+<blockquote>
+🎉 <b>Rᴇꜰᴇʀʀᴀʟ Rᴇᴡᴀʀᴅ Nᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ</b> 🎉
 
-We're pleased to inform you that your referral <b>{first_name}</b> has successfully joined using your referral link.
+Wᴇ'ʀᴇ ᴘʟᴇᴀꜱᴇᴅ ᴛᴏ ɪɴꜰᴏʀᴍ ʏᴏᴜ ᴛʜᴀᴛ ʏᴏᴜʀ ʀᴇꜰᴇʀʀᴀʟ <b>{first_name}</b> ʜᴀꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴊᴏɪɴᴇᴅ ᴜꜱɪɴɢ ʏᴏᴜʀ ʀᴇꜰᴇʀʀᴀʟ ʟɪɴᴋ.
 
-💰 <b>Reward Credited:</b> +{ref_bonus} coins
-📈 <b>Your Total Referrals:</b> {int(referrer_data.get('total_refs', 0)) + 1}
-💎 <b>Current Balance:</b> {float(referrer_data.get('balance', 0)) + float(ref_bonus):.2f} coins
+💰 <b>Rᴇᴡᴀʀᴅ Cʀᴇᴅɪᴛᴇᴅ:</b> +{ref_bonus} ᴄᴏɪɴꜱ
+📈 <b>Yᴏᴜʀ Tᴏᴛᴀʟ Rᴇꜰᴇʀʀᴀʟꜱ:</b> {int(referrer_data.get('total_refs', 0)) + 1}
+💎 <b>Cᴜʀʀᴇɴᴛ Bᴀʟᴀɴᴄᴇ:</b> {float(referrer_data.get('balance', 0)) + float(ref_bonus):.2f} ᴄᴏɪɴꜱ
 
-Keep sharing your referral link to earn more rewards!
-Your unique link: https://t.me/{bot.get_me().username}?start={data['ref_by']}
+Kᴇᴇᴘ ꜱʜᴀʀɪɴɢ ʏᴏᴜʀ ʀᴇꜰᴇʀʀᴀʟ ʟɪɴᴋ ᴛᴏ ᴇᴀʀɴ ᴍᴏʀᴇ ʀᴇᴡᴀʀᴅꜱ!
+Yᴏᴜʀ ᴜɴɪQᴜᴇ ʟɪɴᴋ: https://t.me/{bot.get_me().username}?start={data['ref_by']}
 
-Thank you for helping grow our community!
+Tʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ʜᴇʟᴘɪɴɢ ɢʀᴏᴡ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ!
+</blockquote>
 """
         bot.send_message(
-            data['ref_by'],
+            data['ref_by'], 
             referral_message,
             parse_mode='HTML',
             disable_web_page_preview=True
@@ -427,20 +433,20 @@ Thank you for helping grow our community!
 
     # Send welcome image with caption
     welcome_image_url = "https://t.me/smmserviceslogs/20"  # Replace with your image URL
-    bonus_text = f"\n\n🎁 ʏᴏᴜ ʀᴇᴄᴇɪᴠᴇᴅ <b>+{welcome_bonus} ᴄᴏɪɴs ᴡᴇʟᴄᴏᴍᴇ ʙᴏɴᴜs!</b>" if show_bonus_message else ""
     welcome_caption = f"""
 <blockquote>
-🎉 <b>Wᴇʟᴄᴏᴍᴇ ʙᴏᴀʀᴅ, {first_name}!</b> 🎉{bonus_text}
+🎉 <b>Wᴇʟᴄᴏᴍᴇ {first_name}!</b> 🎉
 
-👤 <b>ᴜsᴇʀɴᴀᴍᴇ:</b> {username}
+👤 <b>Uꜱᴇʀɴᴀᴍᴇ:</b> {username}
 
-With our bot, you can boost your social media accounts & posts with just a few simple steps!
+Wɪᴛʜ ᴏᴜʀ ʙᴏᴛ, ʏᴏᴜ ᴄᴀɴ ʙᴏᴏꜱᴛ ʏᴏᴜʀ ꜱᴏᴄɪᴀʟ ᴍᴇᴅɪᴀ ᴀᴄᴄᴏᴜɴᴛꜱ & ᴘᴏꜱᴛꜱ ᴡɪᴛʜ ᴊᴜꜱᴛ ᴀ ꜰᴇᴡ ꜱɪᴍᴘʟᴇ ꜱᴛᴇᴘꜱ!
 
-👇 <b>ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ɢᴇᴛ sᴛᴀʀᴛᴇᴅ:</b>
+👇 <b>Cʜᴏᴏꜱᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ɢᴇᴛ ꜱᴛᴀʀᴛᴇᴅ:</b>
 </blockquote>
 """
 
     try:
+        # Send photo with caption
         bot.send_photo(
             chat_id=user_id,
             photo=welcome_image_url,
@@ -448,15 +454,24 @@ With our bot, you can boost your social media accounts & posts with just a few s
             parse_mode='HTML',
             reply_markup=main_markup
         )
+        
+        # Send welcome bonus message separately if applicable
+        if userData['welcome_bonus'] == 0:
+            bot.send_message(
+                user_id,
+                f"🎁 <b>You received +{welcome_bonus} coins welcome bonus!</b>",
+                parse_mode='HTML'
+            )
+            
     except Exception as e:
         print(f"Error sending welcome message: {e}")
+        # Fallback to text message if image fails
         bot.send_message(
             user_id,
             welcome_caption,
             parse_mode='HTML',
             reply_markup=main_markup
         )
-
 #====================== My Account =====================#
 @bot.message_handler(func=lambda message: message.text == "👤 My Account")
 def my_account(message):
@@ -486,6 +501,7 @@ def my_account(message):
     
     # Format the message
     caption = f"""
+<blockquote>
 <b><u>𝗠𝘆 𝗔𝗰𝗰𝗼𝘂𝗻𝘁</u></b>
 
 🆔 Uꜱᴇʀ Iᴅ: <code>{user_id}</code>
@@ -497,6 +513,7 @@ def my_account(message):
 🪙 Bᴀʟᴀɴᴄᴇ: <code>{data['balance']}</code> Cᴏɪɴꜱ
 💸 Cᴏɴꜰɪʀᴍᴇᴅ Sᴘᴇɴᴛ: <code>{confirmed_spent:.2f}</code> Cᴏɪɴꜱ
 ⏳ Pᴇɴᴅɪɴɢ Sᴘᴇɴᴅɪɴɢ: <code>{pending_spent:.2f}</code> Cᴏɪɴꜱ
+</blockquote>
 """
     
     if photos.photos:
@@ -541,7 +558,7 @@ def invite_friends(message):
 
 🔗 <b>Yᴏᴜʀ Rᴇꜰᴇʀʀᴀʟ Lɪɴᴋ:</b>  
 <code>{referral_link}</code>  
-
+<blockquote>
 💎 <b>𝙃𝙤𝙬 𝙞𝙩 𝙒𝙤𝙧𝙠𝙨:</b>  
 1️⃣ Sʜᴀʀᴇ ʏᴏᴜʀ ᴜɴɪQᴜᴇ ʟɪɴᴋ ᴡɪᴛʜ ꜰʀɪᴇɴᴅꜱ  
 2️⃣ Wʜᴇɴ ᴛʜᴇʏ ᴊᴏɪɴ ᴜꜱɪɴɢ ʏᴏᴜʀ ʟɪɴᴋ, <b>Bᴏᴛʜ ᴏꜰ ʏᴏᴜ ɢᴇᴛ {ref_bonus} ᴄᴏɪɴꜱ</b> ɪɴꜱᴛᴀɴᴛʟʏ!  
@@ -554,6 +571,7 @@ def invite_friends(message):
 📌 <b>Pʀᴏ Tɪᴘ:</b> Sʜᴀʀᴇ ʏᴏᴜʀ ʟɪɴᴋ ɪɴ ɢʀᴏᴜᴘꜱ/ᴄʜᴀᴛꜱ ᴡʜᴇʀᴇ ᴘᴇᴏᴘʟᴇ ɴᴇᴇᴅ ꜱᴏᴄɪᴀʟ ᴍᴇᴅɪᴀ ɢʀᴏᴡᴛʜ!
 
 📊 <b>Yᴏᴜʀ ᴄᴜʀʀᴇɴᴛ ʀᴇꜰᴇʀʀᴀʟꜱ:</b> {total_refs}
+</blockquote>
 """
     
     bot.reply_to(
@@ -568,6 +586,7 @@ def invite_friends(message):
 def help_command(message):
     user_id = message.chat.id
     msg = f"""
+<blockquote>
 <b>FʀᴇQᴜᴇɴᴛʟʏ Aꜱᴋᴇᴅ Qᴜᴇꜱᴛɪᴏɴꜱ</b>
 
 <b>• Aʀᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇꜱ ʀᴇᴀʟ?</b>
@@ -588,6 +607,7 @@ Wᴇ ʀᴇᴡᴀʀᴅ ᴏᴜʀ Uꜱᴇʀꜱ Fʀᴇᴇ 100 ᴄᴏɪɴꜱ ꜰᴏʀ
 
 <b>• Cᴀɴ I ᴛʀᴀɴꜱꜰᴇʀ ᴍʏ ʙᴀʟᴀɴᴄᴇ?</b>
 Yᴇꜱ! Fᴏʀ ʙᴀʟᴀɴᴄᴇꜱ ᴏᴠᴇʀ 10,000 ᴄᴏɪɴꜱ, ᴄᴏɴᴛᴀᴄᴛ ꜱᴜᴘᴘᴏʀᴛ.
+</blockquote>
 """
 
     # Create inline button for support
@@ -609,7 +629,7 @@ def pricing_command(message):
     msg = f"""<b><u>💎 Pricing 💎</u></b>
 
 <i> Cʜᴏᴏꜱᴇ Oɴᴇ Oꜰ Tʜᴇ Cᴏɪɴꜱ Pᴀᴄᴋᴀɢᴇꜱ Aɴᴅ Pᴀʏ Iᴛꜱ Cᴏꜱᴛ Vɪᴀ Pʀᴏᴠɪᴅᴇᴅ Pᴀʏᴍᴇɴᴛ Mᴇᴛʜᴏᴅꜱ.</i>
-
+<blockquote>
 <b><u>📜 𝐏𝐚𝐜𝐤𝐚𝐠𝐞𝐬:</u></b>
 <b>➊ 📦 10K coins – $1.00
 ➋ 📦 30K coins – $2.50
@@ -617,7 +637,7 @@ def pricing_command(message):
 ➍ 📦 100K coins – $7.00
 ➎ 📦 150K coins – $10.00
 ➏ 📦 300K coins – $15.00 </b>
-
+</blockquote>
 <b>💡NOTE: 𝘙𝘦𝘮𝘦𝘮𝘣𝘦𝘳 𝘵𝘰 𝘴𝘦𝘯𝘥 𝘺𝘰𝘶𝘳 𝘈𝘤𝘤𝘰𝘶𝘯𝘵 𝘐𝘋 𝘵𝘰 𝘳𝘦𝘤𝘦𝘪𝘷𝘦 𝘤𝘰𝘪𝘯𝘴</b>
 
 <b>🆔 Your id:</b> <code>{user_id}</code>
@@ -664,15 +684,15 @@ def show_order_stats(message):
         completion_rate = (stats['completed'] / stats['total']) * 100 if stats['total'] > 0 else 0
 
         msg = f"""
-📦 <b>Your SMM Order Portfolio</b>
+📦 <b>Yᴏᴜʀ SMM Oʀᴅᴇʀ Pᴏʀᴛꜰᴏʟɪᴏ</b>
 ━━━━━━━━━━━━━━━━━━━━
-
-📊 <b>Performance Overview</b>
-├ 🔄 Total Orders: <code>{stats['total']}</code>
-├ ✅ Completion Rate: <code>{completion_rate:.1f}%</code>
-├ ⏳ Pending: <code>{stats['pending']}</code>
-└ ❌ Failed: <code>{stats['failed']}</code>
-
+<blockquote>
+📊 <b>Pᴇʀꜰᴏʀᴍᴀɴᴄᴇ Oᴠᴇʀᴠɪᴇᴡ</b>
+├ 🔄 Tᴏᴛᴀʟ Oʀᴅᴇʀꜱ: <code>{stats['total']}</code>
+├ ✅ Cᴏᴍᴘʟᴇᴛɪᴏɴ Rᴀᴛᴇ: <code>{completion_rate:.1f}%</code>
+├ ⏳ Pᴇɴᴅɪɴɢ: <code>{stats['pending']}</code>
+└ ❌ Fᴀɪʟᴇᴅ: <code>{stats['failed']}</code>
+</blockquote>
 📌 <b>NOTE:</b> Iꜰ ʏᴏᴜ ʜᴀᴠᴇ ᴀ Fᴀɪʟᴇᴅ Oʀᴅᴇʀ ᴀɴᴅ ʏᴏᴜʀ Cᴏɪɴꜱ ᴡᴇʀᴇ Dᴇᴅᴜᴄᴛᴇᴅ, 
 Vɪꜱɪᴛ ᴛʜᴇ @smmserviceslogs ᴀɴᴅ ɢᴇᴛ ʏᴏᴜʀ Oʀᴅᴇʀ Iᴅ. 
 Tʜᴇɴ ꜱᴇɴᴅ ɪᴛ ᴛᴏ ᴛʜᴇ Aᴅᴍɪɴ ꜰᴏʀ Aꜱꜱɪꜱᴛᴀɴᴄᴇ @SocialHubBoosterTMbot.
@@ -703,9 +723,9 @@ Tʜᴇɴ ꜱᴇɴᴅ ɪᴛ ᴛᴏ ᴛʜᴇ Aᴅᴍɪɴ ꜰᴏʀ Aꜱꜱɪꜱᴛ�
     except Exception as e:
         print(f"Order stats error: {e}")
         bot.reply_to(message,
-            "⚠️ <b>Order Statistics Unavailable</b>\n\n"
-            "We couldn't retrieve your order data at this time\n"
-            "Please try again later",
+            "⚠️ <blockquote><b>Oʀᴅᴇʀ Sᴛᴀᴛɪꜱᴛɪᴄꜱ Uɴᴀᴠᴀɪʟᴀʙʟᴇ</b>\n\n"
+            "ᴡWᴇ ᴄᴏᴜʟᴅɴ'ᴛ ʀᴇᴛʀɪᴇᴠᴇ ʏᴏᴜʀ Oʀᴅᴇʀ Dᴀᴛᴀ ᴀᴛ ᴛʜɪꜱ ᴛɪᴍᴇ\n"
+            "Pʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ</blockquote>",
             parse_mode='HTML')
 
 @bot.callback_query_handler(func=lambda call: call.data == "order_history")
@@ -723,16 +743,16 @@ def show_recent_orders(call):
             {"service": 1, "quantity": 1, "status": 1, "timestamp": 1, "_id": 0}
         ).sort("timestamp", -1))
 
-        msg = "🕒 <b>Pending Orders (Last 24h)</b>\n"
+        msg = "🕒 <b>Pᴇɴᴅɪɴɢ Oʀᴅᴇʀꜱ (Lᴀꜱᴛ 24ʜ)</b>\n"
 
         if recent_orders:
             for i, order in enumerate(recent_orders, 1):
                 time_ago = format_timespan(time.time() - order.get('timestamp', time.time()))
-                msg += f"\n{i}. ⏳ {order.get('service', 'N/A')[:15]}... x{order.get('quantity', '?')} (<i>{time_ago} ago</i>)"
+                msg += f"\n{i}. ⏳ {order.get('service', 'N/A')[:15]}... x{order.get('quantity', '?')} (<i>{time_ago} ᴀɢᴏ</i>)"
         else:
-            msg += "\n└ 🌟 No pending orders found"
+            msg += "\n└ 🌟 Nᴏ ᴘᴇɴᴅɪɴɢ ᴏʀᴅᴇʀꜱ ꜰᴏᴜɴᴅ"
 
-        msg += "\n\n📌 <i>Only pending orders are shown here</i>"
+        msg += "\n\n📌 <i>Oɴʟʏ ᴘᴇɴᴅɪɴɢ ᴏʀᴅᴇʀꜱ ᴀʀᴇ ꜱʜᴏᴡɴ ʜᴇʀᴇ</i>"
 
         markup = InlineKeyboardMarkup()
         markup.row(
@@ -849,16 +869,16 @@ def handle_telegram_order(message):
     # Here we'll just pass it through the register_next_step_handler
     
     msg = f"""📊 Order {service['name']}:
-    
+<blockquote>
 📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
+</blockquote>
 
-
-Enter quantity:"""
+*Enter quantity*:"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -913,14 +933,14 @@ def process_telegram_quantity(message, service):
 
 def process_telegram_link(message, service, quantity, cost):
     if message.text == "✘ Cancel":
-        bot.reply_to(message, "❌ Order cancelled.", reply_markup=main_markup)
+        bot.reply_to(message, "❌ Oʀᴅᴇʀ ᴄᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
         return
     
     link = message.text.strip()
     
     # Validate link format (basic check)
     if not re.match(r'^https?://t\.me/', link):
-        bot.reply_to(message, "❌ Invalid Telegram link format", reply_markup=telegram_services_markup)
+        bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ Tᴇʟᴇɢʀᴀᴍ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=telegram_services_markup)
         return
     
     # Submit to SMM panel
@@ -974,14 +994,14 @@ def process_telegram_link(message, service, quantity, cost):
             bot.reply_to(
                 message,
                 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-                
+<blockquote>              
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
 😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-
+</blockquote>
 ⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
@@ -1099,15 +1119,15 @@ def handle_tiktok_order(message):
 )
     
     msg = f"""📊 Order {service['name']}:
-    
+<blockquote>  
 📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-
-Enter quantity:"""
+</blockquote>
+*Enter quantity*:"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -1215,14 +1235,14 @@ def process_tiktok_link(message, service, quantity, cost):
             bot.reply_to(
                 message,
                 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-                
+<blockquote>               
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
 😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-
+</blockquote>
 ⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
@@ -1335,15 +1355,15 @@ def handle_instagram_order(message):
     )
     
     msg = f"""📊 Order {service['name']}:
-    
+<blockquote>  
 📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-
-Enter quantity:"""
+</blockquote>
+*Enter quantity:*"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -1355,32 +1375,32 @@ Enter quantity:"""
 def process_instagram_quantity(message, service):
     """Process Instagram order quantity"""
     if message.text == "✘ Cancel":
-        bot.reply_to(message, "❌ Order cancelled.", reply_markup=main_markup)
+        bot.reply_to(message, "❌ Oʀᴅᴇʀ ᴄᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
         return
     elif message.text == "↩️ Go Back":
-        bot.reply_to(message, "Returning to Instagram services...", reply_markup=instagram_services_markup)
+        bot.reply_to(message, "Rᴇᴛᴜʀɴɪɴɢ ᴛᴏ Iɴꜱᴛᴀɢʀᴀᴍ ꜱᴇʀᴠɪᴄᴇꜱ...", reply_markup=instagram_services_markup)
         return
     
     try:
         quantity = int(message.text)
         if quantity < service['min']:
-            bot.reply_to(message, f"❌ Minimum order is {service['min']}", reply_markup=instagram_services_markup)
+            bot.reply_to(message, f"❌ Mɪɴɪᴍᴜᴍ ᴏʀᴅᴇʀ ɪꜱ {service['min']}", reply_markup=instagram_services_markup)
             return
         if quantity > service['max']:
-            bot.reply_to(message, f"❌ Maximum order is {service['max']}", reply_markup=instagram_services_markup)
+            bot.reply_to(message, f"❌ Mᴀxɪᴍᴜᴍ ᴏʀᴅᴇʀ ɪꜱ {service['max']}", reply_markup=instagram_services_markup)
             return
             
         cost = (quantity * service['price']) // 1000
         user_data = getData(str(message.from_user.id))
         
         if float(user_data['balance']) < cost:
-            bot.reply_to(message, f"❌ Insufficient balance. You need {cost} coins.", reply_markup=instagram_services_markup)
+            bot.reply_to(message, f"❌ Iɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʙᴀʟᴀɴᴄᴇ. Yᴏᴜ ɴᴇᴇᴅ {cost} ᴄᴏɪɴꜱ.", reply_markup=instagram_services_markup)
             return
             
         cancel_markup = ReplyKeyboardMarkup(resize_keyboard=True)
         cancel_markup.add(KeyboardButton("✘ Cancel"))
         
-        bot.reply_to(message, f"🔗 Please send the {service['link_hint']}:", reply_markup=cancel_markup)
+        bot.reply_to(message, f"🔗 Pʟᴇᴀꜱᴇ ꜱᴇɴᴅ ᴛʜᴇ {service['link_hint']}:", reply_markup=cancel_markup)
         bot.register_next_step_handler(
             message, 
             process_instagram_link, 
@@ -1390,17 +1410,17 @@ def process_instagram_quantity(message, service):
         )
         
     except ValueError:
-        bot.reply_to(message, "❌ Please enter a valid number", reply_markup=instagram_services_markup)
+        bot.reply_to(message, "❌ Pʟᴇᴀꜱᴇ ᴇɴᴛᴇʀ ᴀ ᴠᴀʟɪᴅ ɴᴜᴍʙᴇʀ", reply_markup=instagram_services_markup)
 
 def process_instagram_link(message, service, quantity, cost):
     if message.text == "✘ Cancel":
-        bot.reply_to(message, "❌ Order cancelled.", reply_markup=main_markup)
+        bot.reply_to(message, "❌ Oʀᴅᴇʀ ᴄᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
         return
     
     link = message.text.strip()
     
     if not re.match(r'^https?://(www\.)?instagram\.com/[\w./-]+', link):
-        bot.reply_to(message, "❌ Invalid Instagram link format", reply_markup=instagram_services_markup)
+        bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ Iɴꜱᴛᴀɢʀᴀᴍ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=instagram_services_markup)
         return
     
     try:
@@ -1448,14 +1468,14 @@ def process_instagram_link(message, service, quantity, cost):
             bot.reply_to(
                 message,
                 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-                
+<blockquote>              
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
 😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-
+</blockquote>
 ⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
@@ -1566,15 +1586,15 @@ def handle_youtube_order(message):
     )
     
     msg = f"""📊 Order {service['name']}:
-    
+<blockquote>   
 📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-
-Enter quantity:"""
+</blockquote>
+*Enter quantity:*"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -1586,32 +1606,32 @@ Enter quantity:"""
 def process_youtube_quantity(message, service):
     """Process YouTube order quantity"""
     if message.text == "✘ Cancel":
-        bot.reply_to(message, "❌ Order cancelled.", reply_markup=main_markup)
+        bot.reply_to(message, "❌ Oʀᴅᴇʀ ᴄᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
         return
     elif message.text == "↩️ Go Back":
-        bot.reply_to(message, "Returning to YouTube services...", reply_markup=youtube_services_markup)
+        bot.reply_to(message, "Rᴇᴛᴜʀɴɪɴɢ ᴛᴏ YᴏᴜTᴜʙᴇ ꜱᴇʀᴠɪᴄᴇꜱ...", reply_markup=youtube_services_markup)
         return
     
     try:
         quantity = int(message.text)
         if quantity < service['min']:
-            bot.reply_to(message, f"❌ Minimum order is {service['min']}", reply_markup=youtube_services_markup)
+            bot.reply_to(message, f"❌ Mɪɴɪᴍᴜᴍ ᴏʀᴅᴇʀ ɪꜱ {service['min']}", reply_markup=youtube_services_markup)
             return
         if quantity > service['max']:
-            bot.reply_to(message, f"❌ Maximum order is {service['max']}", reply_markup=youtube_services_markup)
+            bot.reply_to(message, f"❌ Mᴀxɪᴍᴜᴍ ᴏʀᴅᴇʀ ɪꜱ {service['max']}", reply_markup=youtube_services_markup)
             return
             
         cost = (quantity * service['price']) // 1000
         user_data = getData(str(message.from_user.id))
         
         if float(user_data['balance']) < cost:
-            bot.reply_to(message, f"❌ Insufficient balance. You need {cost} coins.", reply_markup=youtube_services_markup)
+            bot.reply_to(message, f"❌ Iɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʙᴀʟᴀɴᴄᴇ. Yᴏᴜ ɴᴇᴇᴅ {cost} ᴄᴏɪɴꜱ.", reply_markup=youtube_services_markup)
             return
             
         cancel_markup = ReplyKeyboardMarkup(resize_keyboard=True)
         cancel_markup.add(KeyboardButton("✘ Cancel"))
         
-        bot.reply_to(message, f"🔗 Please send the {service['link_hint']}:", reply_markup=cancel_markup)
+        bot.reply_to(message, f"🔗 Pʟᴇᴀꜱᴇ ꜱᴇɴᴅ ᴛʜᴇ {service['link_hint']}:", reply_markup=cancel_markup)
         bot.register_next_step_handler(
             message, 
             process_youtube_link, 
@@ -1621,17 +1641,17 @@ def process_youtube_quantity(message, service):
         )
         
     except ValueError:
-        bot.reply_to(message, "❌ Please enter a valid number", reply_markup=youtube_services_markup)
+        bot.reply_to(message, "❌ Pʟᴇᴀꜱᴇ ᴇɴᴛᴇʀ ᴀ ᴠᴀʟɪᴅ ɴᴜᴍʙᴇʀ", reply_markup=youtube_services_markup)
 
 def process_youtube_link(message, service, quantity, cost):
     if message.text == "✘ Cancel":
-        bot.reply_to(message, "❌ Order cancelled.", reply_markup=main_markup)
+        bot.reply_to(message, "❌ Oʀᴅᴇʀ ᴄᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
         return
     
     link = message.text.strip()
     
     if not re.match(r'^https?://(www\.)?(youtube\.com|youtu\.be)/', link):
-        bot.reply_to(message, "❌ Invalid YouTube link format", reply_markup=youtube_services_markup)
+        bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ YᴏᴜTᴜʙᴇ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=youtube_services_markup)
         return
     
     try:
@@ -1679,14 +1699,14 @@ def process_youtube_link(message, service, quantity, cost):
             bot.reply_to(
                 message,
                 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-                
+<blockquote>              
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
 😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-
+</blockquote>
 ⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
@@ -1807,15 +1827,15 @@ def handle_facebook_order(message):
     )
     
     msg = f"""📊 Order {service['name']}:
-    
+<blockquote>
 📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-
-Enter quantity:"""
+</blockquote>
+*Enter quantity*:"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -1827,32 +1847,32 @@ Enter quantity:"""
 def process_facebook_quantity(message, service):
     """Process Facebook order quantity"""
     if message.text == "✘ Cancel":
-        bot.reply_to(message, "❌ Order cancelled.", reply_markup=main_markup)
+        bot.reply_to(message, "❌ Oʀᴅᴇʀ ᴄᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
         return
     elif message.text == "↩️ Go Back":
-        bot.reply_to(message, "Returning to Facebook services...", reply_markup=facebook_services_markup)
+        bot.reply_to(message, "Rᴇᴛᴜʀɴɪɴɢ ᴛᴏ Fᴀᴄᴇʙᴏᴏᴋ ꜱᴇʀᴠɪᴄᴇꜱ...", reply_markup=facebook_services_markup)
         return
     
     try:
         quantity = int(message.text)
         if quantity < service['min']:
-            bot.reply_to(message, f"❌ Minimum order is {service['min']}", reply_markup=facebook_services_markup)
+            bot.reply_to(message, f"❌ Mɪɴɪᴍᴜᴍ ᴏʀᴅᴇʀ ɪꜱ {service['min']}", reply_markup=facebook_services_markup)
             return
         if quantity > service['max']:
-            bot.reply_to(message, f"❌ Maximum order is {service['max']}", reply_markup=facebook_services_markup)
+            bot.reply_to(message, f"❌ Mᴀxɪᴍᴜᴍ ᴏʀᴅᴇʀ ɪꜱ {service['max']}", reply_markup=facebook_services_markup)
             return
             
         cost = (quantity * service['price']) // 1000
         user_data = getData(str(message.from_user.id))
         
         if float(user_data['balance']) < cost:
-            bot.reply_to(message, f"❌ Insufficient balance. You need {cost} coins.", reply_markup=facebook_services_markup)
+            bot.reply_to(message, f"❌ Iɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʙᴀʟᴀɴᴄᴇ. Yᴏᴜ ɴᴇᴇᴅ {cost} ᴄᴏɪɴꜱ.", reply_markup=facebook_services_markup)
             return
             
         cancel_markup = ReplyKeyboardMarkup(resize_keyboard=True)
         cancel_markup.add(KeyboardButton("✘ Cancel"))
         
-        bot.reply_to(message, f"🔗 Please send the {service['link_hint']}:", reply_markup=cancel_markup)
+        bot.reply_to(message, f"🔗 Pʟᴇᴀꜱᴇ ꜱᴇɴᴅ ᴛʜᴇ {service['link_hint']}:", reply_markup=cancel_markup)
         bot.register_next_step_handler(
             message, 
             process_facebook_link, 
@@ -1862,17 +1882,17 @@ def process_facebook_quantity(message, service):
         )
         
     except ValueError:
-        bot.reply_to(message, "❌ Please enter a valid number", reply_markup=facebook_services_markup)
+        bot.reply_to(message, "❌ Pʟᴇᴀꜱᴇ ᴇɴᴛᴇʀ ᴀ ᴠᴀʟɪᴅ ɴᴜᴍʙᴇʀ", reply_markup=facebook_services_markup)
 
 def process_facebook_link(message, service, quantity, cost):
     if message.text == "✘ Cancel":
-        bot.reply_to(message, "❌ Order cancelled.", reply_markup=main_markup)
+        bot.reply_to(message, "❌ Oʀᴅᴇʀ ᴄᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
         return
     
     link = message.text.strip()
     
     if not re.match(r'^https?://(www\.|m\.)?(facebook\.com|fb\.watch)/', link):
-        bot.reply_to(message, "❌ Invalid Facebook link format", reply_markup=facebook_services_markup)
+        bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ Fᴀᴄᴇʙᴏᴏᴋ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=facebook_services_markup)
         return
     
     try:
@@ -1920,14 +1940,14 @@ def process_facebook_link(message, service, quantity, cost):
             bot.reply_to(
                 message,
                 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-                
+<blockquote>               
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
 😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-
+</blockquote>
 ⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
@@ -2029,15 +2049,15 @@ def handle_whatsapp_order(message):
     )
     
     msg = f"""📊 Order {service['name']}:
-
+<blockquote>
 📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-
-Enter quantity:"""
+</blockquote>
+*Enter quantity:*"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -2049,32 +2069,32 @@ Enter quantity:"""
 def process_whatsapp_quantity(message, service):
     """Process WhatsApp order quantity"""
     if message.text == "✘ Cancel":
-        bot.reply_to(message, "❌ Order cancelled.", reply_markup=main_markup)
+        bot.reply_to(message, "❌ Oʀᴅᴇʀ ᴄᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
         return
     elif message.text == "↩️ Go Back":
-        bot.reply_to(message, "Returning to WhatsApp services...", reply_markup=whatsapp_services_markup)
+        bot.reply_to(message, "Rᴇᴛᴜʀɴɪɴɢ ᴛᴏ WʜᴀᴛꜱAᴘᴘ ꜱᴇʀᴠɪᴄᴇꜱ...", reply_markup=whatsapp_services_markup)
         return
     
     try:
         quantity = int(message.text)
         if quantity < service['min']:
-            bot.reply_to(message, f"❌ Minimum order is {service['min']}", reply_markup=whatsapp_services_markup)
+            bot.reply_to(message, f"❌ Mɪɴɪᴍᴜᴍ ᴏʀᴅᴇʀ ɪꜱ {service['min']}", reply_markup=whatsapp_services_markup)
             return
         if quantity > service['max']:
-            bot.reply_to(message, f"❌ Maximum order is {service['max']}", reply_markup=whatsapp_services_markup)
+            bot.reply_to(message, f"❌ Mᴀxɪᴍᴜᴍ ᴏʀᴅᴇʀ ɪꜱ {service['max']}", reply_markup=whatsapp_services_markup)
             return
             
         cost = (quantity * service['price']) // 1000
         user_data = getData(str(message.from_user.id))
         
         if float(user_data['balance']) < cost:
-            bot.reply_to(message, f"❌ Insufficient balance. You need {cost} coins.", reply_markup=whatsapp_services_markup)
+            bot.reply_to(message, f"❌ Iɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʙᴀʟᴀɴᴄᴇ. Yᴏᴜ ɴᴇᴇᴅ {cost} ᴄᴏɪɴꜱ.", reply_markup=whatsapp_services_markup)
             return
             
         cancel_markup = ReplyKeyboardMarkup(resize_keyboard=True)
         cancel_markup.add(KeyboardButton("✘ Cancel"))
         
-        bot.reply_to(message, f"🔗 Please send the {service['link_hint']}:", reply_markup=cancel_markup)
+        bot.reply_to(message, f"🔗 Pʟᴇᴀꜱᴇ ꜱᴇɴᴅ ᴛʜᴇ {service['link_hint']}:", reply_markup=cancel_markup)
         bot.register_next_step_handler(
             message, 
             process_whatsapp_link, 
@@ -2084,18 +2104,17 @@ def process_whatsapp_quantity(message, service):
         )
         
     except ValueError:
-        bot.reply_to(message, "❌ Please enter a valid number", reply_markup=whatsapp_services_markup)
+        bot.reply_to(message, "❌ Pʟᴇᴀꜱᴇ ᴇɴᴛᴇʀ ᴀ ᴠᴀʟɪᴅ ɴᴜᴍʙᴇʀ", reply_markup=whatsapp_services_markup)
 
 def process_whatsapp_link(message, service, quantity, cost):
     if message.text == "✘ Cancel":
-        bot.reply_to(message, "❌ Order cancelled.", reply_markup=main_markup)
+        bot.reply_to(message, "❌ Oʀᴅᴇʀ ᴄᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
         return
     
     link = message.text.strip()
     
     if not re.match(r'^https?://(chat\.whatsapp\.com|wa\.me)/', link):
-        bot.reply_to(message, "❌ Invalid WhatsApp link format", reply_markup=whatsapp_services_markup)
-        return
+        bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ WʜᴀᴛꜱAᴘᴘ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=whatsapp_services_markup)
     
     try:
         response = requests.post(
@@ -2142,14 +2161,14 @@ def process_whatsapp_link(message, service, quantity, cost):
             bot.reply_to(
                 message,
                 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-                
+<blockquote>             
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
 😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-
+</blockquote>
 ⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
@@ -2233,26 +2252,27 @@ def handle_back_buttons(message):
         bot.reply_to(message, "Oᴘᴇʀᴀᴛɪᴏɴ Cᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
 
 
+#=================== The back button handler =========================================
 @bot.message_handler(func=lambda message: message.text == "🔙 Main Menu")
 def back_to_main(message):
     if message.from_user.id in admin_user_ids:
         # For admins, show both admin and user keyboards
         combined_markup = ReplyKeyboardMarkup(resize_keyboard=True)
-        combined_markup.row("🛒 Buy Services", "👤 My Account")
-        combined_markup.row("💳 Pricing", "📊 Order Stats")
-        combined_markup.row("🗣 Invite", "🏆 Leaderboard")
+        combined_markup.row("📤 Send Orders", "👤 My Account")
+        combined_markup.row("💳 Pricing", "📊 Order Statistics")
+        combined_markup.row("🗣 Invite Friends", "🏆 Leaderboard")
         combined_markup.row("📜 Help")
         
         bot.reply_to(message,
-            "🔄 *Returning to Main Menu*\n\n"
-            "All admin functions saved\n"
-            "You can resume later",
+            "🔄 *Rᴇᴛᴜʀɴɪɴɢ ᴛᴏ Mᴀɪɴ Mᴇɴᴜ*\n\n"
+            "Aʟʟ ᴀᴅᴍɪɴ ꜰᴜɴᴄᴛɪᴏɴꜱ ꜱᴀᴠᴇᴅ\n"
+            "Yᴏᴜ ᴄᴀɴ ʀᴇꜱᴜᴍᴇ ʟᴀᴛᴇʀ",
             parse_mode="Markdown",
             reply_markup=combined_markup)
     else:
         # For regular users, show normal keyboard
         bot.reply_to(message,
-            "🔄 *Returning to Main Menu*",
+            "🔄 *Rᴇᴛᴜʀɴɪɴɢ ᴛᴏ Mᴀɪɴ Mᴇɴᴜ*",
             parse_mode="Markdown",
             reply_markup=main_markup)
 
@@ -2262,18 +2282,18 @@ def back_to_main(message):
 def admin_panel(message):
     if message.from_user.id not in admin_user_ids:
         bot.reply_to(message,
-            "🔒 *Restricted Area*\n\n"
-            "This panel is for authorized administrators only\n\n"
-            "⚠️ Your access attempt has been logged",
+            "🔒 *Rᴇꜱᴛʀɪᴄᴛᴇᴅ Aʀᴇᴀ*\n\n"
+            "Tʜɪꜱ Pᴀɴᴇʟ ɪꜱ ꜰᴏʀ ᴀᴜᴛʜᴏʀɪᴢᴇᴅ Aᴅᴍɪɴɪꜱᴛʀᴀᴛᴏʀꜱ ᴏɴʟʏ\n\n"
+            "⚠️ Yᴏᴜʀ ᴀᴄᴄᴇꜱꜱ ᴀᴛᴛᴇᴍᴘᴛ ʜᴀꜱ ʙᴇᴇɴ ʟᴏɢɢᴇᴅ",
             parse_mode="Markdown")
         return
     
     bot.reply_to(message,
-        "⚡ *SMM Booster Admin Center*\n\n"
-        "▸ User Management\n"
-        "▸ Coin Transactions\n"
-        "▸ System Controls\n\n"
-        "Select an option below:",
+        "⚡ *SMM Bᴏᴏꜱᴛᴇʀ Aᴅᴍɪɴ Cᴇɴᴛᴇʀ*\n\n"
+        "▸ Uꜱᴇʀ Mᴀɴᴀɢᴇᴍᴇɴᴛ\n"
+        "▸ Cᴏɪɴ Tʀᴀɴꜱᴀᴄᴛɪᴏɴꜱ\n"
+        "▸ Sʏꜱᴛᴇᴍ Cᴏɴᴛʀᴏʟꜱ\n\n"
+        "Sᴇʟᴇᴄᴛ ᴀɴ ᴏᴘᴛɪᴏɴ ʙᴇʟᴏᴡ:",
         parse_mode="Markdown",
         reply_markup=admin_markup)
     
@@ -2284,20 +2304,20 @@ def admin_actions(message):
     """Enhanced admin command guidance"""
     if "Add" in message.text:
         bot.reply_to(message,
-            "💎 *Add Coins Guide*\n\n"
-            "Command: `/addcoins <user_id> <amount>`\n\n"
-            "Example:\n"
+            "💎 *Aᴅᴅ Cᴏɪɴꜱ Gᴜɪᴅᴇ*\n\n"
+            "Cᴏᴍᴍᴀɴᴅ: `/addcoins <user_id> <amount>`\n\n"
+            "Exᴀᴍᴘʟᴇ:\n"
             "`/addcoins 123456789 500.00`\n\n"
-            "⚠️ Will create account if not exists",
+            "⚠️ Wɪʟʟ ᴄʀᴇᴀᴛᴇ ᴀᴄᴄᴏᴜɴᴛ ɪꜰ ɴᴏᴛ ᴇxɪꜱᴛꜱ",
             parse_mode="Markdown",
             reply_markup=ForceReply(selective=True))
     elif "Remove" in message.text:
         bot.reply_to(message,
-            "⚡ *Remove Coins Guide*\n\n"
-            "Command: `/removecoins <user_id> <amount>`\n\n"
-            "Example:\n"
+            "⚡ *Rᴇᴍᴏᴠᴇ Cᴏɪɴꜱ Gᴜɪᴅᴇ*\n\n"
+            "Cᴏᴍᴍᴀɴᴅ: `/removecoins <user_id> <amount>`\n\n"
+            "Exᴀᴍᴘʟᴇ:\n"
             "`/removecoins 123456789 250.50`\n\n"
-            "⚠️ Fails if insufficient balance",
+            "⚠️ Fᴀɪʟꜱ ɪꜰ ɪɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʙᴀʟᴀɴᴄᴇ",
             parse_mode="Markdown",
             reply_markup=ForceReply(selective=True))
 
@@ -2305,9 +2325,9 @@ def admin_actions(message):
 def handle_admin_commands(message):
     if message.from_user.id not in admin_user_ids:
         bot.reply_to(message, 
-            "⛔ *Admin Access Denied*\n\n"
-            "This command is restricted to authorized staff only\n"
-            "Unauthorized access attempts are logged",
+            "⛔ *Aᴅᴍɪɴ Aᴄᴄᴇꜱꜱ Dᴇɴɪᴇᴅ*\n\n"
+            "Tʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ɪꜱ ʀᴇꜱᴛʀɪᴄᴛᴇᴅ ᴛᴏ ᴀᴜᴛʜᴏʀɪᴢᴇᴅ ꜱᴛᴀꜰꜰ ᴏɴʟʏ\n"
+            "Uɴᴀᴜᴛʜᴏʀɪᴢᴇᴅ ᴀᴄᴄᴇꜱꜱ ᴀᴛᴛᴇᴍᴘᴛꜱ ᴀʀᴇ ʟᴏɢɢᴇᴅ",
             parse_mode="Markdown")
         return
     
@@ -2315,11 +2335,11 @@ def handle_admin_commands(message):
         args = message.text.split()
         if len(args) != 3:
             bot.reply_to(message,
-                "⚡ *Usage Guide*\n\n"
-                f"▸ Add coins: `/addcoins <user_id> <amount>`\n"
-                f"▸ Remove coins: `/removecoins <user_id> <amount>`\n\n"
-                "💡 Example: `/addcoins 123456789 100.50`",
-                parse_mode="Markdown")
+"⚡ *Uꜱᴀɢᴇ Gᴜɪᴅᴇ*\n\n"
+"▸ Aᴅᴅ ᴄᴏɪɴꜱ: `/addcoins <user_id> <amount>`\n"
+"▸ Rᴇᴍᴏᴠᴇ ᴄᴏɪɴꜱ: `/removecoins <user_id> <amount>`\n\n"
+"💡 Exᴀᴍᴘʟᴇ: `/addcoins 123456789 100.50`",
+parse_mode="Markdown")
             return
             
         user_id = args[1]
@@ -2330,12 +2350,12 @@ def handle_admin_commands(message):
                 raise ValueError
         except ValueError:
             bot.reply_to(message,
-                "⚠️ *Invalid Amount*\n\n"
-                "Amount must be:\n"
-                "▸ A positive number\n"
-                "▸ Decimal values allowed\n"
-                "▸ Minimum: 0.01",
-                parse_mode="Markdown")
+"⚠️ *Iɴᴠᴀʟɪᴅ Aᴍᴏᴜɴᴛ*\n\n"
+"Amount must be:\n"
+"▸ A ᴘᴏꜱɪᴛɪᴠᴇ ɴᴜᴍʙᴇʀ\n"
+"▸ Dᴇᴄɪᴍᴀʟ ᴠᴀʟᴜᴇꜱ ᴀʟʟᴏᴡᴇᴅ\n"
+"▸ Mɪɴɪᴍᴜᴍ: 0.01",
+parse_mode="Markdown")
             return
             
         if args[0] == '/addcoins':
@@ -2355,24 +2375,24 @@ def handle_admin_commands(message):
                 new_balance = user_data.get('balance', 0) if user_data else 0
                 
                 bot.reply_to(message,
-                    f"💎 *Coins Added Successfully*\n\n"
-                    f"▸ User ID: `{user_id}`\n"
-                    f"▸ Amount: +{amount:.2f} coins\n"
-                    f"▸ New Balance: {new_balance:.2f}\n\n"
-                    "📝 _Transaction logged in database_",
-                    parse_mode="Markdown")
+f"💎 *Cᴏɪɴꜱ Aᴅᴅᴇᴅ Sᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ*\n\n"
+f"▸ Uꜱᴇʀ ID: `{user_id}`\n"
+f"▸ Aᴍᴏᴜɴᴛ: +{amount:.2f} ᴄᴏɪɴꜱ\n"
+f"▸ Nᴇᴡ Bᴀʟᴀɴᴄᴇ: {new_balance:.2f}\n\n"
+"📝 _Tʀᴀɴꜱᴀᴄᴛɪᴏɴ ʟᴏɢɢᴇᴅ ɪɴ ᴅᴀᴛᴀʙᴀꜱᴇ_",
+parse_mode="Markdown")
                 
                 # Premium user notification
                 try:
                     bot.send_message(
                         user_id,
-                        f"🎉 *ACCOUNT CREDITED*\n\n"
-                        f"Your SMM Booster wallet has been topped up!\n\n"
-                        f"▸ Amount: +{amount:.2f} coins\n"
-                        f"▸ New Balance: {new_balance:.2f}\n"
-                        f"▸ Transaction ID: {int(time.time())}\n\n"
-                        "💎 Thank you for being a valued customer!",
-                        parse_mode="Markdown",
+f"🎉 *Aᴄᴄᴏᴜɴᴛ Cʀᴇᴅɪᴛᴇᴅ*\n\n"
+f"Yᴏᴜʀ SMM Bᴏᴏꜱᴛᴇʀ ᴡᴀʟʟᴇᴛ ʜᴀꜱ ʙᴇᴇɴ ᴛᴏᴘᴘᴇᴅ ᴜᴘ!\n\n"
+f"▸ Aᴍᴏᴜɴᴛ: +{amount:.2f} ᴄᴏɪɴꜱ\n"
+f"▸ Nᴇᴡ Bᴀʟᴀɴᴄᴇ: {new_balance:.2f}\n"
+f"▸ Tʀᴀɴꜱᴀᴄᴛɪᴏɴ ID: {int(time.time())}\n\n"
+"💎 Tʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ʙᴇɪɴɢ ᴀ ᴠᴀʟᴜᴇᴅ ᴄᴜꜱᴛᴏᴍᴇʀ!",
+parse_mode="Markdown",
                         reply_markup=InlineKeyboardMarkup().add(
                             InlineKeyboardButton("🛍️ Shop Now", callback_data="show_send_orders")
                         )
@@ -2381,12 +2401,12 @@ def handle_admin_commands(message):
                     print(f"Credit notification failed: {e}")
             else:
                 bot.reply_to(message,
-                    "❌ *Transaction Failed*\n\n"
-                    "Could not add coins to user account\n"
-                    "Possible reasons:\n"
-                    "▸ Database error\n"
-                    "▸ Invalid user ID",
-                    parse_mode="Markdown")
+"❌ *Tʀᴀɴꜱᴀᴄᴛɪᴏɴ Fᴀɪʟᴇᴅ*\n\n"
+"Cᴏᴜʟᴅ ɴᴏᴛ ᴀᴅᴅ ᴄᴏɪɴꜱ ᴛᴏ ᴜꜱᴇʀ ᴀᴄᴄᴏᴜɴᴛ\n"
+"Pᴏꜱꜱɪʙʟᴇ ʀᴇᴀꜱᴏɴꜱ:\n"
+"▸ Dᴀᴛᴀʙᴀꜱᴇ ᴇʀʀᴏʀ\n"
+"▸ Iɴᴠᴀʟɪᴅ ᴜꜱᴇʀ ID",
+parse_mode="Markdown")
                 
         elif args[0] == '/removecoins':
             if cutBalance(user_id, amount):
@@ -2394,24 +2414,24 @@ def handle_admin_commands(message):
                 new_balance = user_data.get('balance', 0) if user_data else 0
                 
                 bot.reply_to(message,
-                    f"⚡ *Coins Deducted Successfully*\n\n"
-                    f"▸ User ID: `{user_id}`\n"
-                    f"▸ Amount: -{amount:.2f} coins\n"
-                    f"▸ New Balance: {new_balance:.2f}\n\n"
-                    "📝 _Transaction logged in database_",
-                    parse_mode="Markdown")
+f"⚡ *Cᴏɪɴꜱ Dᴇᴅᴜᴄᴛᴇᴅ Sᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ*\n\n"
+f"▸ Uꜱᴇʀ ID: `{user_id}`\n"
+f"▸ Aᴍᴏᴜɴᴛ: -{amount:.2f} ᴄᴏɪɴꜱ\n"
+f"▸ Nᴇᴡ Bᴀʟᴀɴᴄᴇ: {new_balance:.2f}\n\n"
+"📝 _Tʀᴀɴꜱᴀᴄᴛɪᴏɴ ʟᴏɢɢᴇᴅ ɪɴ ᴅᴀᴛᴀʙᴀꜱᴇ_",
+parse_mode="Markdown")
                 
                 # Premium user notification
                 try:
                     bot.send_message(
                         user_id,
-                        f"🔔 *ACCOUNT DEBITED*\n\n"
-                        f"Coins have been deducted from your SMM Booster wallet\n\n"
-                        f"▸ Amount: -{amount:.2f} coins\n"
-                        f"▸ New Balance: {new_balance:.2f}\n"
-                        f"▸ Transaction ID: {int(time.time())}\n\n"
-                        "⚠️ Contact support if this was unexpected",
-                        parse_mode="Markdown",
+f"🔔 *Aᴄᴄᴏᴜɴᴛ Dᴇʙɪᴛᴇᴅ*\n\n"
+f"Cᴏɪɴꜱ ʜᴀᴠᴇ ʙᴇᴇɴ ᴅᴇᴅᴜᴄᴛᴇᴅ ꜰʀᴏᴍ ʏᴏᴜʀ SMM Bᴏᴏꜱᴛᴇʀ ᴡᴀʟʟᴇᴛ\n\n"
+f"▸ Aᴍᴏᴜɴᴛ: -{amount:.2f} ᴄᴏɪɴꜱ\n"
+f"▸ Nᴇᴡ Bᴀʟᴀɴᴄᴇ: {new_balance:.2f}\n"
+f"▸ Tʀᴀɴꜱᴀᴄᴛɪᴏɴ ID: {int(time.time())}\n\n"
+"⚠️ Cᴏɴᴛᴀᴄᴛ Sᴜᴘᴘᴏʀᴛ ɪꜰ ᴛʜɪꜱ ᴡᴀꜱ ᴜɴᴇxᴘᴇᴄᴛᴇᴅ",
+parse_mode="Markdown",
                         reply_markup=InlineKeyboardMarkup().add(
                             InlineKeyboardButton("📩 Contact Support", url="https://t.me/SocialHubBoosterTMbot")
                         )
@@ -2420,13 +2440,13 @@ def handle_admin_commands(message):
                     print(f"Debit notification failed: {e}")
             else:
                 bot.reply_to(message,
-                    "❌ *Transaction Failed*\n\n"
-                    "Could not remove coins from user account\n"
-                    "Possible reasons:\n"
-                    "▸ Insufficient balance\n"
-                    "▸ Invalid user ID\n"
-                    "▸ Database error",
-                    parse_mode="Markdown")
+"❌ *Tʀᴀɴꜱᴀᴄᴛɪᴏɴ Fᴀɪʟᴇᴅ*\n\n"
+"Cᴏᴜʟᴅ ɴᴏᴛ ʀᴇᴍᴏᴠᴇ ᴄᴏɪɴꜱ ꜰʀᴏᴍ ᴜꜱᴇʀ ᴀᴄᴄᴏᴜɴᴛ\n"
+"Pᴏꜱꜱɪʙʟᴇ ʀᴇᴀꜱᴏɴꜱ:\n"
+"▸ Iɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʙᴀʟᴀɴᴄᴇ\n"
+"▸ Iɴᴠᴀʟɪᴅ ᴜꜱᴇʀ ID\n"
+"▸ Dᴀᴛᴀʙᴀꜱᴇ ᴇʀʀᴏʀ",
+parse_mode="Markdown")
                 
     except Exception as e:
         bot.reply_to(message,
@@ -2442,30 +2462,30 @@ def show_batch_coins_help(message):
     if message.from_user.id not in admin_user_ids:
         return
     bot.reply_to(message,
-        "🧮 *Batch Coins Panel*\n\n"
-        "Use the following commands to add or remove coins for all users:\n\n"
+        "🧮 *Bᴀᴛᴄʜ Cᴏɪɴꜱ Pᴀɴᴇʟ*\n\n"
+        "Uꜱᴇ ᴛʜᴇ ꜰᴏʟʟᴏᴡɪɴɢ ᴄᴏᴍᴍᴀɴᴅꜱ ᴛᴏ ᴀᴅᴅ ᴏʀ ʀᴇᴍᴏᴠᴇ ᴄᴏɪɴꜱ ꜰᴏʀ ᴀʟʟ ᴜꜱᴇʀꜱ:\n\n"
         "▸ `/alladdcoins <amount>`\n"
         "▸ `/allremovecoins <amount>`\n\n"
-        "⚠️ *Note:* All users will be notified.",
+        "⚠️ *Nᴏᴛᴇ:* Aʟʟ ᴜꜱᴇʀꜱ ᴡɪʟʟ ʙᴇ ɴᴏᴛɪꜰɪᴇᴅ.",
         parse_mode="Markdown")
 
 @bot.message_handler(commands=['alladdcoins', 'allremovecoins'])
 def handle_batch_coins(message):
     if message.from_user.id not in admin_user_ids:
         bot.reply_to(message,
-            "⛔ *Admin Access Denied*\n\n"
-            "This command is restricted to authorized staff only\n"
-            "Unauthorized access attempts are logged",
+            "⛔ *Aᴅᴍɪɴ Aᴄᴄᴇꜱꜱ Dᴇɴɪᴇᴅ*\n\n"
+            "Tʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ɪꜱ ʀᴇꜱᴛʀɪᴄᴛᴇᴅ ᴛᴏ ᴀᴜᴛʜᴏʀɪᴢᴇᴅ ꜱᴛᴀꜰꜰ ᴏɴʟʏ\n"
+            "Uɴᴀᴜᴛʜᴏʀɪᴢᴇᴅ ᴀᴄᴄᴇꜱꜱ ᴀᴛᴛᴇᴍᴘᴛꜱ ᴀʀᴇ ʟᴏɢɢᴇᴅ",
             parse_mode="Markdown")
         return
 
     args = message.text.split()
     if len(args) != 2:
         bot.reply_to(message,
-            "⚡ *Usage Guide*\n\n"
-            "▸ Add coins: `/alladdcoins <amount>`\n"
-            "▸ Remove coins: `/allremovecoins <amount>`\n\n"
-            "💡 Example: `/alladdcoins 100`",
+"⚡ *Uꜱᴀɢᴇ Gᴜɪᴅᴇ*\n\n"
+"▸ Aᴅᴅ ᴄᴏɪɴꜱ: `/alladdcoins <amount>`\n"
+"▸ Rᴇᴍᴏᴠᴇ ᴄᴏɪɴꜱ: `/allremovecoins <amount>`\n\n"
+"💡 Exᴀᴍᴘʟᴇ: `/alladdcoins 100`",
             parse_mode="Markdown")
         return
 
@@ -2475,11 +2495,11 @@ def handle_batch_coins(message):
             raise ValueError
     except ValueError:
         bot.reply_to(message,
-            "⚠️ *Invalid Amount*\n\n"
-            "Amount must be:\n"
-            "▸ A positive number\n"
-            "▸ Decimal values allowed\n"
-            "▸ Minimum: 0.01",
+"⚠️ *Iɴᴠᴀʟɪᴅ Aᴍᴏᴜɴᴛ*\n\n"
+"Amount must be:\n"
+"▸ A positive number\n"
+"▸ Decimal values allowed\n"
+"▸ Minimum: 0.01",
             parse_mode="Markdown")
         return
 
@@ -2494,12 +2514,12 @@ def handle_batch_coins(message):
                     data = getData(uid)
                     bot.send_message(
                         uid,
-                        f"🎉 *ACCOUNT CREDITED*\n\n"
-                        f"Your SMM Booster wallet has been topped up!\n\n"
-                        f"▸ Amount: +{amount:.2f} coins\n"
-                        f"▸ New Balance: {data['balance']:.2f}\n"
-                        f"▸ Transaction ID: {int(time.time())}\n\n"
-                        "💎 Thank you for being a valued customer!",
+f"🎉 *Aᴄᴄᴏᴜɴᴛ Cʀᴇᴅɪᴛᴇᴅ*\n\n"
+f"Yᴏᴜʀ SMM Bᴏᴏꜱᴛᴇʀ ᴡᴀʟʟᴇᴛ ʜᴀꜱ ʙᴇᴇɴ ᴛᴏᴘᴘᴇᴅ ᴜᴘ!\n\n"
+f"▸ Aᴍᴏᴜɴᴛ: +{amount:.2f} ᴄᴏɪɴꜱ\n"
+f"▸ Nᴇᴡ Bᴀʟᴀɴᴄᴇ: {data['balance']:.2f}\n"
+f"▸ Tʀᴀɴꜱᴀᴄᴛɪᴏɴ ID: {int(time.time())}\n\n"
+"💎 Tʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ʙᴇɪɴɢ ᴀ ᴠᴀʟᴜᴇᴅ ᴄᴜꜱᴛᴏᴍᴇʀ!",
                         parse_mode="Markdown",
                         reply_markup=InlineKeyboardMarkup().add(
                             InlineKeyboardButton("🛍️ Shop Now", callback_data="show_send_orders")
@@ -2513,15 +2533,15 @@ def handle_batch_coins(message):
                     data = getData(uid)
                     bot.send_message(
                         uid,
-                        f"🔔 *ACCOUNT DEBITED*\n\n"
-                        f"Coins have been deducted from your SMM Booster wallet\n\n"
-                        f"▸ Amount: -{amount:.2f} coins\n"
-                        f"▸ New Balance: {data['balance']:.2f}\n"
-                        f"▸ Transaction ID: {int(time.time())}\n\n"
-                        "⚠️ Contact support if this was unexpected",
-                        parse_mode="Markdown",
-                        reply_markup=InlineKeyboardMarkup().add(
-                            InlineKeyboardButton("📩 Contact Support", url="https://t.me/SocialHubBoosterTMbot")
+                    f"🔔 *ACCOUNT DEBITED*\n\n"
+                    f"Coins have been deducted from your SMM Booster wallet\n\n"
+                    f"▸ Amount: -{amount:.2f} coins\n"
+                    f"▸ New Balance: {data['balance']:.2f}\n"
+                    f"▸ Transaction ID: {int(time.time())}\n\n"
+                    "⚠️ Contact support if this was unexpected",
+                    parse_mode="Markdown",
+                    reply_markup=InlineKeyboardMarkup().add(
+                        InlineKeyboardButton("📩 Contact Support", url="https://t.me/SocialHubBoosterTMbot")
                         )
                     )
                     success += 1
@@ -2532,9 +2552,9 @@ def handle_batch_coins(message):
             failed += 1
 
     bot.reply_to(message,
-        f"📊 *Batch Operation Completed*\n\n"
-        f"✅ Successful: {success}\n"
-        f"❌ Failed: {failed}",
+        f"📊 *Bᴀᴛᴄʜ Oᴘᴇʀᴀᴛɪᴏɴ Cᴏᴍᴘʟᴇᴛᴇᴅ*\n\n"
+        f"✅ Sᴜᴄᴄᴇꜱꜱꜰᴜʟ: {success}\n"
+        f"❌ Fᴀɪʟᴇᴅ: {failed}",
         parse_mode="Markdown")
 
 #=============================== Admin Stats Command =====================================#
@@ -2551,9 +2571,9 @@ def show_analytics(message):
     except Exception as e:
         print(f"Analytics error: {e}")
         bot.reply_to(message, 
-            "⚠️ <b>Analytics Dashboard Unavailable</b>\n\n"
-            "Our premium metrics system is temporarily offline\n"
-            "Please try again later",
+"⚠️ <b>Aɴᴀʟʏᴛɪᴄꜱ Dᴀꜱʜʙᴏᴀʀᴅ Uɴᴀᴠᴀɪʟᴀʙʟᴇ</b>\n\n"
+"Our ᴘʀᴇᴍɪᴜᴍ ᴍᴇᴛʀɪᴄꜱ ꜱʏꜱᴛᴇᴍ ɪꜱ ᴛᴇᴍᴘᴏʀᴀʀɪʟʏ ᴏꜰꜰʟɪɴᴇ\n"
+"Pʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ",
             parse_mode='HTML')
 
 def show_analytics_dashboard(message, is_refresh=False):
@@ -2581,25 +2601,27 @@ def show_analytics_dashboard(message, is_refresh=False):
         
         # Create premium dashboard
         msg = f"""
-📈 <b>SMM Booster Analytics</b>
+<blockquote>
+📈 <b>SMM Bᴏᴏꜱᴛᴇʀ Aɴᴀʟʏᴛɪᴄꜱ</b>
 ━━━━━━━━━━━━━━━━━━━━
 
-👥 <b>User Statistics</b>
-├ 👤 Total Users: <code>{total_users}</code>
-├ 🔥 Active (7d): <code>{active_users}</code>
-├ 🆕 New (24h): <code>{new_users_24h}</code>
-└ 💰 Avg Deposit/User: <code>{deposit_per_user:.2f}</code> coins
+👥 <b>Uꜱᴇʀ Sᴛᴀᴛɪꜱᴛɪᴄꜱ</b>
+├ 👤 Tᴏᴛᴀʟ Uꜱᴇʀꜱ: <code>{total_users}</code>
+├ 🔥 Aᴄᴛɪᴠᴇ (7ᴅ): <code>{active_users}</code>
+├ 🆕 Nᴇᴡ (24ʜ): <code>{new_users_24h}</code>
+└ 💰 Aᴠɢ Dᴇᴘᴏꜱɪᴛ/Uꜱᴇʀ: <code>{deposit_per_user:.2f}</code> ᴄᴏɪɴꜱ
 
-🛒 <b>Order Metrics</b>
-├ 🚀 Total Orders: <code>{total_orders}</code>
-├ ✅ Completed: <code>{completed_orders}</code>
-├ 📊 Conversion: <code>{conversion_rate:.1f}%</code>
-└ 💸 Total Deposits: <code>{total_deposits:.2f}</code> coins
+🛒 <b>Oʀᴅᴇʀ Mᴇᴛʀɪᴄꜱ</b>
+├ 🚀 Tᴏᴛᴀʟ Oʀᴅᴇʀꜱ: <code>{total_orders}</code>
+├ ✅ Cᴏᴍᴘʟᴇᴛᴇᴅ: <code>{completed_orders}</code>
+├ 📊 Cᴏɴᴠᴇʀꜱɪᴏɴ: <code>{conversion_rate:.1f}%</code>
+└ 💸 Tᴏᴛᴀʟ Dᴇᴘᴏꜱɪᴛꜱ: <code>{total_deposits:.2f}</code> ᴄᴏɪɴꜱ
 
-🔗 <b>Referral Program</b>
+🔗 <b>Rᴇꜰᴇʀʀᴀʟ Pʀᴏɢʀᴀᴍ</b>
 └ {referrer_display}
 
-⏳ <i>Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}</i>
+⏳ <i>Lᴀꜱᴛ Uᴘᴅᴀᴛᴇᴅ: {datetime.now().strftime('%Y-%m-%d %H:%M')}</i>
+</blockquote>
 """
         
         # Add quick action buttons
@@ -2679,29 +2701,31 @@ def handle_full_report(call):
             referrer_display = "📭 No referrals yet"
 
         msg = f"""
-📊 <b>Full Analytics Report</b>
+<blockquote>
+📊 <b>Fᴜʟʟ Aɴᴀʟʏᴛɪᴄꜱ Rᴇᴘᴏʀᴛ</b>
 ━━━━━━━━━━━━━━━━━━━━
 
-👥 <b>User Statistics</b>
-├ Total Users: <code>{total_users}</code>
-├ Active (7d): <code>{active_users}</code> ({active_rate:.1f}%)
-├ New (24h): <code>{new_users_24h}</code>
-├ Banned Users: <code>{banned_users}</code>
-└ Avg Deposit/User: <code>{deposit_per_user:.2f}</code> coins
+👥 <b>Uꜱᴇʀ Sᴛᴀᴛɪꜱᴛɪᴄꜱ</b>
+├ Tᴏᴛᴀʟ Uꜱᴇʀꜱ: <code>{total_users}</code>
+├ Aᴄᴛɪᴠᴇ (7ᴅ): <code>{active_users}</code> ({active_rate:.1f}%)
+├ Nᴇᴡ (24ʜ): <code>{new_users_24h}</code>
+├ Bᴀɴɴᴇᴅ Uꜱᴇʀꜱ: <code>{banned_users}</code>
+└ Aᴠɢ Dᴇᴘᴏꜱɪᴛ/Uꜱᴇʀ: <code>{deposit_per_user:.2f}</code> ᴄᴏɪɴꜱ
 
-🛒 <b>Order Metrics</b>
-├ Total Orders: <code>{total_orders}</code>
-├ Completed: <code>{completed_orders}</code>
-└ Conversion Rate: <code>{conversion_rate:.1f}%</code>
+🛒 <b>Oʀᴅᴇʀ Mᴇᴛʀɪᴄꜱ</b>
+├ Tᴏᴛᴀʟ Oʀᴅᴇʀꜱ: <code>{total_orders}</code>
+├ Cᴏᴍᴘʟᴇᴛᴇᴅ: <code>{completed_orders}</code>
+└ Cᴏɴᴠᴇʀꜱɪᴏɴ Rᴀᴛᴇ: <code>{conversion_rate:.1f}%</code>
 
-💰 <b>Financials</b>
-├ Total Deposits: <code>{total_deposits:.2f}</code> coins
-└ Avg Order Value: <code>{(total_deposits/total_orders):.2f}</code> coins
+💰 <b>Fɪɴᴀɴᴄɪᴀʟꜱ</b>
+├ Tᴏᴛᴀʟ Dᴇᴘᴏꜱɪᴛꜱ: <code>{total_deposits:.2f}</code> ᴄᴏɪɴꜱ
+└ Aᴠɢ Oʀᴅᴇʀ Vᴀʟᴜᴇ: <code>{(total_deposits/total_orders):.2f}</code> ᴄᴏɪɴꜱ
 
-🔗 <b>Referral Program</b>
+🔗 <b>Rᴇꜰᴇʀʀᴀʟ Pʀᴏɢʀᴀᴍ</b>
 └ {referrer_display}
 
-📅 Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}
+📅 Gᴇɴᴇʀᴀᴛᴇᴅ: {datetime.now().strftime('%Y-%m-%d %H:%M')}
+</blockquote>
 """
 
         # Add back button
@@ -2725,17 +2749,17 @@ def handle_full_report(call):
 @bot.message_handler(func=lambda m: m.text == "📤 Broadcast" and m.from_user.id in admin_user_ids)
 def broadcast_start(message):
     """Start normal broadcast process (unpinned)"""
-    msg = bot.reply_to(message, "📢 ✨ <b>Compose Your Broadcast Message</b> ✨\n\n"
-                              "Please enter the message you'd like to send to all users.\n"
-                              "This will be sent as a regular (unpinned) message.\n\n"
-                              "🖋️ You can include text, photos, or documents.\n"
-                              "❌ Type <code>✘ Cancel</code> to abort.", 
+    msg = bot.reply_to(message, "📢 ✨ <b>Cᴏᴍᴘᴏꜱᴇ Yᴏᴜʀ Bʀᴏᴀᴅᴄᴀꜱᴛ Mᴇꜱꜱᴀɢᴇ</b> ✨\n\n"
+                              "Pʟᴇᴀꜱᴇ ᴇɴᴛᴇʀ ᴛʜᴇ ᴍᴇꜱꜱᴀɢᴇ ʏᴏᴜ'ᴅ ʟɪᴋᴇ ᴛᴏ ꜱᴇɴᴅ ᴛᴏ ᴀʟʟ ᴜꜱᴇʀꜱ.\n"
+                              "Tʜɪꜱ ᴡɪʟʟ ʙᴇ ꜱᴇɴᴛ ᴀꜱ ᴀ ʀᴇɢᴜʟᴀʀ (ᴜɴᴘɪɴɴᴇᴅ) ᴍᴇꜱꜱᴀɢᴇ.\n\n"
+                              "🖋️ Yᴏᴜ ᴄᴀɴ ɪɴᴄʟᴜᴅᴇ ᴛᴇxᴛ, ᴘʜᴏᴛᴏꜱ, ᴏʀ ᴅᴏᴄᴜᴍᴇɴᴛꜱ.\n"
+                              "❌ Tʏᴘᴇ <code>✘ Cᴀɴᴄᴇʟ</code> ᴛᴏ ᴀʙᴏʀᴛ.", 
                        parse_mode="HTML")
     bot.register_next_step_handler(msg, process_broadcast)
 
 def process_broadcast(message):
     """Process and send the broadcast message (unpinned)"""
-    if message.text == "✘ Cancel":
+    if message.text == "Cancel":
         bot.reply_to(message, "🛑 <b>Broadcast cancelled.</b>", 
                      parse_mode="HTML", reply_markup=admin_markup)
         return
@@ -2749,10 +2773,10 @@ def process_broadcast(message):
     failed = 0
     
     # Enhanced sending notification with progress bar concept
-    progress_msg = bot.reply_to(message, f"""📨 <b>Broadcast Initiated</b>
+    progress_msg = bot.reply_to(message, f"""📨 <b>Bʀᴏᴀᴅᴄᴀꜱᴛ Iɴɪᴛɪᴀᴛᴇᴅ</b>
     
-📊 Total Recipients: <code>{len(users)}</code>
-⏳ Status: <i>Processing...</i>
+📊 Tᴏᴛᴀʟ Rᴇᴄɪᴘɪᴇɴᴛꜱ: <code>{len(users)}</code>
+⏳ Sᴛᴀᴛᴜꜱ: <i>Processing...</i>
 
 [░░░░░░░░░░] 0%""", parse_mode="HTML")
     
@@ -2763,11 +2787,11 @@ def process_broadcast(message):
         try:
             if message.content_type == 'text':
                 # Enhanced text message format
-                formatted_text = f"""✨ <b>Announcement</b> ✨\n\n{message.text}\n\n"""
+                formatted_text = f"""✨ <b>Aɴɴᴏᴜɴᴄᴇᴍᴇɴᴛ</b> ✨\n\n{message.text}\n\n"""
                 if not message.text.endswith(('🌐', '📢', '🔔', '📣', '📩')):
                     formatted_text += "━━━━━━━━━━━━━━\n"
-                    formatted_text += "💌 Thank you for being part of our community!\n"
-                    formatted_text += "🔔 Stay tuned for more updates."
+                    formatted_text += "💌 Tʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ʙᴇɪɴɢ ᴘᴀʀᴛ ᴏꜰ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ!\n"
+                    formatted_text += "🔔 Sᴛᴀʏ ᴛᴜɴᴇᴅ ꜰᴏʀ ᴍᴏʀᴇ ᴜᴘᴅᴀᴛᴇꜱ."
                 bot.send_message(user_id, formatted_text, parse_mode="HTML")
             elif message.content_type == 'photo':
                 # Enhanced photo caption
@@ -2787,12 +2811,12 @@ def process_broadcast(message):
             progress = int((index+1)/len(users)*100)
             progress_bar = '█' * (progress//10) + '░' * (10 - progress//10)
             try:
-                bot.edit_message_text(f"""📨 <b>Broadcast Progress</b>
+                bot.edit_message_text(f"""📨 <b>Bʀᴏᴀᴅᴄᴀꜱᴛ Pʀᴏɢʀᴇꜱꜱ</b>
                 
-📊 Total Recipients: <code>{len(users)}</code>
-✅ Successful: <code>{success}</code>
-❌ Failed: <code>{failed}</code>
-⏳ Status: <i>Sending...</i>
+📊 Tᴏᴛᴀʟ Rᴇᴄɪᴘɪᴇɴᴛꜱ: <code>{len(users)}</code>
+✅ Sᴜᴄᴄᴇꜱꜱꜰᴜʟ: <code>{success}</code>
+❌ Fᴀɪʟᴇᴅ: <code>{failed}</code>
+⏳ Sᴛᴀᴛᴜꜱ: <i>Sᴇɴᴅɪɴɢ...</i>
 
 [{progress_bar}] {progress}%""", 
                     message.chat.id, progress_msg.message_id, parse_mode="HTML")
@@ -2801,16 +2825,16 @@ def process_broadcast(message):
         
         time.sleep(0.1)  # Rate limiting
     
-    # Enhanced completion message
-    bot.reply_to(message, f"""📣 <b>Broadcast Completed Successfully!</b>
+# Enhanced completion message
+    bot.reply_to(message, f"""📣 <b>Bʀᴏᴀᴅᴄᴀꜱᴛ Cᴏᴍᴘʟᴇᴛᴇᴅ Sᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ!</b>
     
-📊 <b>Statistics:</b>
-├ 📤 <i>Sent:</i> <code>{success}</code>
-└ ❌ <i>Failed:</i> <code>{failed}</code>
+📊 <b>Sᴛᴀᴛɪꜱᴛɪᴄꜱ:</b>
+├ 📤 <i>Sᴇɴᴛ:</i> <code>{success}</code>
+└ ❌ <i>Fᴀɪʟᴇᴅ:</i> <code>{failed}</code>
 
-⏱️ <i>Finished at:</i> <code>{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</code>
+⏱️ <i>Fɪɴɪꜱʜᴇᴅ ᴀᴛ:</i> <code>{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</code>
 
-✨ <i>Thank you for using our broadcast system!</i>""", 
+✨ <i>Tʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ᴜꜱɪɴɢ ᴏᴜʀ ʙʀᴏᴀᴅᴄᴀꜱᴛ ꜱʏꜱᴛᴇᴍ!</i>""", 
                  parse_mode="HTML", reply_markup=admin_markup)
 
 #====================== Ban User Command ================================#
@@ -2819,18 +2843,18 @@ def process_broadcast(message):
 def ban_user_start(message):
     """Start ban user process"""
     msg = bot.reply_to(message, 
-        "⚡ *SMM Admin Panel - Ban User*\n\n"
+        "⚡ *SMM Aᴅᴍɪɴ Pᴀɴᴇʟ - Bᴀɴ Uꜱᴇʀ*\n\n"
         "Eɴᴛᴇʀ Uꜱᴇʀ Iᴅ Tᴏ Bᴀɴ:\n"
-        "▸ *Format*: `123456789`\n"
-        "▸ *Note*: User will lose all service access\n\n"
-        "✘ Type *'Cancel'* to abort",
+        "▸ *Fᴏʀᴍᴀᴛ*: `123456789`\n"
+        "▸ *Nᴏᴛᴇ*: Uꜱᴇʀ ᴡɪʟʟ ʟᴏꜱᴇ ᴀʟʟ ꜱᴇʀᴠɪᴄᴇ ᴀᴄᴄᴇꜱꜱ\n\n"
+        "✘ Tʏᴘᴇ *'Cᴀɴᴄᴇʟ'* ᴛᴏ ᴀʙᴏʀᴛ",
         parse_mode="Markdown",
         reply_markup=ForceReply(selective=True))
     bot.register_next_step_handler(msg, process_ban_user)
 
 def process_ban_user(message):
     """Ban a user with enhanced features"""
-    if message.text == "✘ Cancel":
+    if message.text == "Cancel":
         bot.reply_to(message, "❌ Ban cancelled.", reply_markup=admin_markup)
         return
     
@@ -2838,9 +2862,9 @@ def process_ban_user(message):
     
     if not user_id.isdigit():
         bot.reply_to(message, 
-            "❌ *Invalid Input*\n"
-            "User ID must contain only numbers\n"
-            "Example: `123456789`",
+            "❌ *Iɴᴠᴀʟɪᴅ Iɴᴘᴜᴛ*\n"
+            "Uꜱᴇʀ Iᴅ ᴍᴜꜱᴛ ᴄᴏɴᴛᴀɪɴ ᴏɴʟʏ ɴᴜᴍʙᴇʀꜱ\n"
+            "Exᴀᴍᴘʟᴇ: `123456789`",
             parse_mode="Markdown",
             reply_markup=admin_markup)
         return
@@ -2866,14 +2890,15 @@ def process_ban_user(message):
         
         bot.send_message(
             user_id,
-            f"⛔ *ACCOUNT SUSPENDED*\n\n"
-            f"Your access to *SMM Booster* services has been restricted.\n\n"
-            f"▸ *Reason*: Violation of Terms\n"
-            f"▸ *Appeal*: Available via button below\n"
-            f"▸ *Status*: Permanent (until appeal)\n\n"
-            f"⚠️ Attempting to bypass will result in IP blacklist",
-            parse_mode="Markdown",
-            reply_markup=appeal_markup
+            f"<blockquote>⛔ *ACCOUNT SUSPENDED*\n\n"
+f"⛔ *Aᴄᴄᴏᴜɴᴛ Sᴜꜱᴘᴇɴᴅᴇᴅ*\n\n"
+f"Yᴏᴜʀ ᴀᴄᴄᴇꜱꜱ ᴛᴏ *SMM Bᴏᴏꜱᴛᴇʀ* ꜱᴇʀᴠɪᴄᴇꜱ ʜᴀꜱ ʙᴇᴇɴ ʀᴇꜱᴛʀɪᴄᴛᴇᴅ.\n\n"
+f"▸ *Rᴇᴀꜱᴏɴ*: Vɪᴏʟᴀᴛɪᴏɴ ᴏꜰ Tᴇʀᴍꜱ\n"
+f"▸ *Aᴘᴘᴇᴀʟ*: Aᴠᴀɪʟᴀʙʟᴇ ᴠɪᴀ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ\n"
+f"▸ *Sᴛᴀᴛᴜꜱ*: Pᴇʀᴍᴀɴᴇɴᴛ (ᴜɴᴛɪʟ ᴀᴘᴘᴇᴀʟ)\n\n"
+f"⚠️ Aᴛᴛᴇᴍᴘᴛɪɴɢ ᴛᴏ ʙʏᴘᴀꜱꜱ ᴡɪʟʟ ʀᴇꜱᴜʟᴛ ɪɴ IP ʙʟᴀᴄᴋʟɪꜱᴛ</blockquote>",
+parse_mode="Markdown",
+reply_markup=appeal_markup
         )
         notified_success = True
     except Exception as e:
@@ -2882,11 +2907,11 @@ def process_ban_user(message):
     
     # Enhanced admin confirmation
     bot.reply_to(message,
-    f"✅ *User Banned Successfully*\n\n"
-    f"▸ User ID: `{user_id}`\n"
-    f"▸ Action: Full service restriction\n"
-    f"▸ Notified: {'Yes' if notified_success else 'Failed'}\n\n"
-    f"📝 _This user has been added to ban database_",
+    f"✅ *Uꜱᴇʀ Bᴀɴɴᴇᴅ Sᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ*\n\n"
+    f"▸ Uꜱᴇʀ Iᴅ: `{user_id}`\n"
+    f"▸ Aᴄᴛɪᴏɴ: Fᴜʟʟ ꜱᴇʀᴠɪᴄᴇ ʀᴇꜱᴛʀɪᴄᴛɪᴏɴ\n"
+    f"▸ Nᴏᴛɪꜰɪᴇᴅ: {'Yᴇꜱ' if notified_success else 'Fᴀɪʟᴇᴅ'}\n\n"
+    f"📝 _Tʜɪꜱ ᴜꜱᴇʀ ʜᴀꜱ ʙᴇᴇɴ ᴀᴅᴅᴇᴅ ᴛᴏ ʙᴀɴ ᴅᴀᴛᴀʙᴀꜱᴇ_",
     parse_mode="Markdown",
     reply_markup=admin_markup)
 
@@ -2897,37 +2922,39 @@ def show_ban_terms(call):
     try:
         # Get the policy message from the policy_command function
         policy_text = """
-📜 <b>🤖 Bot Usage Policy & Guidelines</b> 📜
+<blockquote>
+📜 <b>🤖 Bᴏᴛ Uꜱᴀɢᴇ Pᴏʟɪᴄʏ & Gᴜɪᴅᴇʟɪɴᴇꜱ</b> 📜
 ━━━━━━━━━━━━━━━━━━━━
 
-🔹 <b>1. Acceptable Use</b>
-   ├ ✅ Permitted: Legal, non-harmful content
-   └ ❌ Prohibited: Spam, harassment, illegal material
+🔹 <b>1. Aᴄᴄᴇᴘᴛᴀʙʟᴇ Uꜱᴇ</b>
+   ├ ✅ Pᴇʀᴍɪᴛᴛᴇᴅ: Lᴇɢᴀʟ, ɴᴏɴ-ʜᴀʀᴍꜰᴜʟ ᴄᴏɴᴛᴇɴᴛ
+   └ ❌ Pʀᴏʜɪʙɪᴛᴇᴅ: Sᴘᴀᴍ, ʜᴀʀᴀꜱꜱᴍᴇɴᴛ, ɪʟʟᴇɢᴀʟ ᴍᴀᴛᴇʀɪᴀʟ
 
-🔹 <b>2. Fair Usage Policy</b>
-   ├ ⚖️ Abuse may lead to restrictions
-   └ 📊 Excessive usage may be rate-limited
+🔹 <b>2. Fᴀɪʀ Uꜱᴀɢᴇ Pᴏʟɪᴄʏ</b>
+   ├ ⚖️ Aʙᴜꜱᴇ ᴍᴀʏ ʟᴇᴀᴅ ᴛᴏ ʀᴇꜱᴛʀɪᴄᴛɪᴏɴꜱ
+   └ 📊 Exᴄᴇꜱꜱɪᴠᴇ ᴜꜱᴀɢᴇ ᴍᴀʏ ʙᴇ ʀᴀᴛᴇ-ʟɪᴍɪᴛᴇᴅ
 
-🔹 <b>3. Financial Policy</b>
-   ├ 💳 All transactions are final
-   └ 🔄 No refunds for completed services
+🔹 <b>3. Fɪɴᴀɴᴄɪᴀʟ Pᴏʟɪᴄʏ</b>
+   ├ 💳 Aʟʟ ᴛʀᴀɴꜱᴀᴄᴛɪᴏɴꜱ ᴀʀᴇ ꜰɪɴᴀʟ
+   └ 🔄 Nᴏ ʀᴇꜰᴜɴᴅꜱ ꜰᴏʀ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ꜱᴇʀᴠɪᴄᴇꜱ
 
-🔹 <b>4. Privacy Commitment</b>
-   ├ 🔒 Your data stays confidential
-   └ 🤝 Never shared with third parties
+🔹 <b>4. Pʀɪᴠᴀᴄʏ Cᴏᴍᴍɪᴛᴍᴇɴᴛ</b>
+   ├ 🔒 Yᴏᴜʀ ᴅᴀᴛᴀ ꜱᴛᴀʏꜱ ᴄᴏɴꜰɪᴅᴇɴᴛɪᴀʟ
+   └ 🤝 Nᴇᴠᴇʀ ꜱʜᴀʀᴇᴅ ᴡɪᴛʜ ᴛʜɪʀᴅ ᴘᴀʀᴛɪᴇꜱ
 
-🔹 <b>5. Platform Compliance</b>
-   ├ ✋ Must follow Telegram's ToS
-   └ 🌐 All content must be legal in your jurisdiction
+🔹 <b>5. Pʟᴀᴛꜰᴏʀᴍ Cᴏᴍᴘʟɪᴀɴᴄᴇ</b>
+   ├ ✋ Mᴜꜱᴛ ꜰᴏʟʟᴏᴡ Tᴇʟᴇɢʀᴀᴍ'ꜱ TᴏS
+   └ 🌐 Aʟʟ ᴄᴏɴᴛᴇɴᴛ ᴍᴜꜱᴛ ʙᴇ ʟᴇɢᴀʟ ɪɴ ʏᴏᴜʀ ᴊᴜʀɪꜱᴅɪᴄᴛɪᴏɴ
 
-⚠️ <b>Consequences of Violation</b>
-   ├ ⚠️ First offense: Warning
-   ├ 🔇 Repeated violations: Temporary suspension
-   └ 🚫 Severe cases: Permanent ban
+⚠️ <b>CᴏɴꜱᴇQᴜᴇɴᴄᴇꜱ ᴏꜰ Vɪᴏʟᴀᴛɪᴏɴ</b>
+   ├ ⚠️ Fɪʀꜱᴛ ᴏꜰꜰᴇɴꜱᴇ: Wᴀʀɴɪɴɢ
+   ├ 🔇 Rᴇᴘᴇᴀᴛᴇᴅ ᴠɪᴏʟᴀᴛɪᴏɴꜱ: Tᴇᴍᴘᴏʀᴀʀʏ ꜱᴜꜱᴘᴇɴꜱɪᴏɴ
+   └ 🚫 Sᴇᴠᴇʀᴇ ᴄᴀꜱᴇꜱ: Pᴇʀᴍᴀɴᴇɴᴛ ʙᴀɴ
 
-📅 <i>Last updated: {update_date}</i>
+📅 <i>Lᴀꜱᴛ ᴜᴘᴅᴀᴛᴇᴅ: {update_date}</i>
 ━━━━━━━━━━━━━━━━━━━━
-💡 Need help? Contact @SocialHubBoosterTMbot
+💡 Nᴇᴇᴅ ʜᴇʟᴘ? Cᴏɴᴛᴀᴄᴛ @SocialHubBoosterTMbot
+</blockquote>
 """.format(update_date=datetime.now().strftime('%Y-%m-%d'))
 
         
@@ -2951,18 +2978,18 @@ def show_ban_terms(call):
 def unban_user_start(message):
     """Start unban user process"""
     msg = bot.reply_to(message,
-        "⚡ *SMM Admin Panel - Unban User*\n\n"
-        "Eɴᴛᴇʀ Uꜱᴇʀ Iᴅ Tᴏ Uɴʙᴀɴ:\n"
-        "▸ Will restore all services\n"
-        "▸ Automatic notification sent\n\n"
-        "✘ Type *'Cancel'* to abort",
+"⚡ *SMM Aᴅᴍɪɴ Pᴀɴᴇʟ - Uɴʙᴀɴ Uꜱᴇʀ*\n\n"
+"Eɴᴛᴇʀ Uꜱᴇʀ Iᴅ Tᴏ Uɴʙᴀɴ:\n"
+"▸ Wɪʟʟ ʀᴇꜱᴛᴏʀᴇ ᴀʟʟ ꜱᴇʀᴠɪᴄᴇꜱ\n"
+"▸ Aᴜᴛᴏᴍᴀᴛɪᴄ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ ꜱᴇɴᴛ\n\n"
+"✘ Tʏᴘᴇ *'Cancel'* ᴛᴏ ᴀʙᴏʀᴛ",
         parse_mode="Markdown",
         reply_markup=ForceReply(selective=True))
     bot.register_next_step_handler(msg, process_unban_user)
 
 def process_unban_user(message):
     """Unban a user with premium features"""
-    if message.text == "✘ Cancel":
+    if message.text == "Cancel":
         bot.reply_to(message, "❌ Unban cancelled.", reply_markup=admin_markup)
         return
     
@@ -2970,9 +2997,9 @@ def process_unban_user(message):
     
     if not user_id.isdigit():
         bot.reply_to(message,
-            "❌ *Invalid Input*\n"
-            "User ID must contain only numbers\n"
-            "Example: `987654321`",
+            "❌ *Iɴᴠᴀʟɪᴅ Iɴᴘᴜᴛ*\n"
+            "Uꜱᴇʀ Iᴅ ᴍᴜꜱᴛ ᴄᴏɴᴛᴀɪɴ ᴏɴʟʏ Nᴜᴍʙᴇʀꜱ\n"
+            "Exᴀᴍᴘʟᴇ: `987654321`",
             parse_mode="Markdown",
             reply_markup=admin_markup)
         return
@@ -2995,12 +3022,12 @@ def process_unban_user(message):
         
         bot.send_message(
             user_id,
-            f"✅ *ACCOUNT REINSTATED*\n\n"
-            f"Your *SMM Booster* access has been restored!\n\n"
-            f"▸ All services: Reactivated\n"
-            f"▸ Order history: Preserved\n"
-            f"▸ Balance: Unaffected\n\n"
-            f"⚠️ Please review our terms to avoid future issues",
+            f"<blockquote>✅ *Aᴄᴄᴏᴜɴᴛ Rᴇɪɴꜱᴛᴀᴛᴇᴅ*\n\n"
+            f"Yᴏᴜʀ *SMM Bᴏᴏꜱᴛᴇʀ* ᴀᴄᴄᴇꜱꜱ ʜᴀꜱ ʙᴇᴇɴ ʀᴇꜱᴛᴏʀᴇᴅ!\n\n"
+            f"▸ Aʟʟ ꜱᴇʀᴠɪᴄᴇꜱ: Rᴇᴀᴄᴛɪᴠᴀᴛᴇᴅ\n"
+            f"▸ Oʀᴅᴇʀ ʜɪꜱᴛᴏʀʏ: Pʀᴇꜱᴇʀᴠᴇᴅ\n"
+            f"▸ Bᴀʟᴀɴᴄᴇ: Uɴᴀꜰꜰᴇᴄᴛᴇᴅ\n\n"
+            f"⚠️ Pʟᴇᴀꜱᴇ ʀᴇᴠɪᴇᴡ ᴏᴜʀ ᴛᴇʀᴍꜱ ᴛᴏ ᴀᴠᴏɪᴅ ꜰᴜᴛᴜʀᴇ ɪꜱꜱᴜᴇꜱ</blockquote>",
             parse_mode="Markdown",
             reply_markup=markup
         )
@@ -3011,11 +3038,11 @@ def process_unban_user(message):
     
     # Admin confirmation with flair
     bot.reply_to(message,
-        f"✨ *User Unbanned Successfully*\n\n"
-        f"▸ User ID: `{user_id}`\n"
-        f"▸ Services: Reactivated\n"
-        f"▸ Notified: {'Yes' if notified_success else 'Failed'}\n\n"
-        f"📝 _Removed from ban database_",
+        f"✨ *Uꜱᴇʀ Uɴʙᴀɴɴᴇᴅ Sᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ*\n\n"
+        f"▸ Uꜱᴇʀ Iᴅ: `{user_id}`\n"
+        f"▸ Sᴇʀᴠɪᴄᴇꜱ: Rᴇᴀᴄᴛɪᴠᴀᴛᴇᴅ\n"
+        f"▸ Nᴏᴛɪꜰɪᴇᴅ: {'Yᴇꜱ' if notified_success else 'Fᴀɪʟᴇᴅ'}\n\n"
+        f"📝 _Rᴇᴍᴏᴠᴇᴅ ꜰʀᴏᴍ ʙᴀɴ ᴅᴀᴛᴀʙᴀꜱᴇ_",
         parse_mode="Markdown",
         reply_markup=admin_markup)
 
@@ -3052,19 +3079,19 @@ def list_banned(message):
     
     if not banned_users:
         bot.reply_to(message,
-            "🛡️ *Ban List Status*\n\n"
-            "No users currently restricted\n\n"
-            "▸ Database: 0 entries\n"
-            "▸ Last ban: None",
+            "<blockquote>🛡️ *Bᴀɴ Lɪꜱᴛ Sᴛᴀᴛᴜꜱ*\n\n"
+            "Nᴏ ᴜꜱᴇʀꜱ ᴄᴜʀʀᴇɴᴛʟʏ ʀᴇꜱᴛʀɪᴄᴛᴇᴅ\n\n"
+            "▸ Dᴀᴛᴀʙᴀꜱᴇ: 0 Entries\n"
+            "▸ Lᴀꜱᴛ ʙᴀɴ: None</blockquote>",
             parse_mode="Markdown",
             reply_markup=admin_markup)
         return
     
     # Enhanced list formatting
     msg = [
-        "⛔ *SMM Booster Ban List*\n",
-        f"▸ Total Banned: {len(banned_users)}",
-        f"▸ Last Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n",
+        "<blockquote>⛔ *SMM Bᴏᴏꜱᴛᴇʀ Bᴀɴ Lɪꜱᴛ*\n",
+        f"▸ Tᴏᴛᴀʟ Bᴀɴɴᴇᴅ: {len(banned_users)}",
+        f"▸ Lᴀꜱᴛ Uᴘᴅᴀᴛᴇᴅ: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n</blockquote>",
         "━━━━━━━━━━━━━━━━━━━━"
     ]
     
@@ -3095,16 +3122,16 @@ def show_leaderboard(message):
     
     if not top_users:
         bot.reply_to(message,
-            "🌟 *SMM Booster Leaderboard*\n\n"
-            "No order data available yet\n\n"
-            "Be the first to appear here!",
+            "<blockquote>🌟 * SMM Bᴏᴏꜱᴛᴇʀ Lᴇᴀᴅᴇʀʙᴏᴀʀᴅ*\n\n"
+            "Nᴏ ᴏʀᴅᴇʀ ᴅᴀᴛᴀ ᴀᴠᴀɪʟᴀʙʟᴇ ʏᴇᴛ\n\n"
+            "Bᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴛᴏ ᴀᴘᴘᴇᴀʀ ʜᴇʀᴇ!</blockquote>",
             parse_mode="Markdown",
             reply_markup=main_markup)
         return
     
     leaderboard = [
-        "🏆 *SMM Booster Top Clients*",
-        "Ranked by completed orders\n",
+        "<blockquote>🏆 *SMM Bᴏᴏꜱᴛᴇʀ Tᴏᴘ Cʟɪᴇɴᴛꜱ*",
+        "Rᴀɴᴋᴇᴅ ʙʏ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀᴅᴇʀꜱ\n</blockquote>",
         "━━━━━━━━━━━━━━━━━━━━"
     ]
     
@@ -3119,8 +3146,8 @@ def show_leaderboard(message):
             leaderboard.append(f"{medal_emoji[i-1]} User {user_id}: *{count}* orders")
     
     leaderboard.extend([
-        "\n💎 *VIP Benefits Available*",
-        "Top 3 clients get monthly bonuses!"
+        "<blockquote>\n💎 *Vɪᴘ Bᴇɴᴇꜰɪᴛꜱ Aᴠᴀɪʟᴀʙʟᴇ*",
+        "Tᴏᴘ 3 Cʟɪᴇɴᴛꜱ ɢᴇᴛ ᴍᴏɴᴛʜʟʏ ʙᴏɴᴜꜱᴇꜱ!</blockquote>"
     ])
     
     bot.reply_to(message, "\n".join(leaderboard),
@@ -3239,6 +3266,7 @@ def process_user_info(message):
         user_data = getData(user_id) or {}
         
         info = f"""
+<blockquote>
 ┌──────────────────────
 │ 🔍 <b>𝗨𝘀𝗲𝗿 𝗜𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻</b>:
 │ ━━━━━━━━━━━━━━━━━━━━━━
@@ -3250,7 +3278,7 @@ def process_user_info(message):
 │ 👥 Rᴇꜰᴇʀʀᴀʟꜱ: {user_data.get('total_refs', 0)}
 │ 🔨 Sᴛᴀᴛᴜꜱ: {"BANNED ⛔" if is_banned(user_id) else "ACTIVE ✅"}
 └─────────────────────
-
+</blockquote>
         """
         bot.reply_to(message, info, parse_mode="HTML")
     except ValueError:
@@ -3280,6 +3308,7 @@ def server_status(message):
         mongo_stats = db.command("dbstats")
         
         status = f"""
+<blockquote>
 ┌───────────────────────
 │ 🖥 <b>𝙎𝙮𝙨𝙩𝙚𝙢 𝙎𝙩𝙖𝙩𝙪𝙨</b>
 │ ━━━━━━━━━━━━━━━━━━━━━━
@@ -3295,7 +3324,7 @@ def server_status(message):
 │ 🗃 Sᴛᴏʀᴀɢᴇ: {mongo_stats['storageSize']/1024/1024:.1f}MB
 │ 📂 Cᴏʟʟᴇᴄᴛɪᴏɴꜱ: {mongo_stats['collections']}
 └───────────────────────
-
+</blockquote>
         """
         bot.reply_to(message, status, parse_mode="HTML")
     except Exception as e:
@@ -3367,7 +3396,7 @@ def set_maintenance_message(message):
     sent = 0
     for user_id in users:
         try:
-            bot.send_message(user_id, f"⚠️ 𝙈𝙖𝙞𝙣𝙩𝙚𝙣𝙖𝙣𝙘𝙚 𝙉𝙤𝙩𝙞𝙘𝙚:\n{maintenance_message}")
+            bot.send_message(user_id, f"<blockquote>⚠️ 𝙈𝙖𝙞𝙣𝙩𝙚𝙣𝙖𝙣𝙘𝙚 𝙉𝙤𝙩𝙞𝙘𝙚:\n{maintenance_message}</blockquote>")
             sent += 1
             time.sleep(0.1)
         except:
@@ -3398,6 +3427,7 @@ def process_check_order(message):
         if order:
             status_time = datetime.fromtimestamp(order.get('timestamp', time.time())).strftime('%Y-%m-%d %H:%M')
             status = f"""
+<blockquote>
 ┌─────────────────────
 │ 📦 <b>Order #{order_id}</b>
 │ ━━━━━━━━━━━━━━
@@ -3409,6 +3439,7 @@ def process_check_order(message):
 │ 🔄 Sᴛᴀᴛᴜꜱ: {order.get('status', 'N/A')}
 │ ⏱ Dᴀᴛᴇ: {status_time}
 └─────────────────────
+</blockquote>
             """
             bot.reply_to(message, status, parse_mode="HTML", disable_web_page_preview=True)
         else:
@@ -3423,37 +3454,39 @@ def process_check_order(message):
 def policy_command(message):
     """Show the bot's usage policy"""
     policy_text = """
-📜 <b>Bot Usage Policy & Guidelines</b>
+<blockquote>
+📜 <b> Bᴏᴛ Uꜱᴀɢᴇ Pᴏʟɪᴄʏ & Gᴜɪᴅᴇʟɪɴᴇꜱ</b>
 ━━━━━━━━━━━━━━━━━━━━
 
-🔹 <b>1. Acceptable Use</b>
-   ├ ✅ Permitted: Legal, non-harmful content
-   └ ❌ Prohibited: Spam, harassment, illegal material
+🔹 <b>1. Aᴄᴄᴇᴘᴛᴀʙʟᴇ Uꜱᴇ</b>
+  ├ ✅ Pᴇʀᴍɪᴛᴛᴇᴅ: Lᴇɢᴀʟ, ɴᴏɴ-ʜᴀʀᴍꜰᴜʟ ᴄᴏɴᴛᴇɴᴛ
+  └ ❌ Pʀᴏʜɪʙɪᴛᴇᴅ: Sᴘᴀᴍ, ʜᴀʀᴀꜱꜱᴍᴇɴᴛ, ɪʟʟᴇɢᴀʟ ᴍᴀᴛᴇʀɪᴀʟ
 
-🔹 <b>2. Fair Usage Policy</b>
-   ├ ⚖️ Abuse may lead to restrictions
-   └ 📊 Excessive usage may be rate-limited
+🔹 <b>2. Fᴀɪʀ Uꜱᴀɢᴇ Pᴏʟɪᴄʏ</b>
+   ├ ⚖️ Aʙᴜꜱᴇ ᴍᴀʏ ʟᴇᴀᴅ ᴛᴏ ʀᴇꜱᴛʀɪᴄᴛɪᴏɴꜱ
+   └ 📊 Exᴄᴇꜱꜱɪᴠᴇ ᴜꜱᴀɢᴇ ᴍᴀʏ ʙᴇ ʀᴀᴛᴇ-ʟɪᴍɪᴛᴇᴅ
 
-🔹 <b>3. Financial Policy</b>
-   ├ 💳 All transactions are final
-   └ 🔄 No refunds for completed services
+🔹 <b>3. Fɪɴᴀɴᴄɪᴀʟ Pᴏʟɪᴄʏ</b>
+   ├ 💳 Aʟʟ ᴛʀᴀɴꜱᴀᴄᴛɪᴏɴꜱ ᴀʀᴇ ꜰɪɴᴀʟ
+   └ 🔄 Nᴏ ʀᴇꜰᴜɴᴅꜱ ꜰᴏʀ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ꜱᴇʀᴠɪᴄᴇꜱ
 
-🔹 <b>4. Privacy Commitment</b>
-   ├ 🔒 Your data stays confidential
-   └ 🤝 Never shared with third parties
+🔹 <b>4. Pʀɪᴠᴀᴄʏ Cᴏᴍᴍɪᴛᴍᴇɴᴛ</b>
+   ├ 🔒 Yᴏᴜʀ ᴅᴀᴛᴀ ꜱᴛᴀʏꜱ ᴄᴏɴꜰɪᴅᴇɴᴛɪᴀʟ
+   └ 🤝 Nᴇᴠᴇʀ ꜱʜᴀʀᴇᴅ ᴡɪᴛʜ ᴛʜɪʀᴅ ᴘᴀʀᴛɪᴇꜱ
 
-🔹 <b>5. Platform Compliance</b>
-   ├ ✋ Must follow Telegram's ToS
-   └ 🌐 All content must be legal in your jurisdiction
+🔹 <b>5. Pʟᴀᴛꜰᴏʀᴍ Cᴏᴍᴘʟɪᴀɴᴄᴇ</b>
+   ├ ✋ Mᴜꜱᴛ ꜰᴏʟʟᴏᴡ Tᴇʟᴇɢʀᴀᴍ'ꜱ TᴏS
+   └ 🌐 Aʟʟ ᴄᴏɴᴛᴇɴᴛ ᴍᴜꜱᴛ ʙᴇ ʟᴇɢᴀʟ ɪɴ ʏᴏᴜʀ ᴊᴜʀɪꜱᴅɪᴄᴛɪᴏɴ
 
-⚠️ <b>Consequences of Violation</b>
-   ├ ⚠️ First offense: Warning
-   ├ 🔇 Repeated violations: Temporary suspension
-   └ 🚫 Severe cases: Permanent ban
+⚠️ <b>CᴏɴꜱᴇQᴜᴇɴᴄᴇꜱ ᴏꜰ Vɪᴏʟᴀᴛɪᴏɴ</b>
+   ├ ⚠️ Fɪʀꜱᴛ ᴏꜰꜰᴇɴꜱᴇ: Wᴀʀɴɪɴɢ
+   ├ 🔇 Rᴇᴘᴇᴀᴛᴇᴅ ᴠɪᴏʟᴀᴛɪᴏɴꜱ: Tᴇᴍᴘᴏʀᴀʀʏ ꜱᴜꜱᴘᴇɴꜱɪᴏɴ
+   └ 🚫 Sᴇᴠᴇʀᴇ ᴄᴀꜱᴇꜱ: Pᴇʀᴍᴀɴᴇɴᴛ ʙᴀɴ
 
-📅 <i>Last updated: {update_date}</i>
+📅 <i> Lᴀꜱᴛ ᴜᴘᴅᴀᴛᴇᴅ: {update_date}</i>
 ━━━━━━━━━━━━━━━━━━━━
-💡 Need help? Contact @SocialHubBoosterTMbot
+💡 Nᴇᴇᴅ ʜᴇʟᴘ? Cᴏɴᴛᴀᴄᴛ @SocialHubBoosterTMbot
+</blockquote>
 """.format(update_date=datetime.now().strftime('%Y-%m-%d'))  # Fixed datetime reference
     
     markup = types.InlineKeyboardMarkup()
@@ -3465,7 +3498,7 @@ def policy_command(message):
 def accept_policy_callback(call):
     bot.answer_callback_query(
         call.id,
-        text="🙏 Thank you for your cooperation!",
+        text="🙏 Tʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ʏᴏᴜʀ Cᴏᴏᴘᴇʀᴀᴛɪᴏɴ!",
         show_alert=True
     )
 
@@ -3535,6 +3568,7 @@ def start_status_updater():
 
 threading.Thread(target=start_status_updater, daemon=True).start()
 
+
 #======================== Set Bot Commands =====================#
 def get_formatted_datetime():
     """Get current datetime in East Africa Time (EAT) timezone"""
@@ -3553,12 +3587,14 @@ def send_startup_message(is_restart=False):
         status = "Rᴇsᴛᴀʀᴛᴇᴅ" if is_restart else "Sᴛᴀʀᴛᴇᴅ"
         
         message = f"""
+<blockquote>
 🚀 <b>Bᴏᴛ {status}</b> !
 
 📅 Dᴀᴛᴇ : {dt['date']}
 ⏰ Tɪᴍᴇ : {dt['time']}
 🌐 Tɪᴍᴇᴢᴏɴᴇ : {dt['timezone']}
 🛠️ Bᴜɪʟᴅ Sᴛᴀᴛᴜs: v2 [ Sᴛᴀʙʟᴇ ]
+</blockquote>
 """
         bot.send_message(
             chat_id=payment_channel,  # Or your specific logs channel ID
