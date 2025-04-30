@@ -449,7 +449,6 @@ def clear_all_pinned_messages():
 #========= Show how much the user spent ==========#
 def get_confirmed_spent(user_id):
     try:
-        from . import orders_collection
         pipeline = [
             {"$match": {
                 "user_id": str(user_id),
@@ -465,7 +464,6 @@ def get_confirmed_spent(user_id):
 
 def get_pending_spent(user_id):
     try:
-        from . import orders_collection
         pipeline = [
             {"$match": {
                 "user_id": str(user_id),
