@@ -675,7 +675,8 @@ def show_order_stats(message):
         if recent_orders:
             for i, order in enumerate(recent_orders, 1):
                 time_ago = format_timespan(time.time() - order.get('timestamp', time.time()))
-                status_icon = "✅" if order.get('status') == "completed" else "⏳" if order.get('status') == "pending" else "❌"
+                # Fix: Only show ❌ if status is explicitly "failed"
+                status_icon = "✅" if order.get('status', '').lower() == "completed" else "⏳" if order.get('status', '').lower() == "pending" else "🔹"
                 msg += f"\n{i}. {status_icon} {order.get('service', 'N/A')[:15]}... x{order.get('quantity', '?')} (<i>{time_ago} ago</i>)"
         else:
             msg += "\n└ 🌟 No recent orders found"
@@ -687,7 +688,10 @@ def show_order_stats(message):
             InlineKeyboardButton("📜 Full History", callback_data="order_history")
         )
         
-        # Check if this is a callback edit or new message
+        # Store the stats in the message object for later use
+        message.stats_data = stats
+        message.recent_orders = recent_orders
+        
         if hasattr(message, 'is_callback'):
             bot.edit_message_text(
                 chat_id=message.chat.id,
@@ -735,7 +739,8 @@ def show_recent_orders(call):
         if recent_orders:
             for i, order in enumerate(recent_orders, 1):
                 time_ago = format_timespan(time.time() - order.get('timestamp', time.time()))
-                status_icon = "✅" if order.get('status') == "completed" else "⏳" if order.get('status') == "pending" else "❌"
+                # Fix: Only show ❌ if status is explicitly "failed"
+                status_icon = "✅" if order.get('status', '').lower() == "completed" else "⏳" if order.get('status', '').lower() == "pending" else "🔹"
                 msg += f"\n{i}. {status_icon} {order.get('service', 'N/A')[:15]}... x{order.get('quantity', '?')} (<i>{time_ago} ago</i>)"
         else:
             msg += "\n└ 🌟 No recent orders found"
@@ -763,9 +768,21 @@ def show_recent_orders(call):
 def callback_show_order_stats(call):
     """Go back to the SMM order portfolio page from history"""
     try:
-        # Mark the call as a callback to trigger edit_message behavior
-        call.message.is_callback = True
-        show_order_stats(call.message)
+        # Create a message-like object with stored data
+        from types import SimpleNamespace
+        message = SimpleNamespace()
+        message.chat = call.message.chat
+        message.message_id = call.message.message_id
+        message.from_user = call.from_user
+        message.is_callback = True
+        
+        # Retrieve the stored stats if available
+        if hasattr(call.message, 'stats_data'):
+            message.stats_data = call.message.stats_data
+        if hasattr(call.message, 'recent_orders'):
+            message.recent_orders = call.message.recent_orders
+            
+        show_order_stats(message)
         bot.answer_callback_query(call.id)
     except Exception as e:
         print(f"Error in callback_show_order_stats: {e}")
