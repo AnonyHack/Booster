@@ -870,16 +870,16 @@ def handle_telegram_order(message):
     # Here we'll just pass it through the register_next_step_handler
     
     msg = f"""📊 Order {service['name']}:
-<blockquote>
+
 📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-</blockquote>
 
-*Enter quantity*:"""
+
+Enter quantity:"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -995,14 +995,14 @@ def process_telegram_link(message, service, quantity, cost):
             bot.reply_to(
                 message,
                 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-<blockquote>              
+             
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
 😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-</blockquote>
+
 ⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
@@ -1120,15 +1120,15 @@ def handle_tiktok_order(message):
 )
     
     msg = f"""📊 Order {service['name']}:
-<blockquote>  
+
 📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-</blockquote>
-*Enter quantity*:"""
+
+Enter quantity:"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -1236,14 +1236,14 @@ def process_tiktok_link(message, service, quantity, cost):
             bot.reply_to(
                 message,
                 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-<blockquote>               
+             
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
 😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-</blockquote>
+
 ⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
@@ -1356,15 +1356,15 @@ def handle_instagram_order(message):
     )
     
     msg = f"""📊 Order {service['name']}:
-<blockquote>  
+ 
 📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-</blockquote>
-*Enter quantity:*"""
+
+Enter quantity:"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -1469,14 +1469,14 @@ def process_instagram_link(message, service, quantity, cost):
             bot.reply_to(
                 message,
                 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-<blockquote>              
+              
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
 😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-</blockquote>
+
 ⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
@@ -1587,15 +1587,15 @@ def handle_youtube_order(message):
     )
     
     msg = f"""📊 Order {service['name']}:
-<blockquote>   
+  
 📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-</blockquote>
-*Enter quantity:*"""
+
+Enter quantity:"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -1700,14 +1700,14 @@ def process_youtube_link(message, service, quantity, cost):
             bot.reply_to(
                 message,
                 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-<blockquote>              
+             
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
 😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-</blockquote>
+
 ⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
@@ -1828,15 +1828,15 @@ def handle_facebook_order(message):
     )
     
     msg = f"""📊 Order {service['name']}:
-<blockquote>
+
 📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-</blockquote>
-*Enter quantity*:"""
+
+Enter quantity:"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -1941,14 +1941,14 @@ def process_facebook_link(message, service, quantity, cost):
             bot.reply_to(
                 message,
                 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-<blockquote>               
+             
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
 😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-</blockquote>
+
 ⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
@@ -2050,15 +2050,15 @@ def handle_whatsapp_order(message):
     )
     
     msg = f"""📊 Order {service['name']}:
-<blockquote>
+
 📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
 📌 Mɪɴɪᴍᴜᴍ: {service['min']}
 📌 Mᴀxɪᴍᴜᴍ: {service['max']}
 💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-</blockquote>
-*Enter quantity:*"""
+
+Enter quantity:"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -2162,14 +2162,14 @@ def process_whatsapp_link(message, service, quantity, cost):
             bot.reply_to(
                 message,
                 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-<blockquote>             
+             
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
 😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-</blockquote>
+
 ⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
@@ -2265,9 +2265,7 @@ def back_to_main(message):
         combined_markup.row("📜 Help")
         
         bot.reply_to(message,
-            "🔄 *Rᴇᴛᴜʀɴɪɴɢ ᴛᴏ Mᴀɪɴ Mᴇɴᴜ*\n\n"
-            "Aʟʟ ᴀᴅᴍɪɴ ꜰᴜɴᴄᴛɪᴏɴꜱ ꜱᴀᴠᴇᴅ\n"
-            "Yᴏᴜ ᴄᴀɴ ʀᴇꜱᴜᴍᴇ ʟᴀᴛᴇʀ",
+            "🔄 *Rᴇᴛᴜʀɴɪɴɢ ᴛᴏ Mᴀɪɴ Mᴇɴᴜ*\n\n",
             parse_mode="Markdown",
             reply_markup=combined_markup)
     else:
