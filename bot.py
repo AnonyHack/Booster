@@ -578,7 +578,7 @@ Yᴇꜱ! Fᴏʀ ʙᴀʟᴀɴᴄᴇꜱ ᴏᴠᴇʀ 10,000 ᴄᴏɪɴꜱ, ᴄᴏɴ
 
     # Create inline button for support
     markup = InlineKeyboardMarkup()
-    support_button = InlineKeyboardButton("🆘 Contact Support", url="https://t.me/SocialHubBoosterHelper")
+    support_button = InlineKeyboardButton("🆘 Contact Support", url="https://t.me/SocialHubBoosterTMbot")
     markup.add(support_button)
 
     bot.reply_to(
