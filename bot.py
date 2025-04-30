@@ -3534,19 +3534,6 @@ def start_status_updater():
 
 threading.Thread(target=start_status_updater, daemon=True).start()
 
-#======================== Logging Setup =====================#
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    filename='bot.log'
-)
-logger = logging.getLogger(__name__)
-
-print(f"Account folder exists: {os.path.exists('Account')}")
-print(f"Files in Account: {os.listdir('Account')}")
-
-print(f"Can write to Account: {os.access('Account', os.W_OK)}")
-
 #======================== Set Bot Commands =====================#
 def get_formatted_datetime():
     """Get current datetime in East Africa Time (EAT) timezone"""
