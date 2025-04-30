@@ -196,20 +196,6 @@ def add_order(user_id, order_data):
         logger.error(f"Error adding order for {user_id}: {e}")
         return False
 
-def update_order_status(user_id, order_id, new_status):
-    """Update status of a specific order."""
-    try:
-        result = orders_collection.update_one(
-            {"user_id": str(user_id), "order_id": order_id},
-            {"$set": {
-                "status": new_status,
-                "status_update_time": time.time()
-            }}
-        )
-        return result.modified_count > 0
-    except PyMongoError as e:
-        logger.error(f"Error updating order status {order_id}: {e}")
-        return False
 
 def get_user_orders_stats(user_id):
     """Get order statistics for a specific user."""
@@ -254,6 +240,21 @@ def get_user_orders_stats(user_id):
         # Return default stats with all zeros if there's an error
     
     return stats
+
+def update_order_status(user_id, order_id, new_status):
+    """Update status of a specific order."""
+    try:
+        result = orders_collection.update_one(
+            {"user_id": str(user_id), "order_id": order_id},
+            {"$set": {
+                "status": new_status,
+                "status_update_time": time.time()
+            }}
+        )
+        return result.modified_count > 0
+    except PyMongoError as e:
+        logger.error(f"Error updating order status {order_id}: {e}")
+        return False
 
 # Admin functions
 def get_all_users():
@@ -476,5 +477,9 @@ def get_pending_spent(user_id):
     except Exception as e:
         print(f"Error in get_pending_spent: {e}")
         return 0.0
-        
+
+
+
+
 print("functions.py loaded with MongoDB support")
+
