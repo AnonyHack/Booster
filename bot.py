@@ -686,7 +686,7 @@ def show_order_stats(message):
         msg = f"""
 📦 <b>Yᴏᴜʀ SMM Oʀᴅᴇʀ Pᴏʀᴛꜰᴏʟɪᴏ</b>
 ━━━━━━━━━━━━━━━━━━━━
-<blockquote>
+
 📊 <b>Pᴇʀꜰᴏʀᴍᴀɴᴄᴇ Oᴠᴇʀᴠɪᴇᴡ</b>
 ├ 🔄 Tᴏᴛᴀʟ Oʀᴅᴇʀꜱ: <code>{stats['total']}</code>
 ├ ✅ Cᴏᴍᴘʟᴇᴛɪᴏɴ Rᴀᴛᴇ: <code>{completion_rate:.1f}%</code>
@@ -696,7 +696,6 @@ def show_order_stats(message):
 📌 <b>NOTE:</b> Iꜰ ʏᴏᴜ ʜᴀᴠᴇ ᴀ Fᴀɪʟᴇᴅ Oʀᴅᴇʀ ᴀɴᴅ ʏᴏᴜʀ Cᴏɪɴꜱ ᴡᴇʀᴇ Dᴇᴅᴜᴄᴛᴇᴅ, 
 Vɪꜱɪᴛ ᴛʜᴇ @smmserviceslogs ᴀɴᴅ ɢᴇᴛ ʏᴏᴜʀ Oʀᴅᴇʀ Iᴅ. 
 Tʜᴇɴ ꜱᴇɴᴅ ɪᴛ ᴛᴏ ᴛʜᴇ Aᴅᴍɪɴ ꜰᴏʀ Aꜱꜱɪꜱᴛᴀɴᴄᴇ @SocialHubBoosterTMbot.
-</blockquote>
 """
 
         markup = InlineKeyboardMarkup()
@@ -724,9 +723,9 @@ Tʜᴇɴ ꜱᴇɴᴅ ɪᴛ ᴛᴏ ᴛʜᴇ Aᴅᴍɪɴ ꜰᴏʀ Aꜱꜱɪꜱᴛ�
     except Exception as e:
         print(f"Order stats error: {e}")
         bot.reply_to(message,
-            "⚠️ <blockquote><b>Oʀᴅᴇʀ Sᴛᴀᴛɪꜱᴛɪᴄꜱ Uɴᴀᴠᴀɪʟᴀʙʟᴇ</b>\n\n"
+            "⚠️ <b>Oʀᴅᴇʀ Sᴛᴀᴛɪꜱᴛɪᴄꜱ Uɴᴀᴠᴀɪʟᴀʙʟᴇ</b>\n\n"
             "ᴡWᴇ ᴄᴏᴜʟᴅɴ'ᴛ ʀᴇᴛʀɪᴇᴠᴇ ʏᴏᴜʀ Oʀᴅᴇʀ Dᴀᴛᴀ ᴀᴛ ᴛʜɪꜱ ᴛɪᴍᴇ\n"
-            "Pʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ</blockquote>",
+            "Pʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ",
             parse_mode='HTML')
 
 @bot.callback_query_handler(func=lambda call: call.data == "order_history")
@@ -787,7 +786,7 @@ def callback_show_order_stats(call):
     except Exception as e:
         print(f"Callback show_order_stats error: {e}")
         bot.answer_callback_query(call.id, "⚠️ Failed to go back", show_alert=True)
-
+      
 def delete_after_delay(chat_id, message_id, delay):
     time.sleep(delay)
     try:
