@@ -453,12 +453,15 @@ def get_confirmed_spent(user_id):
         pipeline = [
             {"$match": {
                 "user_id": str(user_id),
-                "status": {"$in": ["completed", "partial"]}
+                "status": "completed"  # Only completed orders
             }},
-            {"$group": {"_id": None, "total": {"$sum": "$cost"}}}
+            {"$group": {
+                "_id": None, 
+                "total": {"$sum": "$cost"}
+            }}
         ]
         result = list(orders_collection.aggregate(pipeline))
-        return result[0]["total"] if result else 0.0
+        return float(result[0]["total"]) if result else 0.0
     except Exception as e:
         print(f"Error in get_confirmed_spent: {e}")
         return 0.0
