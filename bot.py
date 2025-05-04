@@ -680,7 +680,7 @@ def show_order_stats(message):
         orders_collection.update_many(
             {
                 "user_id": user_id,
-                "status": {"$in": ["completed", "failed"]},
+                "status": {"$in": ["completed", "Completed", "failed", "Failed"]},
                 "hidden": {"$ne": True}
             },
             {"$set": {"hidden": True}}
