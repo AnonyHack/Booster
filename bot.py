@@ -7,6 +7,7 @@ import traceback
 import logging
 import psutil
 import threading
+from threading import Thread
 import datetime
 from datetime import datetime
 import pytz
@@ -3526,51 +3527,42 @@ def accept_policy_callback(call):
 
 #======================= Function to periodically check order status ====================#
 def update_order_statuses():
-
+    """Periodically check SMM panel and update order statuses in MongoDB"""
     try:
-        pending_orders = list(orders_collection.find({"status": "pending"}))
-        if not pending_orders:
-            return
-
+        # Get pending/processing orders from MongoDB
+        pending_orders = orders_collection.find({
+            "status": {"$in": ["pending", "processing"]}
+        })
+        
         for order in pending_orders:
-            order_id = order.get("order_id")
-            if not order_id:
-                continue
-
+            # Check status with SMM panel API
             response = requests.post(
                 SmmPanelApiUrl,
                 data={
                     'key': SmmPanelApi,
                     'action': 'status',
-                    'order': order_id
-                },
-                timeout=30
+                    'order': order['order_id']
+                }
             )
             result = response.json()
-
-            if result and result.get("status"):
-                new_status = result["status"].lower()
-                if new_status != "pending":
-                    orders_collection.update_one(
-                        {"order_id": order_id},
-                        {"$set": {
-                            "status": new_status,
-                            "status_update_time": time.time()
-                        }}
-                    )
-                    print(f"✅ Order {order_id} updated to {new_status}")
-
+            
+            # Update status in MongoDB if different
+            if result.get('status') and result['status'] != order['status']:
+                orders_collection.update_one(
+                    {"_id": order['_id']},
+                    {"$set": {"status": result['status'].lower()}}
+                )
+                
     except Exception as e:
-        print(f"[Order Status Check Error] {e}")
+        print(f"Error updating order statuses: {e}")
 
-# Schedule it to run every 2 minutes
-def start_status_updater():
+def status_updater():
     while True:
         update_order_statuses()
-        time.sleep(120)  # every 2 minutes
+        time.sleep(300)  # Check every 5 minutes
 
-threading.Thread(target=start_status_updater, daemon=True).start()
-
+# Start the updater in a separate thread
+Thread(target=status_updater, daemon=True).start()
 
 #======================== Set Bot Commands =====================#
 def get_formatted_datetime():
