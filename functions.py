@@ -229,16 +229,20 @@ def get_user_orders_stats(user_id):
         # Update counts based on aggregation results
         for result in results:
             status = result["_id"].lower()
-            if status in stats:
-                stats[status] = result["count"]
+            count = result["count"]
+            
+            if status == "processing":
+                stats['pending'] += count  # Treat 'processing' as pending
+            elif status in stats:
+                stats[status] = count
         
-        # Calculate total as sum of all status counts
+        # Calculate total as sum of all known status counts
         stats['total'] = stats['completed'] + stats['pending'] + stats['failed']
-        
-    except Exception as e:  # Changed from PyMongoError to Exception for broader coverage
+    
+    except Exception as e:
         logger.error(f"Error getting order stats for {user_id}: {e}")
         # Return default stats with all zeros if there's an error
-    
+
     return stats
 
 def update_order_status(user_id, order_id, new_status):
