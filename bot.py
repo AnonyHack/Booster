@@ -742,7 +742,7 @@ def show_recent_orders(call):
         recent_orders = list(orders_collection.find(
             {
                 "user_id": user_id,
-                "status": "pending",
+                "status": {"$in": ["pending", "processing"]}
                 "hidden": {"$ne": True}
             },
             {"service": 1, "quantity": 1, "status": 1, "timestamp": 1, "_id": 0}
