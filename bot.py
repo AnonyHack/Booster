@@ -359,7 +359,7 @@ def set_bot_commands():
         print(f"Error setting bot commands: {e}")
   
 #======================= Start Command =======================#
-@bot.message_handler(commands=['start'])
+@bot.message_handler(commands=['start']) 
 @check_ban
 def send_welcome(message):
     user_id = str(message.from_user.id)
@@ -454,7 +454,7 @@ Wɪᴛʜ ᴏᴜʀ ʙᴏᴛ, ʏᴏᴜ ᴄᴀɴ ʙᴏᴏꜱᴛ ʏᴏᴜʀ ꜱᴏ�
             parse_mode='HTML',
             reply_markup=main_markup
         )
-        
+
         # Send welcome bonus message separately if applicable
         if userData['welcome_bonus'] == 0:
             bot.send_message(
@@ -462,16 +462,21 @@ Wɪᴛʜ ᴏᴜʀ ʙᴏᴛ, ʏᴏᴜ ᴄᴀɴ ʙᴏᴏꜱᴛ ʏᴏᴜʀ ꜱᴏ�
                 f"🎁 <b>You received +{welcome_bonus} coins welcome bonus!</b>",
                 parse_mode='HTML'
             )
-            
+
+        # ✅ ADDITION: Check for pending orders and notify the user
+        stats = get_user_orders_stats(user_id)
+        if stats['pending'] > 0:
+            bot.send_message(
+                user_id,
+                f"⏳ You have {stats['pending']} pending orders",
+                reply_markup=InlineKeyboardMarkup().add(
+                    InlineKeyboardButton("View Orders", callback_data="order_history")
+                )
+            )
+
     except Exception as e:
-        print(f"Error sending welcome message: {e}")
-        # Fallback to text message if image fails
-        bot.send_message(
-            user_id,
-            welcome_caption,
-            parse_mode='HTML',
-            reply_markup=main_markup
-        )
+        print(f"Error in send_welcome: {e}")
+
 #====================== My Account =====================#
 @bot.message_handler(func=lambda message: message.text == "👤 My Account")
 def my_account(message):
