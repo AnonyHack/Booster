@@ -1333,7 +1333,7 @@ def handle_instagram_order(message):
         "❤️ Insta Likes": {
             "name": "Instagram Likes",
             "quality": "Power Quality",
-            "min": 500,
+            "min": 10,
             "max": 10000,
             "price": 1000,
             "unit": "1k likes",
@@ -1497,7 +1497,7 @@ def process_instagram_link(message, service, quantity, cost):
             try:
                 bot.send_message(
                     payment_channel,
-                    f"""📢 New Instagram Order:
+                    f"""<b>📢 New Instagram Order:</b>
                     
 👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
 🆔 <b>ID:</b> {message.from_user.id}
@@ -1728,7 +1728,7 @@ def process_youtube_link(message, service, quantity, cost):
             try:
                 bot.send_message(
                     payment_channel,
-                    f"""📢 New Youtube Order:
+                    f"""<b>📢 New Youtube Order:</b>
                     
 👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
 🆔 <b>ID:</b> {message.from_user.id}
@@ -1970,7 +1970,7 @@ def process_facebook_link(message, service, quantity, cost):
             try:
                 bot.send_message(
                     payment_channel,
-                    f"""📢 New Facebook Order:
+                    f"""<b>📢 New Facebook Order:</b>
                     
 👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
 🆔 <b>ID:</b> {message.from_user.id}
@@ -2190,7 +2190,7 @@ def process_whatsapp_link(message, service, quantity, cost):
             try:
                 bot.send_message(
                     payment_channel,
-                    f"""📢 New Whastapp Order:
+                    f"""<b>📢 New Whastapp Order:</b>
                     
 👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
 🆔 <b>ID:</b> {message.from_user.id}
