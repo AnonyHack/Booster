@@ -7,6 +7,7 @@ flask
 gunicorn
 pytz
 psutil
+PIL
 
 # Monitoring & Reliability
 schedule
@@ -23,3 +24,7 @@ pymongo[srv]
 python-dateutil
 tzlocal
 pyyaml
+
+# Add missing dependencies
+Pillow
+pyrogram
