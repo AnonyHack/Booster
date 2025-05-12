@@ -236,14 +236,14 @@ def check_membership_and_prompt(user_id, message):
 🔐 *Vᴇʀɪғɪᴄᴀᴛɪᴏɴ Sᴛᴀᴛᴜꜱ:* 𝘕𝘰𝘵 𝘝𝘦𝘳𝘪𝘧𝘪𝘦𝘥
 ━━━━━━━━━━━━━━━━━━━━
 </blockquote>""",
-            parse_mode="Markdown",
+            parse_mode="HTML",
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/SmmBoosterz")],
-                [InlineKeyboardButton("🤖 BOTS UPDATE", url="https://t.me/Megahubbots")],
-                [InlineKeyboardButton("💎 PROMOTER CHANNEL", url="https://t.me/Freenethubz")],
-                [InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
+              #  [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/SmmBoosterz")],
+              #  [InlineKeyboardButton("🤖 BOTS UPDATE", url="https://t.me/Megahubbots")],
+               # [InlineKeyboardButton("💎 PROMOTER CHANNEL", url="https://t.me/Freenethubz")],
+               # [InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
                 [InlineKeyboardButton("📝 LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
-                [InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
+               # [InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
                 [InlineKeyboardButton("✨ ✅ VERIFY MEMBERSHIP", callback_data="verify_membership")],
                 [InlineKeyboardButton("❓ Why Join These Channels?", callback_data="why_join_info")]
             ])
