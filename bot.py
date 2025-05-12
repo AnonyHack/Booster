@@ -19,6 +19,7 @@ from telebot import types
 from logging.handlers import RotatingFileHandler
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
+from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageFilter
 from telebot.types import ForceReply, KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup, BotCommand
 from functions import (insertUser, track_exists, addBalance, cutBalance, getData,
                        addRefCount, isExists, setWelcomeStaus, setReferredStatus, updateUser, 
@@ -44,7 +45,7 @@ admin_user_ids = [int(id.strip()) for id in os.getenv("ADMIN_USER_IDS", "").spli
 bot = telebot.TeleBot(bot_token)
 
 
-welcome_bonus = 100
+welcome_bonus = 60
 ref_bonus = 50
 
 # Main keyboard markup
@@ -189,7 +190,7 @@ def add_order(user_id, order_data):
 #==================================== Channel Membership Check =======================#
 #================================== Force Join Method =======================================#
 #================================== Force Join Method =======================================#
-required_channels = ["smmserviceslogs"]  # Channel usernames without "@"
+required_channels = ["SmmBoosterz", "Megahubbots", "Freenethubz", "Freenethubchannel", "smmserviceslogs"]  # Channel usernames without "@"
 payment_channel = "@smmserviceslogs"  # Channel for payment notifications
 
 def is_user_member(user_id):
@@ -237,12 +238,12 @@ def check_membership_and_prompt(user_id, message):
 </blockquote>""",
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/smmserviceslogs")],
-                #[InlineKeyboardButton("🤖 BOTS UPDATE", url="https://t.me/Megahubbots")],
-                #[InlineKeyboardButton("💎 PROMOTER CHANNEL", url="https://t.me/Freenethubz")],
-                #[InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
-                #[InlineKeyboardButton("📝 LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
-                #[InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
+                [InlineKeyboardButton("📢 MAIN CHANNEL", url="https://t.me/SmmBoosterz")],
+                [InlineKeyboardButton("🤖 BOTS UPDATE", url="https://t.me/Megahubbots")],
+                [InlineKeyboardButton("💎 PROMOTER CHANNEL", url="https://t.me/Freenethubz")],
+                [InlineKeyboardButton("🔰 BACKUP CHANNEL", url="https://t.me/Freenethubchannel")],
+                [InlineKeyboardButton("📝 LOGS CHANNEL", url="https://t.me/smmserviceslogs")],
+                [InlineKeyboardButton("📱 WHATSAPP CHANNEL", url="https://whatsapp.com/channel/0029VaDnY2y0rGiPV41aSX0l")],
                 [InlineKeyboardButton("✨ ✅ VERIFY MEMBERSHIP", callback_data="verify_membership")],
                 [InlineKeyboardButton("❓ Why Join These Channels?", callback_data="why_join_info")]
             ])
@@ -949,7 +950,6 @@ def process_telegram_link(message, service, quantity, cost):
         bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ Tᴇʟᴇɢʀᴀᴍ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=telegram_services_markup)
         return
     
-    # Submit to SMM panel
     try:
         response = requests.post(
             SmmPanelApiUrl,
@@ -987,14 +987,78 @@ def process_telegram_link(message, service, quantity, cost):
             # Add to order history
             add_order(str(message.from_user.id), order_data)
             
-            # Create "Check Order Status" button
+            # Generate notification image
+            try:
+                user_img = get_profile_photo(message.from_user.id)
+                bot_img = get_profile_photo(bot.get_me().id)
+                image_path = generate_notification_image(
+                    user_img,
+                    bot_img,
+                    message.from_user.first_name,
+                    bot.get_me().first_name,
+                    service['name']
+                )
+                
+                if image_path:
+                    # Create buttons
+                    markup = InlineKeyboardMarkup()
+                    markup.row(
+                        InlineKeyboardButton("🔗 View Order Link", url=link),
+                        InlineKeyboardButton("🤖 Visit Bot", url=f"https://t.me/{bot.get_me().username}")
+                    )
+                    
+                    # Stylish notification to payment channel
+                    caption = f"""📢 <b>Nᴇᴡ Tᴇʟᴇɢʀᴀᴍ Oʀᴅᴇʀ</b>
+                    
+👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
+🆔 <b>ID:</b> {message.from_user.id}
+📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
+🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
+💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
+📎 <b>Lɪɴᴋ:</b> {link}
+🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
+⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
+🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+                    
+                    with open(image_path, 'rb') as photo:
+                        bot.send_photo(
+                            payment_channel,
+                            photo,
+                            caption=caption,
+                            parse_mode='HTML',
+                            reply_markup=markup
+                        )
+                    
+                    # Clean up
+                    os.remove(image_path)
+                    
+            except Exception as e:
+                print(f"Error generating notification image: {e}")
+                # Fallback to text message if image generation fails
+                bot.send_message(
+                    payment_channel,
+                    f"""<b>📢 New Telegram Order:</b>
+                    
+👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
+🆔 <b>ID:</b> {message.from_user.id}
+📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
+🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
+💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
+📎 <b>Lɪɴᴋ:</b> {link}
+🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
+⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
+🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}""",
+                    disable_web_page_preview=True,
+                    parse_mode='HTML'
+                )
+
+            # Create "Check Order Status" button for user
             markup = InlineKeyboardMarkup()
             check_status_button = InlineKeyboardButton(
                 text="📊 Check Order Status",
-                url=f"https://t.me/{payment_channel.lstrip('@')}"  # Hardcoded for testing  # Convert @channel to proper URL
+                url=f"https://t.me/{payment_channel.lstrip('@')}"
             )
-            markup.add(check_status_button)  # Use add() instead of row()
-
+            markup.add(check_status_button)
             
             # Stylish confirmation message
             bot.reply_to(
@@ -1021,27 +1085,6 @@ def process_telegram_link(message, service, quantity, cost):
                 data['orders_count'] = 0
             data['orders_count'] += 1
             updateUser(user_id, data)
-            
-            # Stylish notification to payment channel
-            try:
-                bot.send_message(
-                    payment_channel,
-                    f"""📢 <b>Nᴇᴡ Tᴇʟᴇɢʀᴀᴍ Oʀᴅᴇʀ</b>
-                    
-👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
-🆔 <b>ID:</b> {message.from_user.id}
-📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
-🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
-💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
-⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
-🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}""",
-                    disable_web_page_preview=True,
-                    parse_mode='HTML'
-                )
-            except Exception as e:
-                print(f"Fᴀɪʟᴇᴅ ᴛᴏ ꜱᴇɴᴅ ᴛᴏ ᴘᴀʏᴍᴇɴᴛ ᴄʜᴀɴɴᴇʟ: {e}")
             
         else:
             error_msg = result.get('error', 'Uɴᴋɴᴏᴡɴ ᴇʀʀᴏʀ ꜰʀᴏᴍ SMM ᴘᴀɴᴇʟ')
@@ -1087,7 +1130,7 @@ def handle_tiktok_order(message):
             "name": "TikTok Views",
             "quality": "Fast Speed",
             "link_hint": "Tiktok Post Link",
-            "min": 100,
+            "min": 500,
             "max": 100000,
             "price": 200,
             "unit": "1k views",
@@ -1333,7 +1376,7 @@ def handle_instagram_order(message):
         "❤️ Insta Likes": {
             "name": "Instagram Likes",
             "quality": "Power Quality",
-            "min": 10,
+            "min": 50,
             "max": 10000,
             "price": 1000,
             "unit": "1k likes",
@@ -2542,11 +2585,11 @@ f"▸ Tʀᴀɴꜱᴀᴄᴛɪᴏɴ ID: {int(time.time())}\n\n"
                     bot.send_message(
                         uid,
                     f"🔔 *ACCOUNT DEBITED*\n\n"
-                    f"Coins have been deducted from your SMM Booster wallet\n\n"
-                    f"▸ Amount: -{amount:.2f} coins\n"
-                    f"▸ New Balance: {data['balance']:.2f}\n"
-                    f"▸ Transaction ID: {int(time.time())}\n\n"
-                    "⚠️ Contact support if this was unexpected",
+                    f"Cᴏɪɴꜱ ʜᴀᴠᴇ ʙᴇᴇɴ Dᴇᴅᴜᴄᴛᴇᴅ ꜰʀᴏᴍ ʏᴏᴜʀ Sᴍᴍ Bᴏᴏꜱᴛᴇʀ Wᴀʟʟᴇᴛ\n\n"
+                    f"▸ Aᴍᴏᴜɴᴛ: -{amount:.2f} coins\n"
+                    f"▸ Nᴇᴡ Bᴀʟᴀɴᴄᴇ: {data['balance']:.2f}\n"
+                    f"▸ Tʀᴀɴꜱᴀᴄᴛɪᴏɴ ID: {int(time.time())}\n\n"
+                    "⚠️ Cᴏɴᴛᴀᴄᴛ Sᴜᴘᴘᴏʀᴛ ɪꜰ ᴛʜɪꜱ ᴡᴀꜱ ᴜɴᴇxᴘᴇᴄᴛᴇᴅ",
                     parse_mode="Markdown",
                     reply_markup=InlineKeyboardMarkup().add(
                         InlineKeyboardButton("📩 Contact Support", url="https://t.me/SocialHubBoosterTMbot")
@@ -3603,6 +3646,133 @@ def send_startup_message(is_restart=False):
     except Exception as e:
         print(f"Error sending startup message: {e}")
       
+#========= Send Notification with image ==========#
+from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageFilter
+import os
+
+def get_profile_photo(user_id):
+    """Download and process profile photo"""
+    try:
+        photos = bot.get_user_profile_photos(user_id, limit=1)
+        if not photos.photos:
+            raise Exception("No profile photo available")
+            
+        file_info = bot.get_file(photos.photos[0][-1].file_id)
+        downloaded_file = bot.download_file(file_info.file_path)
+        
+        with open(f"{user_id}.jpg", 'wb') as new_file:
+            new_file.write(downloaded_file)
+            
+        original_img = Image.open(f"{user_id}.jpg").convert("RGB")
+        
+        # Create circular mask
+        size = (200, 200)
+        mask = Image.new('L', size, 0)
+        draw = ImageDraw.Draw(mask)
+        draw.ellipse((0, 0, size[0], size[1]), fill=255)
+        
+        # Resize and apply mask
+        img = ImageOps.fit(original_img, size, method=Image.LANCZOS)
+        img.putalpha(mask)
+        
+        os.remove(f"{user_id}.jpg")
+        return img
+    except Exception as e:
+        print(f"Using default profile photo: {e}")
+        # Create default gray circle
+        img = Image.new("RGBA", (200, 200), (70, 70, 70, 255))
+        draw = ImageDraw.Draw(img)
+        draw.ellipse((0, 0, 200, 200), fill=(100, 100, 100, 255))
+        return img
+
+def generate_notification_image(user_img, bot_img, user_name, bot_name, service_name):
+    """Generate a pro-quality notification image."""
+    try:
+        # Create base image with rich gradient background
+        width, height = 800, 400
+        bg = Image.new("RGB", (width, height), (30, 30, 45))
+        gradient = Image.new("L", (1, height), color=0xFF)
+
+        for y in range(height):
+            gradient.putpixel((0, y), int(255 * (1 - y / height)))
+        alpha_gradient = gradient.resize((width, height))
+        black_img = Image.new("RGB", (width, height), color=(10, 10, 25))
+        bg = Image.composite(bg, black_img, alpha_gradient)
+
+        draw = ImageDraw.Draw(bg)
+
+        # Fonts
+        try:
+            title_font = ImageFont.truetype("arialbd.ttf", 40)
+            name_font = ImageFont.truetype("arialbd.ttf", 28)
+            service_font = ImageFont.truetype("arialbd.ttf", 24)
+        except:
+            title_font = ImageFont.load_default()
+            name_font = ImageFont.load_default()
+            service_font = ImageFont.load_default()
+
+        # Draw top title
+        draw.text((width // 2, 40), "NEW ORDER NOTIFICATION", font=title_font,
+                  fill="white", anchor="mm")
+
+        # Helper to draw glowing circular image
+        def draw_glowing_circle(base, img, pos, size, glow_color=(255, 215, 0)):
+            glow = Image.new("RGBA", (size + 40, size + 40), (0, 0, 0, 0))
+            glow_draw = ImageDraw.Draw(glow)
+            center = (glow.size[0] // 2, glow.size[1] // 2)
+
+            for radius in range(size // 2 + 10, size // 2 + 20):
+                glow_draw.ellipse([
+                    center[0] - radius, center[1] - radius,
+                    center[0] + radius, center[1] + radius
+                ], fill=glow_color + (10,), outline=None)
+
+            glow = glow.filter(ImageFilter.GaussianBlur(8))
+            base.paste(glow, (pos[0] - 20, pos[1] - 20), glow)
+
+            # Golden ring
+            ring = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+            ring_draw = ImageDraw.Draw(ring)
+            ring_draw.ellipse((0, 0, size - 1, size - 1), outline=(255, 215, 0), width=6)
+
+            # Add mask to image
+            img = img.resize((size, size))
+            mask = Image.new('L', (size, size), 0)
+            mask_draw = ImageDraw.Draw(mask)
+            mask_draw.ellipse((0, 0, size, size), fill=255)
+            img.putalpha(mask)
+
+            base.paste(img, pos, img)
+            base.paste(ring, pos, ring)
+
+        # Paste profile images
+        user_pos = (130, 120)
+        bot_pos = (520, 120)
+        draw_glowing_circle(bg, user_img, user_pos, 150)
+        draw_glowing_circle(bg, bot_img, bot_pos, 150)
+
+        # Draw usernames
+        draw.text((user_pos[0] + 75, 290), user_name, font=name_font,
+                  fill="white", anchor="ma")
+        draw.text((bot_pos[0] + 75, 290), bot_name, font=name_font,
+                  fill="white", anchor="ma")
+
+        # Draw service name in the middle
+        draw.text((width // 2, 330), f"Service: {service_name}", font=service_font,
+                  fill=(255, 215, 0), anchor="ma")
+
+        # Bottom banner
+        draw.rectangle([0, 370, width, 400], fill=(255, 215, 0))
+        draw.text((width // 2, 385), "Powered by SMM Booster", font=name_font,
+                  fill=(30, 30, 30), anchor="mm")
+
+        output_path = f"order_{user_name}.png"
+        bg.save(output_path, quality=95)
+        return output_path
+
+    except Exception as e:
+        print(f"Image generation error: {e}")
+        return None
 # ==================== FLASK INTEGRATION ==================== #
 
 # Configure API helper settings
