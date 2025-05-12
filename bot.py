@@ -190,7 +190,7 @@ def add_order(user_id, order_data):
 #==================================== Channel Membership Check =======================#
 #================================== Force Join Method =======================================#
 #================================== Force Join Method =======================================#
-required_channels = ["SmmBoosterz", "Megahubbots", "Freenethubz", "Freenethubchannel", "smmserviceslogs"]  # Channel usernames without "@"
+required_channels = ["smmserviceslogs"]  # Channel usernames without "@"
 payment_channel = "@smmserviceslogs"  # Channel for payment notifications
 
 def is_user_member(user_id):
