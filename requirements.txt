@@ -7,7 +7,6 @@ flask
 gunicorn
 pytz
 psutil
-PIL
 
 # Monitoring & Reliability
 schedule
