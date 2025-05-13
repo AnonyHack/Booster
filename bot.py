@@ -833,7 +833,7 @@ def handle_telegram_order(message):
             "quality": "Super Fast",
             "min": 1000,
             "max": 100000,
-            "price": 200,
+            "price": 100,
             "unit": "1k views",
             "service_id": "10576",  # Your SMM panel service ID for views
             "link_hint": "Telegram post link"
@@ -841,9 +841,9 @@ def handle_telegram_order(message):
         "❤️ Post Reactions": {
             "name": "Positive Reactions",
             "quality": "No Refil",
-            "min": 60,
+            "min": 100,
             "max": 1000,
-            "price": 1500,
+            "price": 989,
             "unit": "1k reactions",
             "service_id": "12209",  # Replace with actual service ID
             "link_hint": "Telegram post link"
@@ -854,7 +854,7 @@ def handle_telegram_order(message):
             "quality": "Refill 90 Days",
             "min": 500,
             "max": 10000,
-            "price": 10000,
+            "price": 9560,
             "unit": "1k members",
             "service_id": "18578", # Replace with actual service ID
             "link_hint": "Telegram channel link"  # Replace with actual service ID
@@ -1148,9 +1148,9 @@ def handle_tiktok_order(message):
             "name": "TikTok Views",
             "quality": "Fast Speed",
             "link_hint": "Tiktok Post Link",
-            "min": 100,
+            "min": 1000,
             "max": 100000,
-            "price": 200,
+            "price": 14,
             "unit": "1k views",
             "service_id": "18454"
         },
@@ -1160,7 +1160,7 @@ def handle_tiktok_order(message):
             "link_hint": "Tiktok Post Link",
             "min": 100,
             "max": 10000,
-            "price": 1500,
+            "price": 1164,
             "unit": "1k likes",
             "service_id": "17335"
         },
@@ -1170,7 +1170,7 @@ def handle_tiktok_order(message):
             "link_hint": "Tiktok Profile Link",
             "min": 100,
             "max": 10000,
-            "price": 15000,
+            "price": 16943,
             "unit": "1k followers",
             "service_id": "18383"
         }
@@ -1458,7 +1458,7 @@ def handle_instagram_order(message):
             "quality": "Real Accounts",
             "min": 1000,
             "max": 100000,
-            "price": 300,
+            "price": 72,
             "unit": "1k views",
             "service_id": "17316",
             "link_hint": "Instagram video link"
@@ -1466,9 +1466,9 @@ def handle_instagram_order(message):
         "❤️ Insta Likes": {
             "name": "Instagram Likes",
             "quality": "Power Quality",
-            "min": 50,
+            "min": 100,
             "max": 10000,
-            "price": 1000,
+            "price": 225,
             "unit": "1k likes",
             "service_id": "17375",
             "link_hint": "Instagram post link"
@@ -1476,9 +1476,9 @@ def handle_instagram_order(message):
         "👥 Insta Followers": {
             "name": "Instagram Followers",
             "quality": "Old Accounts With Posts",
-            "min": 500,
+            "min": 100,
             "max": 10000,
-            "price": 13000,
+            "price": 12353,
             "unit": "1k followers",
             "service_id": "18968",
             "link_hint": "Instagram profile link"
@@ -1763,7 +1763,7 @@ def handle_youtube_order(message):
             "quality": "100% Real",
             "min": 40000,
             "max": 1000000,
-            "price": 7000,
+            "price": 7713,
             "unit": "1k views",
             "service_id": "11272",
             "link_hint": "YouTube video link"
@@ -1771,9 +1771,9 @@ def handle_youtube_order(message):
         "👍 YT Likes": {
             "name": "YouTube Likes [Real]",
             "quality": "No Refill",
-            "min": 500,
+            "min": 100,
             "max": 10000,
-            "price": 2000,
+            "price": 1607,
             "unit": "1k likes",
             "service_id": "18144",
             "link_hint": "YouTube video link"
@@ -1781,9 +1781,9 @@ def handle_youtube_order(message):
         "👥 YT Subscribers": {
             "name": "YouTube Subscribers [Cheapest]",
             "quality": "Refill 30 days",
-            "min": 500,
+            "min": 100,
             "max": 10000,
-            "price": 12000,
+            "price": 11078,
             "unit": "1k subscribers",
             "service_id": "16912",
             "link_hint": "YouTube channel link"
@@ -2065,9 +2065,9 @@ def handle_facebook_order(message):
         "👤 Profile Followers": {
             "name": "FB Profile Followers",
             "quality": "High Quality",
-            "min": 500,
+            "min": 100,
             "max": 100000,
-            "price": 10000,
+            "price": 7704,
             "unit": "1k followers",
             "service_id": "18977",
             "link_hint": "Facebook profile link"
@@ -2075,9 +2075,9 @@ def handle_facebook_order(message):
         "📄 Page Followers": {
             "name": "FB Page Followers",
             "quality": "Refill 30 Days",
-            "min": 500,
+            "min": 100,
             "max": 10000,
-            "price": 6000,
+            "price": 5597,
             "unit": "1k followers",
             "service_id": "18984",
             "link_hint": "Facebook page link"
@@ -2085,9 +2085,9 @@ def handle_facebook_order(message):
         "🎥 Video/Reel Views": {
             "name": "FB Video/Reel Views",
             "quality": "Non Drop",
-            "min": 500,
+            "min": 1000,
             "max": 10000,
-            "price": 500,
+            "price": 579,
             "unit": "1k views",
             "service_id": "17859",
             "link_hint": "Facebook video/reel link"
@@ -2097,7 +2097,7 @@ def handle_facebook_order(message):
             "quality": "No Refill",
             "min": 100,
             "max": 10000,
-            "price": 5000,
+            "price": 4567,
             "unit": "1k likes",
             "service_id": "18990",
             "link_hint": "Facebook post link"
@@ -2381,7 +2381,7 @@ def handle_whatsapp_order(message):
             "quality": "EU Users",
             "min": 100,
             "max": 40000,
-            "price": 16000,
+            "price": 20856,
             "unit": "1k members",
             "service_id": "18848",
             "link_hint": "WhatsApp channel invite link"
@@ -2391,7 +2391,7 @@ def handle_whatsapp_order(message):
             "quality": "Mixed",
             "min": 100,
             "max": 10000,
-            "price": 3000,
+            "price": 10627,
             "unit": "1k reactions",
             "service_id": "18846",
             "link_hint": "WhatsApp channel message link"
@@ -4025,9 +4025,6 @@ def send_startup_message(is_restart=False):
         print(f"Error sending startup message: {e}")
       
 #========= Send Notification with image ==========#
-from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageFilter
-import os
-
 def get_profile_photo(user_id):
     """Download and process profile photo"""
     try:
@@ -4044,7 +4041,7 @@ def get_profile_photo(user_id):
         original_img = Image.open(f"{user_id}.jpg").convert("RGB")
         
         # Create circular mask
-        size = (300, 300)
+        size = (500, 500)
         mask = Image.new('L', size, 0)
         draw = ImageDraw.Draw(mask)
         draw.ellipse((0, 0, size[0], size[1]), fill=255)
@@ -4057,10 +4054,10 @@ def get_profile_photo(user_id):
         return img
     except Exception as e:
         print(f"Using default profile photo: {e}")
-        # Create default gray circle
-        img = Image.new("RGBA", (200, 200), (70, 70, 70, 255))
+        # Create default gray circle (now matching the 500x500 size)
+        img = Image.new("RGBA", (500, 500), (70, 70, 70, 255))
         draw = ImageDraw.Draw(img)
-        draw.ellipse((0, 0, 200, 200), fill=(100, 100, 100, 255))
+        draw.ellipse((0, 0, 500, 500), fill=(100, 100, 100, 255))
         return img
 
 def generate_notification_image(user_img, bot_img, user_name, bot_name, service_name):
@@ -4072,26 +4069,32 @@ def generate_notification_image(user_img, bot_img, user_name, bot_name, service_
         gradient = Image.new("L", (1, height), color=0xFF)
 
         for y in range(height):
-            gradient.putpixel((0, y), int(255 * (1 - y / height)))
+            gradient.putpixel((0, y), int(255 * (1 - y/height)))
         alpha_gradient = gradient.resize((width, height))
         black_img = Image.new("RGB", (width, height), color=(10, 10, 25))
         bg = Image.composite(bg, black_img, alpha_gradient)
 
         draw = ImageDraw.Draw(bg)
 
-        # Fonts
+        # Fonts - added fallback for each font individually
         try:
             title_font = ImageFont.truetype("arialbd.ttf", 40)
+        except:
+            title_font = ImageFont.load_default().font_variant(size=40)
+            
+        try:
             name_font = ImageFont.truetype("arialbd.ttf", 28)
+        except:
+            name_font = ImageFont.load_default().font_variant(size=28)
+            
+        try:
             service_font = ImageFont.truetype("arialbd.ttf", 24)
         except:
-            title_font = ImageFont.load_default()
-            name_font = ImageFont.load_default()
-            service_font = ImageFont.load_default()
+            service_font = ImageFont.load_default().font_variant(size=24)
 
         # Draw top title
         draw.text((width // 2, 40), "NEW ORDER NOTIFICATION", font=title_font,
-                  fill="white", anchor="mm")
+                 fill="white", anchor="mm")
 
         # Helper to draw glowing circular image
         def draw_glowing_circle(base, img, pos, size, glow_color=(255, 215, 0)):
@@ -4113,7 +4116,9 @@ def generate_notification_image(user_img, bot_img, user_name, bot_name, service_
             ring_draw = ImageDraw.Draw(ring)
             ring_draw.ellipse((0, 0, size - 1, size - 1), outline=(255, 215, 0), width=6)
 
-            # Add mask to image
+            # Add mask to image (ensure we're working with RGBA)
+            if img.mode != 'RGBA':
+                img = img.convert('RGBA')
             img = img.resize((size, size))
             mask = Image.new('L', (size, size), 0)
             mask_draw = ImageDraw.Draw(mask)
@@ -4129,22 +4134,28 @@ def generate_notification_image(user_img, bot_img, user_name, bot_name, service_
         draw_glowing_circle(bg, user_img, user_pos, 150)
         draw_glowing_circle(bg, bot_img, bot_pos, 150)
 
-        # Draw usernames
-        draw.text((user_pos[0] + 75, 290), user_name, font=name_font,
-                  fill="white", anchor="ma")
-        draw.text((bot_pos[0] + 75, 290), bot_name, font=name_font,
-                  fill="white", anchor="ma")
+        # Draw usernames (with text length safety)
+        max_name_length = 15
+        safe_user_name = (user_name[:max_name_length] + '..') if len(user_name) > max_name_length else user_name
+        safe_bot_name = (bot_name[:max_name_length] + '..') if len(bot_name) > max_name_length else bot_name
+        
+        draw.text((user_pos[0] + 75, 290), safe_user_name, font=name_font,
+                 fill="white", anchor="ma")
+        draw.text((bot_pos[0] + 75, 290), safe_bot_name, font=name_font,
+                 fill="white", anchor="ma")
 
-        # Draw service name in the middle
-        draw.text((width // 2, 330), f"Service: {service_name}", font=service_font,
-                  fill=(255, 215, 0), anchor="ma")
+        # Draw service name in the middle (with safety check)
+        max_service_length = 30
+        safe_service_name = (service_name[:max_service_length] + '..') if len(service_name) > max_service_length else service_name
+        draw.text((width // 2, 330), f"Service: {safe_service_name}", font=service_font,
+                 fill=(255, 215, 0), anchor="ma")
 
         # Bottom banner
         draw.rectangle([0, 370, width, 400], fill=(255, 215, 0))
         draw.text((width // 2, 385), "Powered by SMMHub Booster", font=name_font,
-                  fill=(30, 30, 30), anchor="mm")
+                 fill=(30, 30, 30), anchor="mm")
 
-        output_path = f"order_{user_name}.png"
+        output_path = f"order_{user_name[:50]}.png"  # Limit filename length
         bg.save(output_path, quality=95)
         return output_path
 
