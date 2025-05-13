@@ -1132,7 +1132,7 @@ def handle_tiktok_order(message):
             "name": "TikTok Views",
             "quality": "Fast Speed",
             "link_hint": "Tiktok Post Link",
-            "min": 500,
+            "min": 100,
             "max": 100000,
             "price": 200,
             "unit": "1k views",
