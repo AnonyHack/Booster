@@ -1008,17 +1008,26 @@ def process_telegram_link(message, service, quantity, cost):
                     )
                     
                     # Stylish notification to payment channel
-                    caption = f"""📢 <b>Nᴇᴡ Tᴇʟᴇɢʀᴀᴍ Oʀᴅᴇʀ</b>
-                    
-👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
-🆔 <b>ID:</b> {message.from_user.id}
-📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
-🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
-💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
-⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
-🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+                    caption = f"""⭐️ ｢ɴᴇᴡ ᴏʀᴅᴇʀ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+➠ 👤 Name: {message.from_user.first_name}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🕵🏻‍♂️ Username: @{message.from_user.username or 'Not set'}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 User ID: {message.from_user.id}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🏪 Service Type: {service['service_type']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 📦 Service: {service['name']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🔢 Quantity: {quantity}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 💰 Cost: {cost} ᴄᴏɪɴꜱ
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 Order ID: <code>{result['order']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ ⚡ Status: <code>{result.get('status', 'pending').capitalize()}</code>
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━"""
                     
                     with open(image_path, 'rb') as photo:
                         bot.send_photo(
@@ -1297,17 +1306,26 @@ def process_tiktok_link(message, service, quantity, cost):
                     )
                     
                     # Stylish notification to payment channel
-                    caption = f"""📢 <b>Nᴇᴡ TɪᴋTᴏᴋ Oʀᴅᴇʀ</b>
-                    
-👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
-🆔 <b>ID:</b> {message.from_user.id}
-📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
-🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
-💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
-⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
-🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+                    caption = f"""⭐️ ｢ɴᴇᴡ ᴏʀᴅᴇʀ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+➠ 👤 Name: {message.from_user.first_name}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🕵🏻‍♂️ Username: @{message.from_user.username or 'Not set'}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 User ID: {message.from_user.id}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🏪 Service Type: {service['service_type']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 📦 Service: {service['name']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🔢 Quantity: {quantity}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 💰 Cost: {cost} ᴄᴏɪɴꜱ
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 Order ID: <code>{result['order']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ ⚡ Status: <code>{result.get('status', 'pending').capitalize()}</code>
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━"""
                     
                     with open(image_path, 'rb') as photo:
                         bot.send_photo(
@@ -1581,17 +1599,26 @@ def process_instagram_link(message, service, quantity, cost):
                     )
                     
                     # Stylish notification to payment channel
-                    caption = f"""📢 <b>Nᴇᴡ Iɴꜱᴛᴀɢʀᴀᴍ Oʀᴅᴇʀ</b>
-                    
-👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
-🆔 <b>ID:</b> {message.from_user.id}
-📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
-🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
-💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
-⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
-🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+                    caption = f"""⭐️ ｢ɴᴇᴡ ᴏʀᴅᴇʀ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+➠ 👤 Name: {message.from_user.first_name}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🕵🏻‍♂️ Username: @{message.from_user.username or 'Not set'}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 User ID: {message.from_user.id}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🏪 Service Type: {service['service_type']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 📦 Service: {service['name']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🔢 Quantity: {quantity}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 💰 Cost: {cost} ᴄᴏɪɴꜱ
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 Order ID: <code>{result['order']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ ⚡ Status: <code>{result.get('status', 'pending').capitalize()}</code>
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━"""
                     
                     with open(image_path, 'rb') as photo:
                         bot.send_photo(
@@ -1865,17 +1892,26 @@ def process_youtube_link(message, service, quantity, cost):
                     )
                     
                     # Stylish notification to payment channel
-                    caption = f"""📢 <b>Nᴇᴡ YᴏᴜTᴜʙᴇ Oʀᴅᴇʀ</b>
-                    
-👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
-🆔 <b>ID:</b> {message.from_user.id}
-📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
-🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
-💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
-⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
-🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+                    caption = f"""⭐️ ｢ɴᴇᴡ ᴏʀᴅᴇʀ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+➠ 👤 Name: {message.from_user.first_name}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🕵🏻‍♂️ Username: @{message.from_user.username or 'Not set'}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 User ID: {message.from_user.id}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🏪 Service Type: {service['service_type']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 📦 Service: {service['name']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🔢 Quantity: {quantity}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 💰 Cost: {cost} ᴄᴏɪɴꜱ
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 Order ID: <code>{result['order']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ ⚡ Status: <code>{result.get('status', 'pending').capitalize()}</code>
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━"""
                     
                     with open(image_path, 'rb') as photo:
                         bot.send_photo(
@@ -2153,17 +2189,26 @@ def process_facebook_link(message, service, quantity, cost):
                         InlineKeyboardButton("🤖 Visit Bot", url=f"https://t.me/{bot.get_me().username}")
                     )
 
-                    caption = f"""📢 <b>Nᴇᴡ Fᴀᴄᴇʙᴏᴏᴋ Oʀᴅᴇʀ</b>
-
-👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
-🆔 <b>ID:</b> {message.from_user.id}
-📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
-🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
-💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
-⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
-🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+                    caption = f"""⭐️ ｢ɴᴇᴡ ᴏʀᴅᴇʀ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+➠ 👤 Name: {message.from_user.first_name}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🕵🏻‍♂️ Username: @{message.from_user.username or 'Not set'}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 User ID: {message.from_user.id}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🏪 Service Type: {service['service_type']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 📦 Service: {service['name']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🔢 Quantity: {quantity}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 💰 Cost: {cost} ᴄᴏɪɴꜱ
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 Order ID: <code>{result['order']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ ⚡ Status: <code>{result.get('status', 'pending').capitalize()}</code>
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━"""
 
                     with open(image_path, 'rb') as photo:
                         bot.send_photo(
@@ -2390,17 +2435,26 @@ def process_whatsapp_link(message, service, quantity, cost):
                         InlineKeyboardButton("🤖 Visit Bot", url=f"https://t.me/{bot.get_me().username}")
                     )
 
-                    caption = f"""📢 <b>Nᴇᴡ WʜᴀᴛꜱAᴘᴘ Oʀᴅᴇʀ</b>
-
-👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
-🆔 <b>ID:</b> {message.from_user.id}
-📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
-🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
-💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
-⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
-🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+                    caption = f"""⭐️ ｢ɴᴇᴡ ᴏʀᴅᴇʀ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+➠ 👤 Name: {message.from_user.first_name}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🕵🏻‍♂️ Username: @{message.from_user.username or 'Not set'}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 User ID: {message.from_user.id}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🏪 Service Type: {service['service_type']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 📦 Service: {service['name']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🔢 Quantity: {quantity}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 💰 Cost: {cost} ᴄᴏɪɴꜱ
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 Order ID: <code>{result['order']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ ⚡ Status: <code>{result.get('status', 'pending').capitalize()}</code>
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━"""
 
                     with open(image_path, 'rb') as photo:
                         bot.send_photo(
