@@ -1169,16 +1169,21 @@ def handle_tiktok_order(message):
     KeyboardButton("↩️ Go Back")
 )
     
-    msg = f"""📊 Order {service['name']}:
-
-📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
-📌 Mɪɴɪᴍᴜᴍ: {service['min']}
-📌 Mᴀxɪᴍᴜᴍ: {service['max']}
-💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
+    msg = f"""⭐️ ｢{service['name']} Dᴇᴛᴀɪʟꜱ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+📌 Oʀᴅᴇʀ ID: {service['service_id']}
+━━━━━━━━━━━━━━━━━━━━━━━
+📉 Mɪɴɪᴍᴜᴍ: {service['min']}
+📈 Mᴀxɪᴍᴜᴍ: {service['max']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💰 Pʀɪᴄᴇ: {service['price']} ᴄᴏɪɴꜱ / {service['unit']}
+━━━━━━━━━━━━━━━━━━━━━━━
 🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
+━━━━━━━━━━━━━━━━━━━━━━━
 💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-
-Enter quantity:"""
+━━━━━━━━━━━━━━━━━━━━━━━
+🔢 Eɴᴛᴇʀ Qᴜᴀɴᴛɪᴛʏ: 
+━━━━━━━━━━━━━━━━━━━━━━━"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
