@@ -1304,17 +1304,27 @@ def process_tiktok_link(message, service, quantity, cost):
                     )
                     
                     # Stylish notification to payment channel
-                    caption = f"""📢 <b>Nᴇᴡ TɪᴋTᴏᴋ Oʀᴅᴇʀ</b>
+                    caption = f"""⭐️ ｢ɴᴇᴡ ᴏʀᴅᴇʀ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ 」⭐️
                     
-👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
-🆔 <b>ID:</b> {message.from_user.id}
-📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
-🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
-💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
-⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
-🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+➠ 👤 Nᴀᴍᴇ: {message.from_user.first_name}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🕵🏻‍♂️ Uꜱᴇʀɴᴀᴍᴇ: @{message.from_user.username or 'Not set'}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 Uꜱᴇʀ Iᴅ: {message.from_user.id}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🏪 Sᴇʀᴠɪᴄᴇ Tʏᴘᴇ: {service['service_type']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 📦 Sᴇʀᴠɪᴄᴇ: {service['name']}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🔢 Qᴜᴀɴᴛɪᴛʏ: {quantity}
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 💰 Cᴏꜱᴛ: {cost} ᴄᴏɪɴꜱ
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ 🆔 Oʀᴅᴇʀ Iᴅ: <code>{result['order']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+➠ ⚡ Sᴛᴀᴛᴜꜱ: <code>{result.get('status', 'pending').capitalize()}</code>
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━"""
                     
                     with open(image_path, 'rb') as photo:
                         bot.send_photo(
