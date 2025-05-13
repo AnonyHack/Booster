@@ -1234,7 +1234,7 @@ def process_tiktok_link(message, service, quantity, cost):
     
     link = message.text.strip()
     
-    # Updated TikTok link validation
+    # Validate TikTok link format
     if not re.match(r'^https?://(www\.)?(tiktok\.com|vm\.tiktok\.com)/', link):
         bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ TɪᴋTᴏᴋ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=tiktok_services_markup)
         return
@@ -1252,11 +1252,14 @@ def process_tiktok_link(message, service, quantity, cost):
             timeout=30
         )
         result = response.json()
+        print(f"SMM Panel Response: {result}")  # Debug print
         
         if result and result.get('order'):
+            # Deduct balance
             if not cutBalance(str(message.from_user.id), cost):
-                raise Exception("Fᴀɪʟᴇᴅ ᴛᴏ ᴅᴇᴅᴜᴄᴛ ʙᴀʟᴀɴᴄᴇ")
+                raise Exception("Failed to deduct balance")
             
+            # Prepare complete order data
             order_data = {
                 'service': service['name'],
                 'service_type': 'tiktok',
@@ -1269,16 +1272,82 @@ def process_tiktok_link(message, service, quantity, cost):
                 'timestamp': time.time(),
                 'username': message.from_user.username or str(message.from_user.id)
             }
+            
+            # Add to order history
             add_order(str(message.from_user.id), order_data)
+            
+            # Generate notification image
+            try:
+                user_img = get_profile_photo(message.from_user.id)
+                bot_img = get_profile_photo(bot.get_me().id)
+                image_path = generate_notification_image(
+                    user_img,
+                    bot_img,
+                    message.from_user.first_name,
+                    bot.get_me().first_name,
+                    service['name']
+                )
+                
+                if image_path:
+                    # Create buttons
+                    markup = InlineKeyboardMarkup()
+                    markup.row(
+                        InlineKeyboardButton("🔗 View Order Link", url=link),
+                        InlineKeyboardButton("🤖 Visit Bot", url=f"https://t.me/{bot.get_me().username}")
+                    )
+                    
+                    # Stylish notification to payment channel
+                    caption = f"""📢 <b>Nᴇᴡ TɪᴋTᴏᴋ Oʀᴅᴇʀ</b>
+                    
+👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
+🆔 <b>ID:</b> {message.from_user.id}
+📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
+🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
+💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
+📎 <b>Lɪɴᴋ:</b> {link}
+🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
+⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
+🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+                    
+                    with open(image_path, 'rb') as photo:
+                        bot.send_photo(
+                            payment_channel,
+                            photo,
+                            caption=caption,
+                            parse_mode='HTML',
+                            reply_markup=markup
+                        )
+                    
+                    # Clean up
+                    os.remove(image_path)
+                    
+            except Exception as e:
+                print(f"Error generating notification image: {e}")
+                # Fallback to text message if image generation fails
+                bot.send_message(
+                    payment_channel,
+                    f"""<b>📢 New TikTok Order:</b>
+                    
+👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
+🆔 <b>ID:</b> {message.from_user.id}
+📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
+🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
+💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
+📎 <b>Lɪɴᴋ:</b> {link}
+🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
+⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
+🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}""",
+                    disable_web_page_preview=True,
+                    parse_mode='HTML'
+                )
 
-            # Create "Check Order Status" button
+            # Create "Check Order Status" button for user
             markup = InlineKeyboardMarkup()
             check_status_button = InlineKeyboardButton(
                 text="📊 Check Order Status",
-                url=f"https://t.me/{payment_channel.lstrip('@')}"  # Hardcoded for testing  # Convert @channel to proper URL
+                url=f"https://t.me/{payment_channel.lstrip('@')}"
             )
-            markup.add(check_status_button)  # Use add() instead of row()
-
+            markup.add(check_status_button)
             
             # Stylish confirmation message
             bot.reply_to(
@@ -1298,32 +1367,14 @@ def process_tiktok_link(message, service, quantity, cost):
                 parse_mode='HTML'
             )
             
-            # Update user stats
+            # Update orders count
             user_id = str(message.from_user.id)
             data = getData(user_id)
-            data['orders_count'] = data.get('orders_count', 0) + 1
+            if 'orders_count' not in data:
+                data['orders_count'] = 0
+            data['orders_count'] += 1
             updateUser(user_id, data)
             
-            try:
-                bot.send_message(
-                    payment_channel,
-                    f"""📢 <b>Nᴇᴡ TɪᴋTᴏᴋ Oʀᴅᴇʀ</b>
-                    
-👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
-🆔 <b>ID:</b> {message.from_user.id}
-📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
-🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
-💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
-⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
-🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}""",
-                    disable_web_page_preview=True,
-                    parse_mode='HTML'
-                )
-            except Exception as e:
-                print(f"Fᴀɪʟᴇᴅ ᴛᴏ ꜱᴇɴᴅ ᴛᴏ ᴘᴀʏᴍᴇɴᴛ ᴄʜᴀɴɴᴇʟ: {e}")
-                
         else:
             error_msg = result.get('error', 'Uɴᴋɴᴏᴡɴ ᴇʀʀᴏʀ ꜰʀᴏᴍ SMM ᴘᴀɴᴇʟ')
             raise Exception(error_msg)
@@ -1348,7 +1399,6 @@ def process_tiktok_link(message, service, quantity, cost):
                 f"⚠️ Oʀᴅᴇʀ ᴡᴀꜱ ꜱᴜʙᴍɪᴛᴛᴇᴅ (ID: {result['order']}) ʙᴜᴛ ᴛʜᴇʀᴇ ᴡᴀꜱ ᴀɴ ɪꜱꜱᴜᴇ ᴡɪᴛʜ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴꜱ.",
                 reply_markup=main_markup
             )
-    
 #======================== End of TikTok Orders ========================#
 
 #======================== Send Orders for Instagram =====================#
@@ -1468,6 +1518,7 @@ def process_instagram_link(message, service, quantity, cost):
     
     link = message.text.strip()
     
+    # Validate Instagram link format
     if not re.match(r'^https?://(www\.)?instagram\.com/[\w./-]+', link):
         bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ Iɴꜱᴛᴀɢʀᴀᴍ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=instagram_services_markup)
         return
@@ -1485,11 +1536,14 @@ def process_instagram_link(message, service, quantity, cost):
             timeout=30
         )
         result = response.json()
+        print(f"SMM Panel Response: {result}")  # Debug print
         
         if result and result.get('order'):
+            # Deduct balance
             if not cutBalance(str(message.from_user.id), cost):
                 raise Exception("Failed to deduct balance")
             
+            # Prepare complete order data
             order_data = {
                 'service': service['name'],
                 'service_type': 'instagram',
@@ -1502,42 +1556,58 @@ def process_instagram_link(message, service, quantity, cost):
                 'timestamp': time.time(),
                 'username': message.from_user.username or str(message.from_user.id)
             }
-            add_order(str(message.from_user.id), order_data)
-
-            # Create "Check Order Status" button
-            markup = InlineKeyboardMarkup()
-            check_status_button = InlineKeyboardButton(
-                text="📊 Check Order Status",
-                url=f"https://t.me/{payment_channel.lstrip('@')}"  # Hardcoded for testing  # Convert @channel to proper URL
-            )
-            markup.add(check_status_button)  # Use add() instead of row()
-
             
-            # Stylish confirmation message
-            bot.reply_to(
-                message,
-                f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-              
+            # Add to order history
+            add_order(str(message.from_user.id), order_data)
+            
+            # Generate notification image
+            try:
+                user_img = get_profile_photo(message.from_user.id)
+                bot_img = get_profile_photo(bot.get_me().id)
+                image_path = generate_notification_image(
+                    user_img,
+                    bot_img,
+                    message.from_user.first_name,
+                    bot.get_me().first_name,
+                    service['name']
+                )
+                
+                if image_path:
+                    # Create buttons
+                    markup = InlineKeyboardMarkup()
+                    markup.row(
+                        InlineKeyboardButton("🔗 View Order Link", url=link),
+                        InlineKeyboardButton("🤖 Visit Bot", url=f"https://t.me/{bot.get_me().username}")
+                    )
+                    
+                    # Stylish notification to payment channel
+                    caption = f"""📢 <b>Nᴇᴡ Iɴꜱᴛᴀɢʀᴀᴍ Oʀᴅᴇʀ</b>
+                    
+👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
+🆔 <b>ID:</b> {message.from_user.id}
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
 📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
-😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-
-⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
-                reply_markup=markup,
-                disable_web_page_preview=True,
-                parse_mode='HTML'
-            )
-            
-            # Update user stats
-            user_id = str(message.from_user.id)
-            data = getData(user_id)
-            data['orders_count'] = data.get('orders_count', 0) + 1
-            updateUser(user_id, data)
-            
-            try:
+🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
+⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
+🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+                    
+                    with open(image_path, 'rb') as photo:
+                        bot.send_photo(
+                            payment_channel,
+                            photo,
+                            caption=caption,
+                            parse_mode='HTML',
+                            reply_markup=markup
+                        )
+                    
+                    # Clean up
+                    os.remove(image_path)
+                    
+            except Exception as e:
+                print(f"Error generating notification image: {e}")
+                # Fallback to text message if image generation fails
                 bot.send_message(
                     payment_channel,
                     f"""<b>📢 New Instagram Order:</b>
@@ -1554,31 +1624,63 @@ def process_instagram_link(message, service, quantity, cost):
                     disable_web_page_preview=True,
                     parse_mode='HTML'
                 )
-            except Exception as e:
-                print(f"Failed to send to payment channel: {e}")
-                
+
+            # Create "Check Order Status" button for user
+            markup = InlineKeyboardMarkup()
+            check_status_button = InlineKeyboardButton(
+                text="📊 Check Order Status",
+                url=f"https://t.me/{payment_channel.lstrip('@')}"
+            )
+            markup.add(check_status_button)
+            
+            # Stylish confirmation message
+            bot.reply_to(
+                message,
+                f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
+             
+📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
+🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
+💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
+📎 <b>Lɪɴᴋ:</b> {link}
+🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
+😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
+
+⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
+                reply_markup=markup,
+                disable_web_page_preview=True,
+                parse_mode='HTML'
+            )
+            
+            # Update orders count
+            user_id = str(message.from_user.id)
+            data = getData(user_id)
+            if 'orders_count' not in data:
+                data['orders_count'] = 0
+            data['orders_count'] += 1
+            updateUser(user_id, data)
+            
         else:
-            error_msg = result.get('error', 'Unknown error from SMM panel')
+            error_msg = result.get('error', 'Uɴᴋɴᴏᴡɴ ᴇʀʀᴏʀ ꜰʀᴏᴍ SMM ᴘᴀɴᴇʟ')
             raise Exception(error_msg)
             
     except requests.Timeout:
         bot.reply_to(
             message,
-            "⚠️ The order is taking longer than expected. Please check your balance and order status later.",
+            "⚠️ Tʜᴇ ᴏʀᴅᴇʀ ɪꜱ ᴛᴀᴋɪɴɢ ʟᴏɴɢᴇʀ ᴛʜᴀɴ ᴇxᴘᴇᴄᴛᴇᴅ. Pʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ʙᴀʟᴀɴᴄᴇ ᴀɴᴅ ᴏʀᴅᴇʀ ꜱᴛᴀᴛᴜꜱ ʟᴀᴛᴇʀ.",
             reply_markup=main_markup
         )
     except Exception as e:
-        print(f"Error submitting {service['name']} order: {str(e)}")
+        print(f"Eʀʀᴏʀ ꜱᴜʙᴍɪᴛᴛɪɴɢ {service['name']} ᴏʀᴅᴇʀ: {str(e)}")
         if 'result' not in locals() or not result.get('order'):
             bot.reply_to(
                 message,
-                f"❌ Failed to submit {service['name']} order. Please try again later.",
+                f"❌ Fᴀɪʟᴇᴅ ᴛᴏ ꜱᴜʙᴍɪᴛ {service['name']} ᴏʀᴅᴇʀ. Pʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.",
                 reply_markup=main_markup
             )
         else:
             bot.reply_to(
                 message,
-                f"⚠️ Order was submitted (ID: {result['order']}) but there was an issue with notifications.",
+                f"⚠️ Oʀᴅᴇʀ ᴡᴀꜱ ꜱᴜʙᴍɪᴛᴛᴇᴅ (ID: {result['order']}) ʙᴜᴛ ᴛʜᴇʀᴇ ᴡᴀꜱ ᴀɴ ɪꜱꜱᴜᴇ ᴡɪᴛʜ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴꜱ.",
                 reply_markup=main_markup
             )
 #======================== End of Instagram Orders ===========================#
@@ -1700,6 +1802,7 @@ def process_youtube_link(message, service, quantity, cost):
     
     link = message.text.strip()
     
+    # Validate YouTube link format
     if not re.match(r'^https?://(www\.)?(youtube\.com|youtu\.be)/', link):
         bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ YᴏᴜTᴜʙᴇ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=youtube_services_markup)
         return
@@ -1717,11 +1820,14 @@ def process_youtube_link(message, service, quantity, cost):
             timeout=30
         )
         result = response.json()
+        print(f"SMM Panel Response: {result}")  # Debug print
         
         if result and result.get('order'):
+            # Deduct balance
             if not cutBalance(str(message.from_user.id), cost):
                 raise Exception("Failed to deduct balance")
             
+            # Prepare complete order data
             order_data = {
                 'service': service['name'],
                 'service_type': 'youtube',
@@ -1734,16 +1840,82 @@ def process_youtube_link(message, service, quantity, cost):
                 'timestamp': time.time(),
                 'username': message.from_user.username or str(message.from_user.id)
             }
+            
+            # Add to order history
             add_order(str(message.from_user.id), order_data)
+            
+            # Generate notification image
+            try:
+                user_img = get_profile_photo(message.from_user.id)
+                bot_img = get_profile_photo(bot.get_me().id)
+                image_path = generate_notification_image(
+                    user_img,
+                    bot_img,
+                    message.from_user.first_name,
+                    bot.get_me().first_name,
+                    service['name']
+                )
+                
+                if image_path:
+                    # Create buttons
+                    markup = InlineKeyboardMarkup()
+                    markup.row(
+                        InlineKeyboardButton("🔗 View Order Link", url=link),
+                        InlineKeyboardButton("🤖 Visit Bot", url=f"https://t.me/{bot.get_me().username}")
+                    )
+                    
+                    # Stylish notification to payment channel
+                    caption = f"""📢 <b>Nᴇᴡ YᴏᴜTᴜʙᴇ Oʀᴅᴇʀ</b>
+                    
+👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
+🆔 <b>ID:</b> {message.from_user.id}
+📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
+🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
+💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
+📎 <b>Lɪɴᴋ:</b> {link}
+🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
+⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
+🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+                    
+                    with open(image_path, 'rb') as photo:
+                        bot.send_photo(
+                            payment_channel,
+                            photo,
+                            caption=caption,
+                            parse_mode='HTML',
+                            reply_markup=markup
+                        )
+                    
+                    # Clean up
+                    os.remove(image_path)
+                    
+            except Exception as e:
+                print(f"Error generating notification image: {e}")
+                # Fallback to text message if image generation fails
+                bot.send_message(
+                    payment_channel,
+                    f"""<b>📢 New Youtube Order:</b>
+                    
+👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
+🆔 <b>ID:</b> {message.from_user.id}
+📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
+🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
+💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
+📎 <b>Lɪɴᴋ:</b> {link}
+🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
+⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
+🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}""",
+                    disable_web_page_preview=True,
+                    parse_mode='HTML'
+                )
 
-            # Create "Check Order Status" button
+            # Create "Check Order Status" button for user
             markup = InlineKeyboardMarkup()
             check_status_button = InlineKeyboardButton(
                 text="📊 Check Order Status",
-                url=f"https://t.me/{payment_channel.lstrip('@')}"  # Hardcoded for testing  # Convert @channel to proper URL
+                url=f"https://t.me/{payment_channel.lstrip('@')}"
             )
-            markup.add(check_status_button)  # Use add() instead of row()
-
+            markup.add(check_status_button)
             
             # Stylish confirmation message
             bot.reply_to(
@@ -1763,54 +1935,36 @@ def process_youtube_link(message, service, quantity, cost):
                 parse_mode='HTML'
             )
             
-            # Update user stats
+            # Update orders count
             user_id = str(message.from_user.id)
             data = getData(user_id)
-            data['orders_count'] = data.get('orders_count', 0) + 1
+            if 'orders_count' not in data:
+                data['orders_count'] = 0
+            data['orders_count'] += 1
             updateUser(user_id, data)
             
-            try:
-                bot.send_message(
-                    payment_channel,
-                    f"""<b>📢 New Youtube Order:</b>
-                    
-👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
-🆔 <b>ID:</b> {message.from_user.id}
-📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
-🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
-💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
-⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
-🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}""",
-                    disable_web_page_preview=True,
-                    parse_mode='HTML'
-                )
-            except Exception as e:
-                print(f"Failed to send to payment channel: {e}")
-                
         else:
-            error_msg = result.get('error', 'Unknown error from SMM panel')
+            error_msg = result.get('error', 'Uɴᴋɴᴏᴡɴ ᴇʀʀᴏʀ ꜰʀᴏᴍ SMM ᴘᴀɴᴇʟ')
             raise Exception(error_msg)
             
     except requests.Timeout:
         bot.reply_to(
             message,
-            "⚠️ The order is taking longer than expected. Please check your balance and order status later.",
+            "⚠️ Tʜᴇ ᴏʀᴅᴇʀ ɪꜱ ᴛᴀᴋɪɴɢ ʟᴏɴɢᴇʀ ᴛʜᴀɴ ᴇxᴘᴇᴄᴛᴇᴅ. Pʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ʙᴀʟᴀɴᴄᴇ ᴀɴᴅ ᴏʀᴅᴇʀ ꜱᴛᴀᴛᴜꜱ ʟᴀᴛᴇʀ.",
             reply_markup=main_markup
         )
     except Exception as e:
-        print(f"Error submitting {service['name']} order: {str(e)}")
+        print(f"Eʀʀᴏʀ ꜱᴜʙᴍɪᴛᴛɪɴɢ {service['name']} ᴏʀᴅᴇʀ: {str(e)}")
         if 'result' not in locals() or not result.get('order'):
             bot.reply_to(
                 message,
-                f"❌ Failed to submit {service['name']} order. Please try again later.",
+                f"❌ Fᴀɪʟᴇᴅ ᴛᴏ ꜱᴜʙᴍɪᴛ {service['name']} ᴏʀᴅᴇʀ. Pʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ʟᴀᴛᴇʀ.",
                 reply_markup=main_markup
             )
         else:
             bot.reply_to(
                 message,
-                f"⚠️ Order was submitted (ID: {result['order']}) but there was an issue with notifications.",
+                f"⚠️ Oʀᴅᴇʀ ᴡᴀꜱ ꜱᴜʙᴍɪᴛᴛᴇᴅ (ID: {result['order']}) ʙᴜᴛ ᴛʜᴇʀᴇ ᴡᴀꜱ ᴀɴ ɪꜱꜱᴜᴇ ᴡɪᴛʜ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴꜱ.",
                 reply_markup=main_markup
             )
 #======================== End of Youtube Orders =====================#
@@ -1939,13 +2093,14 @@ def process_facebook_link(message, service, quantity, cost):
     if message.text == "✘ Cancel":
         bot.reply_to(message, "❌ Oʀᴅᴇʀ ᴄᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
         return
-    
+
     link = message.text.strip()
-    
-    if not re.match(r'^https?://(www\.|m\.)?(facebook\.com|fb\.watch)/', link):
+
+    # Validate Facebook link format
+    if not re.match(r'^https?://(www\.)?(facebook\.com|fb\.watch)/', link):
         bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ Fᴀᴄᴇʙᴏᴏᴋ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=facebook_services_markup)
         return
-    
+
     try:
         response = requests.post(
             SmmPanelApiUrl,
@@ -1959,11 +2114,12 @@ def process_facebook_link(message, service, quantity, cost):
             timeout=30
         )
         result = response.json()
-        
+        print(f"SMM Panel Response: {result}")
+
         if result and result.get('order'):
             if not cutBalance(str(message.from_user.id), cost):
                 raise Exception("Failed to deduct balance")
-            
+
             order_data = {
                 'service': service['name'],
                 'service_type': 'facebook',
@@ -1976,47 +2132,29 @@ def process_facebook_link(message, service, quantity, cost):
                 'timestamp': time.time(),
                 'username': message.from_user.username or str(message.from_user.id)
             }
+
             add_order(str(message.from_user.id), order_data)
 
-            # Create "Check Order Status" button
-            markup = InlineKeyboardMarkup()
-            check_status_button = InlineKeyboardButton(
-                text="📊 Check Order Status",
-                url=f"https://t.me/{payment_channel.lstrip('@')}"  # Hardcoded for testing  # Convert @channel to proper URL
-            )
-            markup.add(check_status_button)  # Use add() instead of row()
-
-            
-            # Stylish confirmation message
-            bot.reply_to(
-                message,
-                f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-             
-📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
-🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
-💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
-😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-
-⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
-                reply_markup=markup,
-                disable_web_page_preview=True,
-                parse_mode='HTML'
-            )
-            
-            # Update user stats
-            user_id = str(message.from_user.id)
-            data = getData(user_id)
-            data['orders_count'] = data.get('orders_count', 0) + 1
-            updateUser(user_id, data)
-            
-            
             try:
-                bot.send_message(
-                    payment_channel,
-                    f"""<b>📢 New Facebook Order:</b>
-                    
+                user_img = get_profile_photo(message.from_user.id)
+                bot_img = get_profile_photo(bot.get_me().id)
+                image_path = generate_notification_image(
+                    user_img,
+                    bot_img,
+                    message.from_user.first_name,
+                    bot.get_me().first_name,
+                    service['name']
+                )
+
+                if image_path:
+                    markup = InlineKeyboardMarkup()
+                    markup.row(
+                        InlineKeyboardButton("🔗 View Order Link", url=link),
+                        InlineKeyboardButton("🤖 Visit Bot", url=f"https://t.me/{bot.get_me().username}")
+                    )
+
+                    caption = f"""📢 <b>Nᴇᴡ Fᴀᴄᴇʙᴏᴏᴋ Oʀᴅᴇʀ</b>
+
 👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
 🆔 <b>ID:</b> {message.from_user.id}
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
@@ -2025,37 +2163,67 @@ def process_facebook_link(message, service, quantity, cost):
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
 ⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
-🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}""",
+🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+
+                    with open(image_path, 'rb') as photo:
+                        bot.send_photo(
+                            payment_channel,
+                            photo,
+                            caption=caption,
+                            parse_mode='HTML',
+                            reply_markup=markup
+                        )
+
+                    os.remove(image_path)
+
+            except Exception as e:
+                print(f"Error generating notification image: {e}")
+                bot.send_message(
+                    payment_channel,
+                    caption,
                     disable_web_page_preview=True,
                     parse_mode='HTML'
                 )
-            except Exception as e:
-                print(f"Failed to send to payment channel: {e}")
-                
+
+            markup = InlineKeyboardMarkup()
+            markup.add(InlineKeyboardButton(
+                "📊 Check Order Status", url=f"https://t.me/{payment_channel.lstrip('@')}")
+            )
+
+            bot.reply_to(
+                message,
+                f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
+
+📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
+🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
+💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
+📎 <b>Lɪɴᴋ:</b> {link}
+🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
+😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
+
+⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗻𝗴: ᴅᴏ ɴᴏᴛ ᴅᴜᴘʟɪᴄᴀᴛᴇ ᴏʀᴅᴇʀꜱ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ!</b>""",
+                reply_markup=markup,
+                disable_web_page_preview=True,
+                parse_mode='HTML'
+            )
+
+            user_id = str(message.from_user.id)
+            data = getData(user_id)
+            data['orders_count'] = data.get('orders_count', 0) + 1
+            updateUser(user_id, data)
+
         else:
-            error_msg = result.get('error', 'Unknown error from SMM panel')
-            raise Exception(error_msg)
-            
+            raise Exception(result.get('error', 'Uɴᴋɴᴏᴡɴ ᴇʀʀᴏʀ ꜰʀᴏᴍ SMM ᴘᴀɴᴇʟ'))
+
     except requests.Timeout:
-        bot.reply_to(
-            message,
-            "⚠️ The order is taking longer than expected. Please check your balance and order status later.",
-            reply_markup=main_markup
-        )
+        bot.reply_to(message, "⚠️ Tɪᴍᴇᴏᴜᴛ. Pʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ʙᴀʟᴀɴᴄᴇ ᴀɴᴅ ᴏʀᴅᴇʀ ꜱᴛᴀᴛᴜꜱ ʟᴀᴛᴇʀ.", reply_markup=main_markup)
     except Exception as e:
-        print(f"Error submitting {service['name']} order: {str(e)}")
+        print(f"Error submitting Facebook order: {str(e)}")
         if 'result' not in locals() or not result.get('order'):
-            bot.reply_to(
-                message,
-                f"❌ Failed to submit {service['name']} order. Please try again later.",
-                reply_markup=main_markup
-            )
+            bot.reply_to(message, "❌ Fᴀɪʟᴇᴅ ᴛᴏ ꜱᴜʙᴍɪᴛ Fᴀᴄᴇʙᴏᴏᴋ ᴏʀᴅᴇʀ.", reply_markup=main_markup)
         else:
-            bot.reply_to(
-                message,
-                f"⚠️ Order was submitted (ID: {result['order']}) but there was an issue with notifications.",
-                reply_markup=main_markup
-            )
+            bot.reply_to(message, f"⚠️ Oʀᴅᴇʀ ᴘʟᴀᴄᴇᴅ (ID: {result['order']}) ʙᴜᴛ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ ꜰᴀɪʟᴇᴅ.", reply_markup=main_markup)
+
 #======================== End of Facebook Orders =====================# 
 
 #======================== Send Orders for Whastapp =====================#
@@ -2162,12 +2330,14 @@ def process_whatsapp_link(message, service, quantity, cost):
     if message.text == "✘ Cancel":
         bot.reply_to(message, "❌ Oʀᴅᴇʀ ᴄᴀɴᴄᴇʟʟᴇᴅ.", reply_markup=main_markup)
         return
-    
+
     link = message.text.strip()
-    
-    if not re.match(r'^https?://(chat\.whatsapp\.com|wa\.me)/', link):
+
+    # Validate WhatsApp link format
+    if not re.match(r'^https?://(www\.)?(wa\.me|chat\.whatsapp\.com)/', link):
         bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ WʜᴀᴛꜱAᴘᴘ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=whatsapp_services_markup)
-    
+        return
+
     try:
         response = requests.post(
             SmmPanelApiUrl,
@@ -2181,11 +2351,12 @@ def process_whatsapp_link(message, service, quantity, cost):
             timeout=30
         )
         result = response.json()
-        
+        print(f"SMM Panel Response: {result}")
+
         if result and result.get('order'):
             if not cutBalance(str(message.from_user.id), cost):
                 raise Exception("Failed to deduct balance")
-            
+
             order_data = {
                 'service': service['name'],
                 'service_type': 'whatsapp',
@@ -2198,46 +2369,29 @@ def process_whatsapp_link(message, service, quantity, cost):
                 'timestamp': time.time(),
                 'username': message.from_user.username or str(message.from_user.id)
             }
+
             add_order(str(message.from_user.id), order_data)
 
-            # Create "Check Order Status" button
-            markup = InlineKeyboardMarkup()
-            check_status_button = InlineKeyboardButton(
-                text="📊 Check Order Status",
-                url=f"https://t.me/{payment_channel.lstrip('@')}"  # Hardcoded for testing  # Convert @channel to proper URL
-            )
-            markup.add(check_status_button)  # Use add() instead of row()
-
-            
-            # Stylish confirmation message
-            bot.reply_to(
-                message,
-                f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
-             
-📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
-🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
-💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
-🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
-😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
-
-⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗴: ᴅᴏ ɴᴏᴛ ꜱᴇɴᴅ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏʀᴅᴇʀ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ᴇʟꜱᴇ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!</b>""",
-                reply_markup=markup,
-                disable_web_page_preview=True,
-                parse_mode='HTML'
-            )
-            
-            # Update user stats
-            user_id = str(message.from_user.id)
-            data = getData(user_id)
-            data['orders_count'] = data.get('orders_count', 0) + 1
-            updateUser(user_id, data)
-            
             try:
-                bot.send_message(
-                    payment_channel,
-                    f"""<b>📢 New Whastapp Order:</b>
-                    
+                user_img = get_profile_photo(message.from_user.id)
+                bot_img = get_profile_photo(bot.get_me().id)
+                image_path = generate_notification_image(
+                    user_img,
+                    bot_img,
+                    message.from_user.first_name,
+                    bot.get_me().first_name,
+                    service['name']
+                )
+
+                if image_path:
+                    markup = InlineKeyboardMarkup()
+                    markup.row(
+                        InlineKeyboardButton("🔗 View Order Link", url=link),
+                        InlineKeyboardButton("🤖 Visit Bot", url=f"https://t.me/{bot.get_me().username}")
+                    )
+
+                    caption = f"""📢 <b>Nᴇᴡ WʜᴀᴛꜱAᴘᴘ Oʀᴅᴇʀ</b>
+
 👤 <b>Uꜱᴇʀ:</b> {message.from_user.first_name} (@{message.from_user.username or 'N/A'})
 🆔 <b>ID:</b> {message.from_user.id}
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
@@ -2246,37 +2400,67 @@ def process_whatsapp_link(message, service, quantity, cost):
 📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
 ⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
-🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}""",
+🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
+
+                    with open(image_path, 'rb') as photo:
+                        bot.send_photo(
+                            payment_channel,
+                            photo,
+                            caption=caption,
+                            parse_mode='HTML',
+                            reply_markup=markup
+                        )
+
+                    os.remove(image_path)
+
+            except Exception as e:
+                print(f"Error generating notification image: {e}")
+                bot.send_message(
+                    payment_channel,
+                    caption,
                     disable_web_page_preview=True,
                     parse_mode='HTML'
                 )
-            except Exception as e:
-                print(f"Failed to send to payment channel: {e}")
-                
+
+            markup = InlineKeyboardMarkup()
+            markup.add(InlineKeyboardButton(
+                "📊 Check Order Status", url=f"https://t.me/{payment_channel.lstrip('@')}")
+            )
+
+            bot.reply_to(
+                message,
+                f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
+
+📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
+🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
+💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
+📎 <b>Lɪɴᴋ:</b> {link}
+🆔 <b>Oʀᴅᴇʀ ID:</b> {result['order']}
+😊 <b>Tʜᴀɴᴋꜱ Fᴏʀ Oʀᴅᴇʀɪɴɢ!</b>
+
+⚠️ <b>𝗪𝗮𝗿𝗻𝗶𝗻𝗴: ᴅᴏ ɴᴏᴛ ᴅᴜᴘʟɪᴄᴀᴛᴇ ᴏʀᴅᴇʀꜱ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ!</b>""",
+                reply_markup=markup,
+                disable_web_page_preview=True,
+                parse_mode='HTML'
+            )
+
+            user_id = str(message.from_user.id)
+            data = getData(user_id)
+            data['orders_count'] = data.get('orders_count', 0) + 1
+            updateUser(user_id, data)
+
         else:
-            error_msg = result.get('error', 'Unknown error from SMM panel')
-            raise Exception(error_msg)
-            
+            raise Exception(result.get('error', 'Uɴᴋɴᴏᴡɴ ᴇʀʀᴏʀ ꜰʀᴏᴍ SMM ᴘᴀɴᴇʟ'))
+
     except requests.Timeout:
-        bot.reply_to(
-            message,
-            "⚠️ The order is taking longer than expected. Please check your balance and order status later.",
-            reply_markup=main_markup
-        )
+        bot.reply_to(message, "⚠️ Tɪᴍᴇᴏᴜᴛ. Pʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ʙᴀʟᴀɴᴄᴇ ᴀɴᴅ ᴏʀᴅᴇʀ ꜱᴛᴀᴛᴜꜱ ʟᴀᴛᴇʀ.", reply_markup=main_markup)
     except Exception as e:
-        print(f"Error submitting {service['name']} order: {str(e)}")
+        print(f"Error submitting Facebook order: {str(e)}")
         if 'result' not in locals() or not result.get('order'):
-            bot.reply_to(
-                message,
-                f"❌ Failed to submit {service['name']} order. Please try again later.",
-                reply_markup=main_markup
-            )
+            bot.reply_to(message, "❌ Fᴀɪʟᴇᴅ ᴛᴏ ꜱᴜʙᴍɪᴛ Fᴀᴄᴇʙᴏᴏᴋ ᴏʀᴅᴇʀ.", reply_markup=main_markup)
         else:
-            bot.reply_to(
-                message,
-                f"⚠️ Order was submitted (ID: {result['order']}) but there was an issue with notifications.",
-                reply_markup=main_markup
-            )
+            bot.reply_to(message, f"⚠️ Oʀᴅᴇʀ ᴘʟᴀᴄᴇᴅ (ID: {result['order']}) ʙᴜᴛ ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ ꜰᴀɪʟᴇᴅ.", reply_markup=main_markup)
+
 #======================== End of Whastapp Orders =====================#
 
 #=================== The back button handler =========================================
