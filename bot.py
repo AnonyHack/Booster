@@ -1330,7 +1330,6 @@ def process_tiktok_link(message, service, quantity, cost):
 📦 <b>Sᴇʀᴠɪᴄᴇ:</b> {service['name']}
 🔢 <b>Qᴜᴀɴᴛɪᴛʏ:</b> {quantity}
 💰 <b>Cᴏꜱᴛ:</b> {cost} ᴄᴏɪɴꜱ
-📎 <b>Lɪɴᴋ:</b> {link}
 🆔 <b>Oʀᴅᴇʀ ID:</b> <code>{result['order']}</code>
 ⚡ <b>Sᴛᴀᴛᴜꜱ:</b> <code>{result.get('status', 'pending').capitalize()}</code>
 🤖 <b>Bᴏᴛ:</b> @{bot.get_me().username}"""
