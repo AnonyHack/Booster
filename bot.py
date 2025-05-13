@@ -875,17 +875,21 @@ def handle_telegram_order(message):
     # Store service data in user session (you may need a session system)
     # Here we'll just pass it through the register_next_step_handler
     
-    msg = f"""📊 Order {service['name']}:
-
-📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
-📌 Mɪɴɪᴍᴜᴍ: {service['min']}
-📌 Mᴀxɪᴍᴜᴍ: {service['max']}
-💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
-🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
-💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-
-
-Enter quantity:"""
+    msg = f"""⭐️ ｢{service['name']} Sᴇʀᴠɪᴄᴇ Dᴇᴛᴀɪʟꜱ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+📌 <b>Oʀᴅᴇʀ ID:</b> <code>{service['service_id']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+📉 <b>Mɪɴɪᴍᴜᴍ:</b> {service['min']}
+📈 <b>Mᴀxɪᴍᴜᴍ:</b> {service['max']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💰 <b>Pʀɪᴄᴇ:</b> {service['price']} ᴄᴏɪɴꜱ / {service['unit']}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔗 <b>Lɪɴᴋ Hɪɴᴛ:</b> {service['link_hint']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💎 <b>Qᴜᴀʟɪᴛʏ:</b> {service['quality']}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔢 <b>Eɴᴛᴇʀ Qᴜᴀɴᴛɪᴛʏ:</b> 
+━━━━━━━━━━━━━━━━━━━━━━━"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -1176,16 +1180,21 @@ def handle_tiktok_order(message):
     KeyboardButton("↩️ Go Back")
 )
     
-    msg = f"""📊 Order {service['name']}:
-
-📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
-📌 Mɪɴɪᴍᴜᴍ: {service['min']}
-📌 Mᴀxɪᴍᴜᴍ: {service['max']}
-💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
-🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
-💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-
-Enter quantity:"""
+    msg = f"""⭐️ ｢{service['name']} Sᴇʀᴠɪᴄᴇ Dᴇᴛᴀɪʟꜱ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+📌 <b>Oʀᴅᴇʀ ID:</b> <code>{service['service_id']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+📉 <b>Mɪɴɪᴍᴜᴍ:</b> {service['min']}
+📈 <b>Mᴀxɪᴍᴜᴍ:</b> {service['max']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💰 <b>Pʀɪᴄᴇ:</b> {service['price']} ᴄᴏɪɴꜱ / {service['unit']}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔗 <b>Lɪɴᴋ Hɪɴᴛ:</b> {service['link_hint']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💎 <b>Qᴜᴀʟɪᴛʏ:</b> {service['quality']}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔢 <b>Eɴᴛᴇʀ Qᴜᴀɴᴛɪᴛʏ:</b> 
+━━━━━━━━━━━━━━━━━━━━━━━"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -1471,16 +1480,21 @@ def handle_instagram_order(message):
         KeyboardButton("↩️ Go Back")
     )
     
-    msg = f"""📊 Order {service['name']}:
- 
-📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
-📌 Mɪɴɪᴍᴜᴍ: {service['min']}
-📌 Mᴀxɪᴍᴜᴍ: {service['max']}
-💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
-🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
-💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-
-Enter quantity:"""
+    msg = f"""⭐️ ｢{service['name']} Sᴇʀᴠɪᴄᴇ Dᴇᴛᴀɪʟꜱ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+📌 <b>Oʀᴅᴇʀ ID:</b> <code>{service['service_id']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+📉 <b>Mɪɴɪᴍᴜᴍ:</b> {service['min']}
+📈 <b>Mᴀxɪᴍᴜᴍ:</b> {service['max']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💰 <b>Pʀɪᴄᴇ:</b> {service['price']} ᴄᴏɪɴꜱ / {service['unit']}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔗 <b>Lɪɴᴋ Hɪɴᴛ:</b> {service['link_hint']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💎 <b>Qᴜᴀʟɪᴛʏ:</b> {service['quality']}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔢 <b>Eɴᴛᴇʀ Qᴜᴀɴᴛɪᴛʏ:</b> 
+━━━━━━━━━━━━━━━━━━━━━━━"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -1764,16 +1778,21 @@ def handle_youtube_order(message):
         KeyboardButton("↩️ Go Back")
     )
     
-    msg = f"""📊 Order {service['name']}:
-  
-📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
-📌 Mɪɴɪᴍᴜᴍ: {service['min']}
-📌 Mᴀxɪᴍᴜᴍ: {service['max']}
-💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
-🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
-💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-
-Enter quantity:"""
+    msg = f"""⭐️ ｢{service['name']} Sᴇʀᴠɪᴄᴇ Dᴇᴛᴀɪʟꜱ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+📌 <b>Oʀᴅᴇʀ ID:</b> <code>{service['service_id']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+📉 <b>Mɪɴɪᴍᴜᴍ:</b> {service['min']}
+📈 <b>Mᴀxɪᴍᴜᴍ:</b> {service['max']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💰 <b>Pʀɪᴄᴇ:</b> {service['price']} ᴄᴏɪɴꜱ / {service['unit']}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔗 <b>Lɪɴᴋ Hɪɴᴛ:</b> {service['link_hint']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💎 <b>Qᴜᴀʟɪᴛʏ:</b> {service['quality']}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔢 <b>Eɴᴛᴇʀ Qᴜᴀɴᴛɪᴛʏ:</b> 
+━━━━━━━━━━━━━━━━━━━━━━━"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -2067,16 +2086,21 @@ def handle_facebook_order(message):
         KeyboardButton("↩️ Go Back")
     )
     
-    msg = f"""📊 Order {service['name']}:
-
-📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
-📌 Mɪɴɪᴍᴜᴍ: {service['min']}
-📌 Mᴀxɪᴍᴜᴍ: {service['max']}
-💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
-🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
-💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-
-Enter quantity:"""
+    msg = f"""⭐️ ｢{service['name']} Sᴇʀᴠɪᴄᴇ Dᴇᴛᴀɪʟꜱ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+📌 <b>Oʀᴅᴇʀ ID:</b> <code>{service['service_id']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+📉 <b>Mɪɴɪᴍᴜᴍ:</b> {service['min']}
+📈 <b>Mᴀxɪᴍᴜᴍ:</b> {service['max']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💰 <b>Pʀɪᴄᴇ:</b> {service['price']} ᴄᴏɪɴꜱ / {service['unit']}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔗 <b>Lɪɴᴋ Hɪɴᴛ:</b> {service['link_hint']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💎 <b>Qᴜᴀʟɪᴛʏ:</b> {service['quality']}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔢 <b>Eɴᴛᴇʀ Qᴜᴀɴᴛɪᴛʏ:</b> 
+━━━━━━━━━━━━━━━━━━━━━━━"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -2313,16 +2337,21 @@ def handle_whatsapp_order(message):
         KeyboardButton("↩️ Go Back")
     )
     
-    msg = f"""📊 Order {service['name']}:
-
-📌 Oʀᴅᴇʀ Iᴅ: {service['service_id']}    
-📌 Mɪɴɪᴍᴜᴍ: {service['min']}
-📌 Mᴀxɪᴍᴜᴍ: {service['max']}
-💰 Pʀɪᴄᴇ: {service['price']} coins/{service['unit']}
-🔗 Lɪɴᴋ Hɪɴᴛ: {service['link_hint']}
-💎 Qᴜᴀʟɪᴛʏ: {service['quality']}
-
-Enter quantity:"""
+    msg = f"""⭐️ ｢{service['name']} Sᴇʀᴠɪᴄᴇ Dᴇᴛᴀɪʟꜱ 」⭐️
+━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
+📌 <b>Oʀᴅᴇʀ ID:</b> <code>{service['service_id']}</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+📉 <b>Mɪɴɪᴍᴜᴍ:</b> {service['min']}
+📈 <b>Mᴀxɪᴍᴜᴍ:</b> {service['max']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💰 <b>Pʀɪᴄᴇ:</b> {service['price']} ᴄᴏɪɴꜱ / {service['unit']}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔗 <b>Lɪɴᴋ Hɪɴᴛ:</b> {service['link_hint']}
+━━━━━━━━━━━━━━━━━━━━━━━
+💎 <b>Qᴜᴀʟɪᴛʏ:</b> {service['quality']}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔢 <b>Eɴᴛᴇʀ Qᴜᴀɴᴛɪᴛʏ:</b> 
+━━━━━━━━━━━━━━━━━━━━━━━"""
     
     bot.reply_to(message, msg, reply_markup=cancel_back_markup)
     bot.register_next_step_handler(
@@ -4001,7 +4030,7 @@ def generate_notification_image(user_img, bot_img, user_name, bot_name, service_
 
         # Bottom banner
         draw.rectangle([0, 370, width, 400], fill=(255, 215, 0))
-        draw.text((width // 2, 385), "Powered by SMM Booster", font=name_font,
+        draw.text((width // 2, 385), "Powered by SMMHub Booster", font=name_font,
                   fill=(30, 30, 30), anchor="mm")
 
         output_path = f"order_{user_name}.png"
