@@ -1261,9 +1261,9 @@ def process_tiktok_link(message, service, quantity, cost):
     
     link = message.text.strip()
     
-    # Validate link format (basic check)
-    if not re.match(r'^https?://t\.me/', link):
-        bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ Tᴇʟᴇɢʀᴀᴍ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=telegram_services_markup)
+    # Validate TikTok link format
+    if not re.match(r'^https?://(www\.)?(tiktok\.com|vm\.tiktok\.com)/', link):
+        bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ TɪᴋTᴏᴋ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=tiktok_services_markup)
         return
     
     try:
@@ -1571,9 +1571,9 @@ def process_instagram_link(message, service, quantity, cost):
     
     link = message.text.strip()
     
-    # Validate link format (basic check)
-    if not re.match(r'^https?://t\.me/', link):
-        bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ Tᴇʟᴇɢʀᴀᴍ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=telegram_services_markup)
+    # Validate Instagram link format
+    if not re.match(r'^https?://(www\.)?instagram\.com/[\w./-]+', link):
+        bot.reply_to(message, "❌ Iɴᴠᴀʟɪᴅ Iɴꜱᴛᴀɢʀᴀᴍ ʟɪɴᴋ ꜰᴏʀᴍᴀᴛ", reply_markup=instagram_services_markup)
         return
     
     try:
