@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 # Initialize MongoDB connection
 try:
     client = MongoClient(MONGO_URI)
-    db = client.get_database("smmhubboosterv2")
+    db = client.get_database("smmhubbooster")
     users_collection = db.users
     orders_collection = db.orders
     logger.info("Connected to MongoDB successfully")
@@ -52,6 +52,8 @@ def insertUser(user_id, data):
         data['welcome_bonus'] = data.get('welcome_bonus', 0)  # Default welcome bonus status
         data['referred'] = data.get('referred', 0)  # Default referral status
         data['banned'] = data.get('banned', False)  # Default banned status
+        # Add affiliate earnings field
+        data['affiliate_earnings'] = data.get('affiliate_earnings', 0.0)
         
         # Insert the user into the database
         result = users_collection.insert_one(data)
@@ -485,8 +487,40 @@ def get_pending_spent(user_id):
         print(f"Error in get_pending_spent: {e}")
         return 0.0
 
+# ================= Affiliate Earnings Functions =================
 
+def get_affiliate_earnings(user_id):
+    """Get user's total affiliate earnings"""
+    try:
+        user = users_collection.find_one({"user_id": str(user_id)}, {"affiliate_earnings": 1})
+        return float(user.get("affiliate_earnings", 0.0)) if user else 0.0
+    except Exception as e:
+        logger.error(f"Error getting affiliate earnings for {user_id}: {e}")
+        return 0.0
 
+def add_affiliate_earning(user_id, amount):
+    """Add to user's affiliate earnings"""
+    try:
+        user_id = str(user_id)
+        amount = float(amount)
+        result = users_collection.update_one(
+            {"user_id": user_id},
+            {"$inc": {"affiliate_earnings": amount}},
+            upsert=True
+        )
+        return result.modified_count > 0 or result.upserted_id is not None
+    except Exception as e:
+        logger.error(f"Error adding affiliate earning for {user_id}: {e}")
+        return False
+
+def get_affiliate_users(user_id):
+    """Get list of users referred by this affiliate"""
+    try:
+        user_id = str(user_id)
+        users = users_collection.find({"ref_by": user_id}, {"user_id": 1, "_id": 0})
+        return [u["user_id"] for u in users]
+    except Exception as e:
+        logger.error(f"Error getting affiliate users for {user_id}: {e}")
+        return []
 
 print("functions.py loaded with MongoDB support")
-
