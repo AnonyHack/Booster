@@ -592,19 +592,19 @@ The SMM Menu Affiliate Program is your chance to earn money effortlessly by prom
 
 💰 <b>Your Affiliate Stats:</b>
 ├ 👥 Total Referrals: <code>{total_refs}</code>
-└ 💰 Total Earnings: <code>${affiliate_earnings:.2f}</code>
+└ 💰 Total Earnings: <code>UGX{affiliate_earnings:.2f}</code>
 
 📈 <b>Earnings Breakdown:</b>  
-- A referral orders $50 worth of services → You earn $2.50  
-- They order $500 over a month → You pocket $50  
-- Imagine 20 active referrals spending $200 each → That's $200 in your wallet!  
+- A referral orders $50 worth of services → You earn $2.50 / ~9,100 UGX 
+- They order $500 over a month → You pocket $25.00 / ~91,008 UGX  
+- Imagine 20 active referrals spending $200 each → That's $200.00 / ~728,064 UGX in your wallet!  
 
 🎁 <b>Extra Bonus:</b> You also earn <code>{welcome_bonus}</code> coins when someone signs up using your link!
 
 🔗 <b>Your Unique Affiliate Link:</b>  
 <code>{affiliate_link}</code>
 
-📌 <b>Pro Tip:</b> Share in Telegram groups about social media growth for best results!
+📌 <b>Pro Tip:</b> Share to people who want Social Media growth for best results!
 """
 
     # Create inline buttons for sharing
@@ -634,10 +634,11 @@ def show_affiliate_stats(call):
 📊 <b>Your Affiliate Stats</b>
 
 👥 <b>Total Referrals:</b> {total_refs}
-💰 <b>Total Earnings:</b> ${affiliate_earnings:.2f}
+💰 <b>Total Earnings:</b> UGX{affiliate_earnings:.2f}
 
-🔄 <b>Recent Commissions:</b>
-Coming soon! We're working on detailed stats.
+⚠️ <b>Withdraw Rules:</b>
+You can withdraw your Affiliate Earnings to your Real Wallet. Withdrawals are processed manually by the admins.
+<b>Note:</b> Ensure you have at least UGX 1000 in earnings to withdraw.
 """
     
     bot.answer_callback_query(call.id)
@@ -647,7 +648,8 @@ Coming soon! We're working on detailed stats.
         text=stats_message,
         parse_mode='HTML',
         reply_markup=InlineKeyboardMarkup().add(
-            InlineKeyboardButton("🔙 Back", callback_data="back_to_affiliate")
+            InlineKeyboardButton("🔙 Back", callback_data="back_to_affiliate"),
+            InlineKeyboardButton("📤 Withdraw Cash", url=f"https://t.me/SOCIALBOOSTERADMIN")
         )
     )
 
