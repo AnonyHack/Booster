@@ -27,7 +27,8 @@ from functions import (insertUser, track_exists, addBalance, cutBalance, getData
                        get_top_users, get_user_count, get_active_users, get_total_orders, 
                        get_total_deposits, get_top_referrer, get_user_orders_stats, get_new_users,
                        get_completed_orders, get_all_users, save_pinned_message, get_all_pinned_messages,
-                         clear_all_pinned_messages, orders_collection, get_confirmed_spent, get_pending_spent) # Import your functions from functions.py
+                         clear_all_pinned_messages, orders_collection, get_confirmed_spent, get_pending_spent, 
+                         get_affiliate_earnings, add_affiliate_earning, get_affiliate_users, ) # Import your functions from functions.py
 
 
 
@@ -50,18 +51,19 @@ ref_bonus = 50
 
 # Main keyboard markup
 main_markup = ReplyKeyboardMarkup(resize_keyboard=True)
-button1 = KeyboardButton("🛒 Buy Services")  # Changed from "👁‍🗨 Order View"
+button1 = KeyboardButton("🛒 Buy Services")
 button2 = KeyboardButton("👤 My Account")
 button3 = KeyboardButton("💳 Pricing")
 button4 = KeyboardButton("📊 Order Stats")
 button5 = KeyboardButton("🗣 Invite")
-button6 = KeyboardButton("🏆 Leaderboard")
-button7 = KeyboardButton("📜 Help")
+button6 = KeyboardButton("💰 Affiliate")  # New Affiliate button
+button7 = KeyboardButton("🏆 Leaderboard")
+button8 = KeyboardButton("📜 Help")
 
 main_markup.add(button1, button2)
 main_markup.add(button3, button4)
 main_markup.add(button5, button6)
-main_markup.add(button7)
+main_markup.add(button7, button8)
 
 # Admin keyboard markup
 admin_markup = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -365,19 +367,32 @@ def send_welcome(message):
     user_id = str(message.from_user.id)
     first_name = message.from_user.first_name
     username = f"@{message.from_user.username}" if message.from_user.username else "No Username"
-    ref_by = message.text.split()[1] if len(message.text.split()) > 1 and message.text.split()[1].isdigit() else None
+    
+    ref_by = None
+    is_affiliate = False
+
+    # Parse referral parameter
+    if len(message.text.split()) > 1:
+        ref_param = message.text.split()[1]
+        if ref_param.startswith('aff_'):
+            ref_by = ref_param.replace('aff_', '')
+            is_affiliate = True
+        elif ref_param.isdigit():
+            ref_by = ref_param
+            is_affiliate = False
 
     # Check channel membership
     if not check_membership_and_prompt(user_id, message):
         return
 
-    # Referral system logic
+    # Referral tracking logic
     if ref_by and int(ref_by) != int(user_id) and track_exists(ref_by):
         if not isExists(user_id):
             initial_data = {
                 "user_id": user_id,
                 "balance": "0.00",
                 "ref_by": ref_by,
+                "is_affiliate": is_affiliate,
                 "referred": 0,
                 "welcome_bonus": 0,
                 "total_refs": 0,
@@ -385,11 +400,13 @@ def send_welcome(message):
             insertUser(user_id, initial_data)
             addRefCount(ref_by)
 
+    # If new user and not referred
     if not isExists(user_id):
         initial_data = {
             "user_id": user_id,
             "balance": "0.00",
             "ref_by": "none",
+            "is_affiliate": False,
             "referred": 0,
             "welcome_bonus": 0,
             "total_refs": 0,
@@ -398,13 +415,13 @@ def send_welcome(message):
 
     # Welcome bonus logic
     userData = getData(user_id)
-    if userData['welcome_bonus'] == 0:
+    if userData.get('welcome_bonus', 0) == 0:
         addBalance(user_id, welcome_bonus)
         setWelcomeStaus(user_id)
 
-    # Professional Referral bonus logic
+    # Referral bonus logic
     data = getData(user_id)
-    if data['ref_by'] != "none" and data['referred'] == 0:
+    if data['ref_by'] != "none" and data.get('referred') == 0:
         referrer_data = getData(data['ref_by'])
         referral_message = f"""
 <blockquote>
@@ -431,7 +448,7 @@ Tʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ʜᴇʟᴘɪɴɢ ɢʀᴏᴡ ᴏᴜʀ ᴄᴏᴍᴍ�
         addBalance(data['ref_by'], ref_bonus)
         setReferredStatus(user_id)
 
-    # Send welcome image with caption
+    # Welcome message
     welcome_image_url = "https://t.me/smmserviceslogs/20"  # Replace with your image URL
     welcome_caption = f"""
 <blockquote>
@@ -456,14 +473,14 @@ Wɪᴛʜ ᴏᴜʀ ʙᴏᴛ, ʏᴏᴜ ᴄᴀɴ ʙᴏᴏꜱᴛ ʏᴏᴜʀ ꜱᴏ�
         )
 
         # Send welcome bonus message separately if applicable
-        if userData['welcome_bonus'] == 0:
+        if userData.get('welcome_bonus', 0) == 0:
             bot.send_message(
                 user_id,
                 f"🎁 <b>You received +{welcome_bonus} coins welcome bonus!</b>",
                 parse_mode='HTML'
             )
 
-        # ✅ ADDITION: Check for pending orders and notify the user
+        # Notify about pending orders
         stats = get_user_orders_stats(user_id)
         if stats['pending'] > 0:
             bot.send_message(
@@ -476,6 +493,7 @@ Wɪᴛʜ ᴏᴜʀ ʙᴏᴛ, ʏᴏᴜ ᴄᴀɴ ʙᴏᴏꜱᴛ ʏᴏᴜʀ ꜱᴏ�
 
     except Exception as e:
         print(f"Error in send_welcome: {e}")
+
 
 #====================== My Account =====================#
 @bot.message_handler(func=lambda message: message.text == "👤 My Account")
@@ -585,6 +603,104 @@ def invite_friends(message):
         parse_mode='HTML',
         disable_web_page_preview=True
     )
+
+#======================= Affiliate Program =======================#
+@bot.message_handler(func=lambda message: message.text == "💰 Affiliate")
+@check_ban
+def affiliate_program(message):
+    user_id = str(message.chat.id)
+    bot_username = bot.get_me().username
+    affiliate_link = f"https://t.me/{bot_username}?start=aff_{user_id}"
+    data = getData(user_id)
+    
+    if not data:
+        bot.reply_to(message, "❌ Account not found. Please /start again.")
+        return
+        
+    # Get affiliate stats (you'll need to implement these in functions.py)
+    total_refs = data.get('total_refs', 0)
+    affiliate_earnings = data.get('affiliate_earnings', 0)
+    
+    # Enhanced affiliate message
+    affiliate_message = f"""
+🏆 <b>Unlock Endless Earnings with SMM Menu Affiliate Program!</b>  
+
+🌐 <b>What's the Affiliate Program?</b>  
+The SMM Menu Affiliate Program is your chance to earn money effortlessly by promoting our powerful Social Media Marketing bot. Whether you're a content creator, influencer, or just someone with a network, this is your opportunity to turn connections into cash – without any hard work!  
+
+🔍 <b>How Does It Work?</b>  
+1️⃣ <b>Get Your Link</b> - Use your personalized affiliate link below  
+2️⃣ <b>Spread the Word</b> - Share it on Telegram groups, social media, WhatsApp, or anywhere your audience hangs out  
+3️⃣ <b>Earn Forever</b> - Get 5% of every order your referrals make - for life!  
+
+💰 <b>Your Affiliate Stats:</b>
+├ 👥 Total Referrals: <code>{total_refs}</code>
+└ 💰 Total Earnings: <code>${affiliate_earnings:.2f}</code>
+
+📈 <b>Earnings Breakdown:</b>  
+- A referral orders $50 worth of services → You earn $2.50  
+- They order $500 over a month → You pocket $50  
+- Imagine 20 active referrals spending $200 each → That's $200 in your wallet!  
+
+🔗 <b>Your Unique Affiliate Link:</b>  
+<code>{affiliate_link}</code>
+
+📌 <b>Pro Tip:</b> Share in Telegram groups about social media growth for best results!
+"""
+
+    # Create inline buttons for sharing
+    markup = InlineKeyboardMarkup()
+    markup.row(
+        InlineKeyboardButton("📤 Share Link", url=f"https://t.me/share/url?url={affiliate_link}&text=🚀 Earn money with this amazing SMM bot! Get social media growth services and earn 5% commission on all orders!"),
+        InlineKeyboardButton("📊 View Stats", callback_data="affiliate_stats")
+    )
+    
+    bot.reply_to(
+        message,
+        affiliate_message,
+        parse_mode='HTML',
+        disable_web_page_preview=True,
+        reply_markup=markup
+    )
+
+@bot.callback_query_handler(func=lambda call: call.data == "affiliate_stats")
+def show_affiliate_stats(call):
+    user_id = str(call.from_user.id)
+    data = getData(user_id)
+    
+    total_refs = data.get('total_refs', 0)
+    affiliate_earnings = data.get('affiliate_earnings', 0)
+    
+    stats_message = f"""
+📊 <b>Your Affiliate Stats</b>
+
+👥 <b>Total Referrals:</b> {total_refs}
+💰 <b>Total Earnings:</b> ${affiliate_earnings:.2f}
+
+🔄 <b>Recent Commissions:</b>
+Coming soon! We're working on detailed stats.
+"""
+    
+    bot.answer_callback_query(call.id)
+    bot.edit_message_text(
+        chat_id=call.message.chat.id,
+        message_id=call.message.message_id,
+        text=stats_message,
+        parse_mode='HTML',
+        reply_markup=InlineKeyboardMarkup().add(
+            InlineKeyboardButton("🔙 Back", callback_data="back_to_affiliate")
+        )
+    )
+
+@bot.callback_query_handler(func=lambda call: call.data == "back_to_affiliate")
+def back_to_affiliate(call):
+    # This will regenerate the original affiliate message
+    from types import SimpleNamespace
+    msg = SimpleNamespace()
+    msg.chat = call.message.chat
+    msg.from_user = call.from_user
+    affiliate_program(msg)
+    bot.answer_callback_query(call.id)
 
 #======================= Help =======================#
 @bot.message_handler(func=lambda message: message.text == "📜 Help")
