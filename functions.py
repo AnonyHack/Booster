@@ -21,6 +21,7 @@ try:
     db = client.get_database("smmhubboosterv2")
     users_collection = db.users
     orders_collection = db.orders
+    cash_logs_collection = db['affiliate_cash_logs']  # New collection for cash logs
     logger.info("Connected to MongoDB successfully")
 except PyMongoError as e:
     logger.error(f"Failed to connect to MongoDB: {e}")
@@ -522,5 +523,32 @@ def get_affiliate_users(user_id):
     except Exception as e:
         logger.error(f"Error getting affiliate users for {user_id}: {e}")
         return []
+    
+def update_affiliate_earning(user_id, amount, subtract=False, admin_id=None):
+    """Add or subtract from affiliate earnings and log it separately."""
+    user = users_collection.find_one({"user_id": str(user_id)})
+    if not user:
+        return False
+
+    current = float(user.get("affiliate_earnings", 0.0))
+    new_amount = current - float(amount) if subtract else current + float(amount)
+    new_amount = round(max(new_amount, 0), 2)
+
+    result = users_collection.update_one(
+        {"user_id": str(user_id)},
+        {"$set": {"affiliate_earnings": new_amount}}
+    )
+
+    # ✅ Log this transaction
+    cash_logs_collection.insert_one({
+        "user_id": str(user_id),
+        "amount": float(amount),
+        "type": "remove" if subtract else "add",
+        "admin_id": str(admin_id) if admin_id else "unknown",
+        "timestamp": datetime.utcnow()
+    })
+
+    return result.modified_count > 0
+
 
 print("functions.py loaded with MongoDB support")
