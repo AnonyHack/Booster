@@ -599,6 +599,8 @@ The SMM Menu Affiliate Program is your chance to earn money effortlessly by prom
 - They order $500 over a month → You pocket $50  
 - Imagine 20 active referrals spending $200 each → That's $200 in your wallet!  
 
+🎁 <b>Extra Bonus:</b> You also earn <code>{welcome_bonus}</code> coins when someone signs up using your link!
+
 🔗 <b>Your Unique Affiliate Link:</b>  
 <code>{affiliate_link}</code>
 
