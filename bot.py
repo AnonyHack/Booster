@@ -1268,6 +1268,24 @@ f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
                 data['orders_count'] = 0
             data['orders_count'] += 1
             updateUser(user_id, data)
+
+            # ✅ Affiliate Commission Tracking
+            if data.get('ref_by') and data['ref_by'] != "none":
+                try:
+                    commission = cost * 0.05  # 5% commission
+                    add_affiliate_earning(data['ref_by'], commission)
+
+                    bot.send_message(
+                        data['ref_by'],
+                        f"💰 <b>New Affiliate Commission!</b>\n\n"
+                        f"You earned ${commission:.2f} from {message.from_user.first_name}'s order!\n"
+                        f"📦 Service: {service['name']}\n"
+                        f"💵 Amount: ${cost:.2f}\n\n"
+                        f"Keep sharing your link to earn more!",
+                        parse_mode='HTML'
+                    )
+                except Exception as e:
+                    print(f"Failed to send affiliate notification: {e}")
             
         else:
             error_msg = result.get('error', 'Uɴᴋɴᴏᴡɴ ᴇʀʀᴏʀ ꜰʀᴏᴍ SMM ᴘᴀɴᴇʟ')
