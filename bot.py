@@ -694,13 +694,62 @@ Coming soon! We're working on detailed stats.
 
 @bot.callback_query_handler(func=lambda call: call.data == "back_to_affiliate")
 def back_to_affiliate(call):
-    # This will regenerate the original affiliate message
-    from types import SimpleNamespace
-    msg = SimpleNamespace()
-    msg.chat = call.message.chat
-    msg.from_user = call.from_user
-    affiliate_program(msg)
+    user_id = str(call.from_user.id)
+    bot_username = bot.get_me().username
+    affiliate_link = f"https://t.me/{bot_username}?start=aff_{user_id}"
+    data = getData(user_id)
+
+    if not data:
+        bot.answer_callback_query(call.id, "❌ Account not found.")
+        return
+
+    total_refs = data.get('total_refs', 0)
+    affiliate_earnings = data.get('affiliate_earnings', 0)
+
+    affiliate_message = f"""
+🏆 <b>Unlock Endless Earnings with SMM Menu Affiliate Program!</b>  
+
+🌐 <b>What's the Affiliate Program?</b>  
+The SMM Menu Affiliate Program is your chance to earn money effortlessly by promoting our powerful Social Media Marketing bot. Whether you're a content creator, influencer, or just someone with a network, this is your opportunity to turn connections into cash – without any hard work!  
+
+🔍 <b>How Does It Work?</b>  
+1️⃣ <b>Get Your Link</b> - Use your personalized affiliate link below  
+2️⃣ <b>Spread the Word</b> - Share it on Telegram groups, social media, WhatsApp, or anywhere your audience hangs out  
+3️⃣ <b>Earn Forever</b> - Get 5% of every order your referrals make - for life!  
+
+💰 <b>Your Affiliate Stats:</b>
+├ 👥 Total Referrals: <code>{total_refs}</code>
+└ 💰 Total Earnings: <code>${affiliate_earnings:.2f}</code>
+
+📈 <b>Earnings Breakdown:</b>  
+- A referral orders $50 worth of services → You earn $2.50  
+- They order $500 over a month → You pocket $50  
+- Imagine 20 active referrals spending $200 each → That's $200 in your wallet!  
+
+🔗 <b>Your Unique Affiliate Link:</b>  
+<code>{affiliate_link}</code>
+
+📌 <b>Pro Tip:</b> Share in Telegram groups about social media growth for best results!
+"""
+
+    markup = InlineKeyboardMarkup()
+    markup.row(
+        InlineKeyboardButton("📤 Share Link", url=f"https://t.me/share/url?url={affiliate_link}&text=🚀 Earn money with this amazing SMM bot! Get social media growth services and earn 5% commission on all orders!"),
+        InlineKeyboardButton("📊 View Stats", callback_data="affiliate_stats")
+    )
+
+    # EDIT the current message instead of sending a new one
+    bot.edit_message_text(
+        chat_id=call.message.chat.id,
+        message_id=call.message.message_id,
+        text=affiliate_message,
+        parse_mode='HTML',
+        disable_web_page_preview=True,
+        reply_markup=markup
+    )
+    
     bot.answer_callback_query(call.id)
+
 
 #======================= Help =======================#
 @bot.message_handler(func=lambda message: message.text == "📜 Help")
