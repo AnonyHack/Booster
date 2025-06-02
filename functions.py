@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 # Initialize MongoDB connection
 try:
     client = MongoClient(MONGO_URI)
-    db = client.get_database("smmhubbooster")
+    db = client.get_database("smmhubboosterv2")
     users_collection = db.users
     orders_collection = db.orders
     logger.info("Connected to MongoDB successfully")
