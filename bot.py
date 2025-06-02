@@ -2893,23 +2893,30 @@ def admin_panel(message):
 #============================= Add and Remove Coins ==============================================#
 @bot.message_handler(func=lambda message: message.text in ["➕ Add", "➖ Remove"] and message.from_user.id in admin_user_ids)
 def admin_actions(message):
-    """Enhanced admin command guidance"""
+    """Enhanced admin command guidance for coins and affiliate cash"""
     if "Add" in message.text:
         bot.reply_to(message,
-            "💎 *Aᴅᴅ Cᴏɪɴꜱ Gᴜɪᴅᴇ*\n\n"
-            "Cᴏᴍᴍᴀɴᴅ: `/addcoins <user_id> <amount>`\n\n"
-            "Exᴀᴍᴘʟᴇ:\n"
-            "`/addcoins 123456789 500.00`\n\n"
-            "⚠️ Wɪʟʟ ᴄʀᴇᴀᴛᴇ ᴀᴄᴄᴏᴜɴᴛ ɪꜰ ɴᴏᴛ ᴇxɪꜱᴛꜱ",
+            "💎 *Aᴅᴅ Cᴏɪɴꜱ & Cᴀꜱʜ Gᴜɪᴅᴇ*\n\n"
+            "📌 *To Add Coins:*\n"
+            "▸ `/addcoins <user_id> <amount>`\n"
+            "🧪 Example: `/addcoins 123456789 500.00`\n\n"
+            "📌 *To Add Affiliate Cash:*\n"
+            "▸ `/addcash <user_id> <amount>`\n"
+            "🧪 Example: `/addcash 123456789 5.00`\n\n"
+            "⚠️ Coins affect user balance. Cash affects affiliate earnings.",
             parse_mode="Markdown",
             reply_markup=ForceReply(selective=True))
+
     elif "Remove" in message.text:
         bot.reply_to(message,
-            "⚡ *Rᴇᴍᴏᴠᴇ Cᴏɪɴꜱ Gᴜɪᴅᴇ*\n\n"
-            "Cᴏᴍᴍᴀɴᴅ: `/removecoins <user_id> <amount>`\n\n"
-            "Exᴀᴍᴘʟᴇ:\n"
-            "`/removecoins 123456789 250.50`\n\n"
-            "⚠️ Fᴀɪʟꜱ ɪꜰ ɪɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʙᴀʟᴀɴᴄᴇ",
+            "⚡ *Rᴇᴍᴏᴠᴇ Cᴏɪɴꜱ & Cᴀꜱʜ Gᴜɪᴅᴇ*\n\n"
+            "📌 *To Remove Coins:*\n"
+            "▸ `/removecoins <user_id> <amount>`\n"
+            "🧪 Example: `/removecoins 123456789 250.50`\n\n"
+            "📌 *To Remove Affiliate Cash:*\n"
+            "▸ `/removecash <user_id> <amount>`\n"
+            "🧪 Example: `/removecash 123456789 3.00`\n\n"
+            "⚠️ Use `/removecash` after a withdrawal is completed.",
             parse_mode="Markdown",
             reply_markup=ForceReply(selective=True))
         
@@ -3085,35 +3092,47 @@ def handle_cash_commands(message):
         amount = float(args[2])
 
         if amount <= 0:
-            return bot.reply_to(message, "⚠️ Amount must be a positive number", parse_mode="Markdown")
+            return bot.reply_to(message, "⚠️ Aᴍᴏᴜɴᴛ ᴍᴜꜱᴛ ʙᴇ ᴀ ᴘᴏꜱɪᴛɪᴠᴇ ɴᴜᴍʙᴇʀ", parse_mode="Markdown")
 
         is_removal = message.text.startswith("/removecash")
+        tx_id = int(time.time())
 
         if update_affiliate_earning(user_id, amount, subtract=is_removal, admin_id=message.from_user.id):
             new_data = getData(user_id)
             current = float(new_data.get("affiliate_earnings", 0.0))
 
             bot.reply_to(message,
-f"{'💸 *Cᴀꜱʜ Rᴇᴍᴏᴠᴇᴅ*' if is_removal else '💵 *Cᴀꜱʜ Aᴅᴅᴇᴅ*'}\n\n"
-f"▸ Uꜱᴇʀ ID: `{user_id}`\n"
-f"▸ Aᴍᴏᴜɴᴛ: {'-' if is_removal else '+'}${amount:.2f}\n"
-f"▸ Nᴇᴡ Aꜰꜰɪʟɪᴀᴛᴇ Bᴀʟᴀɴᴄᴇ: ${current:.2f}",
+f"{'💸 *Cᴀꜱʜ Dᴇᴅᴜᴄᴛɪᴏɴ*' if is_removal else '💵 *Cᴀꜱʜ Cʀᴇᴅɪᴛᴇᴅ*'}\n\n"
+f"▸ *Uꜱᴇʀ ID:* `{user_id}`\n"
+f"▸ *Aᴍᴏᴜɴᴛ:* {'-' if is_removal else '+'}UGX{amount:.2f}\n"
+f"▸ *Nᴇᴡ Aꜰꜰɪʟɪᴀᴛᴇ Bᴀʟᴀɴᴄᴇ:* UGX{current:.2f}\n"
+f"▸ *Tʀᴀɴꜱᴀᴄᴛɪᴏɴ ID:* `{tx_id}`\n\n"
+"📝 _Tʀᴀɴꜱᴀᴄᴛɪᴏɴ ʟᴏɢɢᴇᴅ ɪɴ ᴄᴀꜱʜ ʜɪꜱᴛᴏʀʏ_",
             parse_mode="Markdown")
 
             try:
                 bot.send_message(
                     user_id,
-f"📢 *Aꜰꜰɪʟɪᴀᴛᴇ Bᴀʟᴀɴᴄᴇ Uᴘᴅᴀᴛᴇ*\n\n"
-f"{'🧾 Your withdrawal of' if is_removal else '💰 You’ve received'} ${amount:.2f} {'has been processed' if is_removal else 'added to your earnings'}.\n"
-f"➡️ Nᴇᴡ Bᴀʟᴀɴᴄᴇ: ${current:.2f}",
-                    parse_mode="Markdown"
+f"{'🔻 *Aꜰꜰɪʟɪᴀᴛᴇ Wɪᴛʜᴅʀᴀᴡᴀʟ Pʀᴏᴄᴇꜱꜱᴇᴅ*' if is_removal else '💰 *Aꜰꜰɪʟɪᴀᴛᴇ Eᴀʀɴɪɴɢ Cʀᴇᴅɪᴛᴇᴅ*'}\n\n"
+f"{'🧾 Yᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ᴡɪᴛʜᴅʀᴀᴡᴀʟ ʜᴀꜱ ʙᴇᴇɴ ᴘʀᴏᴄᴇꜱꜱᴇᴅ.' if is_removal else '🎉 Yᴏᴜ’ᴠᴇ ʀᴇᴄᴇɪᴠᴇᴅ ᴀ ᴄᴀꜱʜ ʙᴏɴᴜꜱ ꜰʀᴏᴍ ᴀᴅᴍɪɴ!'}\n\n"
+f"▸ *Aᴍᴏᴜɴᴛ:* {'-' if is_removal else '+'}UGX{amount:.2f}\n"
+f"▸ *Nᴇᴡ Bᴀʟᴀɴᴄᴇ:* UGX{current:.2f}\n"
+f"▸ *Tʀᴀɴꜱᴀᴄᴛɪᴏɴ ID:* `{tx_id}`\n\n"
+"📌 _Yᴏᴜʀ ᴇᴀʀɴɪɴɢꜱ ʜᴀᴠᴇ ʙᴇᴇɴ ᴜᴘᴅᴀᴛᴇᴅ_",
+                    parse_mode="Markdown",
+                    reply_markup=InlineKeyboardMarkup().add(
+                        InlineKeyboardButton("📊 View Earnings", callback_data="affiliate_stats")
+                    )
                 )
-            except:
-                pass
+            except Exception as e:
+                print(f"Affiliate notification failed: {e}")
+
         else:
-            bot.reply_to(message, "❌ Failed to update affiliate balance", parse_mode="Markdown")
+            bot.reply_to(message, "❌ Fᴀɪʟᴇᴅ ᴛᴏ ᴜᴘᴅᴀᴛᴇ ᴀꜰꜰɪʟɪᴀᴛᴇ ʙᴀʟᴀɴᴄᴇ", parse_mode="Markdown")
+
     except Exception as e:
-        bot.reply_to(message, f"❌ Error: `{e}`", parse_mode="Markdown")
+        bot.reply_to(message, f"❌ *Eʀʀᴏʀ:* `{str(e)}`", parse_mode="Markdown")
+
 
 
 #=========================== End of Add and Remove Coins =================================#
