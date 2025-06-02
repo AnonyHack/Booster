@@ -28,7 +28,7 @@ from functions import (insertUser, track_exists, addBalance, cutBalance, getData
                        get_total_deposits, get_top_referrer, get_user_orders_stats, get_new_users,
                        get_completed_orders, get_all_users, save_pinned_message, get_all_pinned_messages,
                          clear_all_pinned_messages, orders_collection, get_confirmed_spent, get_pending_spent, 
-                         get_affiliate_earnings, add_affiliate_earning, get_affiliate_users, ) # Import your functions from functions.py
+                         get_affiliate_earnings, add_affiliate_earning, get_affiliate_users, update_affiliate_earning ) # Import your functions from functions.py
 
 
 
@@ -66,7 +66,7 @@ main_markup.add(button7)
 
 # Admin keyboard markup
 admin_markup = ReplyKeyboardMarkup(resize_keyboard=True)
-admin_markup.row("➕ Add Coins", "➖ Remove Coins")
+admin_markup.row("➕ Add", "➖ Remove")
 admin_markup.row("📌 Pin Message", "📍 Unpin")
 admin_markup.row("🔒 Ban User", "✅ Unban User")
 admin_markup.row("📋 List Banned", "👤 User Info")  # New
@@ -2891,7 +2891,7 @@ def admin_panel(message):
     
 
 #============================= Add and Remove Coins ==============================================#
-@bot.message_handler(func=lambda message: message.text in ["➕ Add Coins", "➖ Remove Coins"] and message.from_user.id in admin_user_ids)
+@bot.message_handler(func=lambda message: message.text in ["➕ Add", "➖ Remove"] and message.from_user.id in admin_user_ids)
 def admin_actions(message):
     """Enhanced admin command guidance"""
     if "Add" in message.text:
@@ -2910,6 +2910,25 @@ def admin_actions(message):
             "Exᴀᴍᴘʟᴇ:\n"
             "`/removecoins 123456789 250.50`\n\n"
             "⚠️ Fᴀɪʟꜱ ɪꜰ ɪɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ʙᴀʟᴀɴᴄᴇ",
+            parse_mode="Markdown",
+            reply_markup=ForceReply(selective=True))
+        
+    elif "Add Cash" in message.text:
+        bot.reply_to(message,
+            "💵 *Aᴅᴅ Aꜰꜰɪʟɪᴀᴛᴇ Cᴀꜱʜ Gᴜɪᴅᴇ*\n\n"
+            "Cᴏᴍᴍᴀɴᴅ: `/addcash <user_id> <amount>`\n\n"
+            "Exᴀᴍᴘʟᴇ:\n"
+            "`/addcash 123456789 5.00`\n\n"
+            "⚠️ Fᴏʀ ᴀᴅᴊᴜꜱᴛɪɴɢ ᴀꜰꜰɪʟɪᴀᴛᴇ ᴄᴏᴍᴍɪꜱꜱɪᴏɴꜱ",
+            parse_mode="Markdown",
+            reply_markup=ForceReply(selective=True))
+    elif "Remove Cash" in message.text:
+        bot.reply_to(message,
+            "💸 *Rᴇᴍᴏᴠᴇ Aꜰꜰɪʟɪᴀᴛᴇ Cᴀꜱʜ Gᴜɪᴅᴇ*\n\n"
+            "Cᴏᴍᴍᴀɴᴅ: `/removecash <user_id> <amount>`\n\n"
+            "Exᴀᴍᴘʟᴇ:\n"
+            "`/removecash 123456789 3.00`\n\n"
+            "⚠️ Uꜱᴇ ᴛʜɪꜱ ᴀꜰᴛᴇʀ ᴡɪᴛʜᴅʀᴀᴡᴀʟ ᴄᴏɴꜰɪʀᴍᴀᴛɪᴏɴ",
             parse_mode="Markdown",
             reply_markup=ForceReply(selective=True))
 
@@ -3047,6 +3066,57 @@ parse_mode="Markdown")
             "Please try again or contact developer",
             parse_mode="Markdown")
         print(f"Admin command error: {traceback.format_exc()}")
+
+@bot.message_handler(commands=['addcash', 'removecash'])
+def handle_cash_commands(message):
+    if message.from_user.id not in admin_user_ids:
+        return bot.reply_to(message, "⛔ *Aᴅᴍɪɴ Aᴄᴄᴇꜱꜱ Dᴇɴɪᴇᴅ*", parse_mode="Markdown")
+
+    try:
+        args = message.text.split()
+        if len(args) != 3:
+            return bot.reply_to(message,
+                "💡 *Uꜱᴀɢᴇ:*\n"
+                "`/addcash <user_id> <amount>`\n"
+                "`/removecash <user_id> <amount>`",
+                parse_mode="Markdown")
+
+        user_id = args[1]
+        amount = float(args[2])
+
+        if amount <= 0:
+            return bot.reply_to(message, "⚠️ Amount must be a positive number", parse_mode="Markdown")
+
+        is_removal = message.text.startswith("/removecash")
+
+        if update_affiliate_earning(user_id, amount, subtract=is_removal, admin_id=message.from_user.id):
+            new_data = getData(user_id)
+            current = float(new_data.get("affiliate_earnings", 0.0))
+
+            bot.reply_to(message,
+f"{'💸 *Cᴀꜱʜ Rᴇᴍᴏᴠᴇᴅ*' if is_removal else '💵 *Cᴀꜱʜ Aᴅᴅᴇᴅ*'}\n\n"
+f"▸ Uꜱᴇʀ ID: `{user_id}`\n"
+f"▸ Aᴍᴏᴜɴᴛ: {'-' if is_removal else '+'}${amount:.2f}\n"
+f"▸ Nᴇᴡ Aꜰꜰɪʟɪᴀᴛᴇ Bᴀʟᴀɴᴄᴇ: ${current:.2f}",
+            parse_mode="Markdown")
+
+            try:
+                bot.send_message(
+                    user_id,
+f"📢 *Aꜰꜰɪʟɪᴀᴛᴇ Bᴀʟᴀɴᴄᴇ Uᴘᴅᴀᴛᴇ*\n\n"
+f"{'🧾 Your withdrawal of' if is_removal else '💰 You’ve received'} ${amount:.2f} {'has been processed' if is_removal else 'added to your earnings'}.\n"
+f"➡️ Nᴇᴡ Bᴀʟᴀɴᴄᴇ: ${current:.2f}",
+                    parse_mode="Markdown"
+                )
+            except:
+                pass
+        else:
+            bot.reply_to(message, "❌ Failed to update affiliate balance", parse_mode="Markdown")
+    except Exception as e:
+        bot.reply_to(message, f"❌ Error: `{e}`", parse_mode="Markdown")
+
+
+#=========================== End of Add and Remove Coins =================================#
 
 #=========================== Batch Coin Commands =================================#
 @bot.message_handler(func=lambda m: m.text == "📦 Batch Coins")
