@@ -426,14 +426,14 @@ def send_welcome(message):
 <blockquote>
 🎉 <b>Rᴇꜰᴇʀʀᴀʟ Rᴇᴡᴀʀᴅ Nᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ</b> 🎉
 
-Wᴇ'ʀᴇ ᴘʟᴇᴀꜱᴇᴅ ᴛᴏ ɪɴꜰᴏʀᴍ ʏᴏᴜ ᴛʜᴀᴛ ʏᴏᴜʀ ʀᴇꜰᴇʀʀᴀʟ <b>{first_name}</b> ʜᴀꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴊᴏɪɴᴇᴅ ᴜꜱɪɴɢ ʏᴏᴜʀ ʀᴇꜰᴇʀʀᴀʟ ʟɪɴᴋ.
+Wᴇ'ʀᴇ ᴘʟᴇᴀꜱᴇᴅ ᴛᴏ ɪɴꜰᴏʀᴍ ʏᴏᴜ ᴛʜᴀᴛ ʏᴏᴜʀ ʀᴇꜰᴇʀʀᴀʟ <b>{first_name}</b> ʜᴀꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴊᴏɪɴᴇᴅ ᴜꜱɪɴɢ ʏᴏᴜʀ ᴀꜰꜰɪʟɪᴀᴛᴇ ʟɪɴᴋ.
 
 💰 <b>Rᴇᴡᴀʀᴅ Cʀᴇᴅɪᴛᴇᴅ:</b> +{ref_bonus} ᴄᴏɪɴꜱ
 📈 <b>Yᴏᴜʀ Tᴏᴛᴀʟ Rᴇꜰᴇʀʀᴀʟꜱ:</b> {int(referrer_data.get('total_refs', 0)) + 1}
 💎 <b>Cᴜʀʀᴇɴᴛ Bᴀʟᴀɴᴄᴇ:</b> {float(referrer_data.get('balance', 0)) + float(ref_bonus):.2f} ᴄᴏɪɴꜱ
 
-Kᴇᴇᴘ ꜱʜᴀʀɪɴɢ ʏᴏᴜʀ ʀᴇꜰᴇʀʀᴀʟ ʟɪɴᴋ ᴛᴏ ᴇᴀʀɴ ᴍᴏʀᴇ ʀᴇᴡᴀʀᴅꜱ!
-Yᴏᴜʀ ᴜɴɪQᴜᴇ ʟɪɴᴋ: https://t.me/{bot.get_me().username}?start={data['ref_by']}
+Kᴇᴇᴘ ꜱʜᴀʀɪɴɢ ʏᴏᴜʀ ᴀꜰꜰɪʟɪᴀᴛᴇ ʟɪɴᴋ ᴛᴏ ᴇᴀʀɴ ᴍᴏʀᴇ ʀᴇᴡᴀʀᴅꜱ & ᴄᴀꜱʜ!
+Yᴏᴜʀ ᴜɴɪQᴜᴇ ʟɪɴᴋ: https://t.me/{bot.get_me().username}?start=aff_{data['ref_by']}
 
 Tʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ʜᴇʟᴘɪɴɢ ɢʀᴏᴡ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ!
 </blockquote>
@@ -580,6 +580,7 @@ def affiliate_program(message):
     
     # Enhanced affiliate message
     affiliate_message = f"""
+<blockquote>
 🏆 <b>Unlock Endless Earnings with SMM Menu Affiliate Program!</b>  
 
 🌐 <b>What's the Affiliate Program?</b>  
@@ -605,6 +606,7 @@ The SMM Menu Affiliate Program is your chance to earn money effortlessly by prom
 <code>{affiliate_link}</code>
 
 📌 <b>Pro Tip:</b> Share to people who want Social Media growth for best results!
+</blockquote>
 """
 
     # Create inline buttons for sharing
@@ -631,6 +633,7 @@ def show_affiliate_stats(call):
     affiliate_earnings = data.get('affiliate_earnings', 0)
     
     stats_message = f"""
+<blockquote>
 📊 <b>Your Affiliate Stats</b>
 
 👥 <b>Total Referrals:</b> {total_refs}
@@ -639,6 +642,7 @@ def show_affiliate_stats(call):
 ⚠️ <b>Withdraw Rules:</b>
 You can withdraw your Affiliate Earnings to your Real Wallet. Withdrawals are processed manually by the admins.
 <b>Note:</b> Ensure you have at least UGX 1000 in earnings to withdraw.
+</blockquote>
 """
     
     bot.answer_callback_query(call.id)
@@ -668,6 +672,7 @@ def back_to_affiliate(call):
     affiliate_earnings = data.get('affiliate_earnings', 0)
 
     affiliate_message = f"""
+<blockquote>
 🏆 <b>Unlock Endless Earnings with SMM Menu Affiliate Program!</b>  
 
 🌐 <b>What's the Affiliate Program?</b>  
@@ -691,6 +696,7 @@ The SMM Menu Affiliate Program is your chance to earn money effortlessly by prom
 <code>{affiliate_link}</code>
 
 📌 <b>Pro Tip:</b> Share in Telegram groups about social media growth for best results!
+</blockquote>
 """
 
     markup = InlineKeyboardMarkup()
@@ -761,14 +767,23 @@ def pricing_command(message):
 
 <i> Cʜᴏᴏꜱᴇ Oɴᴇ Oꜰ Tʜᴇ Cᴏɪɴꜱ Pᴀᴄᴋᴀɢᴇꜱ Aɴᴅ Pᴀʏ Iᴛꜱ Cᴏꜱᴛ Vɪᴀ Pʀᴏᴠɪᴅᴇᴅ Pᴀʏᴍᴇɴᴛ Mᴇᴛʜᴏᴅꜱ.</i>
 <blockquote>
-<b><u>📜 𝐏𝐚𝐜𝐤𝐚𝐠𝐞𝐬:</u></b>
-<b>➊ 📦 10K coins – $1.00
-➋ 📦 30K coins – $2.50
-➌ 📦 50K coins – $4.00
-➍ 📦 100K coins – $7.00
-➎ 📦 150K coins – $10.00
-➏ 📦 300K coins – $15.00 </b>
+<b><u>📜 𝐍𝐨𝐫𝐦𝐚𝐥 𝐏𝐚𝐜𝐤𝐚𝐠𝐞𝐬:</u></b>
+<b>➊ 📦 1K coins – 1k UGX
+➋ 📦 2K coins – 2k UGX
+➌ 📦 3K coins – 3k UGX
+➍ 📦 4K coins – 4k UGX
+➎ 📦 5K coins – 5k UGX </b>
 </blockquote>
+
+<blockquote>
+<b><u>👑 𝐏𝐫𝐞𝐦𝐢𝐮𝐦 𝐏𝐚𝐜𝐤𝐚𝐠𝐞𝐬:</u></b>
+<b>➊ 📦 10K coins – $2.8 - 10k UGX
+➋ 📦 20K coins – $5.5 - 20k UGX
+➌ 📦 40K coins – $11 - 40k UGX
+➍ 📦 60K coins – $17 - 60k UGX
+➎ 📦 100K coins – $28 - 100k UGX </b>
+</blockquote>
+
 <b>💡NOTE: 𝘙𝘦𝘮𝘦𝘮𝘣𝘦𝘳 𝘵𝘰 𝘴𝘦𝘯𝘥 𝘺𝘰𝘶𝘳 𝘈𝘤𝘤𝘰𝘶𝘯𝘵 𝘐𝘋 𝘵𝘰 𝘳𝘦𝘤𝘦𝘪𝘷𝘦 𝘤𝘰𝘪𝘯𝘴</b>
 
 <b>🆔 Your id:</b> <code>{user_id}</code>
