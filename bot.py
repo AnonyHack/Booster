@@ -55,15 +55,14 @@ button1 = KeyboardButton("🛒 Buy Services")
 button2 = KeyboardButton("👤 My Account")
 button3 = KeyboardButton("💳 Pricing")
 button4 = KeyboardButton("📊 Order Stats")
-button5 = KeyboardButton("🗣 Invite")
-button6 = KeyboardButton("💰 Affiliate")  # New Affiliate button
-button7 = KeyboardButton("🏆 Leaderboard")
-button8 = KeyboardButton("📜 Help")
+button5 = KeyboardButton("💰 Refer&Earn")
+button6 = KeyboardButton("🏆 Leaderboard")  # New Affiliate button
+button7 = KeyboardButton("📜 Help")
 
 main_markup.add(button1, button2)
 main_markup.add(button3, button4)
 main_markup.add(button5, button6)
-main_markup.add(button7, button8)
+main_markup.add(button7)
 
 # Admin keyboard markup
 admin_markup = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -561,51 +560,9 @@ def my_account(message):
     )
 
 #======================= Invite Friends =======================#
-@bot.message_handler(func=lambda message: message.text == "🗣 Invite")
-@check_ban
-def invite_friends(message):
-    user_id = str(message.chat.id)
-    bot_username = bot.get_me().username
-    referral_link = f"https://t.me/{bot_username}?start={user_id}"
-    data = getData(user_id)
-    
-    if not data:
-        bot.reply_to(message, "❌ Account not found. Please /start again.")
-        return
-        
-    total_refs = data['total_refs']
-    
-    # Enhanced referral message
-    referral_message = f"""
-📢 <b>𝗜𝗻𝘃𝗶𝘁𝗲 𝗙𝗿𝗶𝗲𝗻𝗱𝘀 &amp; 𝗘𝗮𝗿𝗻 𝗙𝗿𝗲𝗲 𝗖𝗼𝗶𝗻𝘀!</b>  
-
-🔗 <b>Yᴏᴜʀ Rᴇꜰᴇʀʀᴀʟ Lɪɴᴋ:</b>  
-<code>{referral_link}</code>  
-<blockquote>
-💎 <b>𝙃𝙤𝙬 𝙞𝙩 𝙒𝙤𝙧𝙠𝙨:</b>  
-1️⃣ Sʜᴀʀᴇ ʏᴏᴜʀ ᴜɴɪQᴜᴇ ʟɪɴᴋ ᴡɪᴛʜ ꜰʀɪᴇɴᴅꜱ  
-2️⃣ Wʜᴇɴ ᴛʜᴇʏ ᴊᴏɪɴ ᴜꜱɪɴɢ ʏᴏᴜʀ ʟɪɴᴋ, <b>Bᴏᴛʜ ᴏꜰ ʏᴏᴜ ɢᴇᴛ {ref_bonus} ᴄᴏɪɴꜱ</b> ɪɴꜱᴛᴀɴᴛʟʏ!  
-3️⃣ Eᴀʀɴ ᴜɴʟɪᴍɪᴛᴇᴅ ᴄᴏɪɴꜱ - <b>Nᴏ ʟɪᴍɪᴛꜱ ᴏɴ ʀᴇꜰᴇʀʀᴀʟꜱ!</b>  
-
-🏆 <b>Bᴏɴᴜꜱ:</b> Tᴏᴘ ʀᴇꜰᴇʀʀᴇʀꜱ ɢᴇᴛ ꜱᴘᴇᴄɪᴀʟ ʀᴇᴡᴀʀᴅꜱ!  
-
-💰 <b>Wʜʏ Wᴀɪᴛ?</b> Sᴛᴀʀᴛ ɪɴᴠɪᴛɪɴɢ ɴᴏᴡ ᴀɴᴅ ʙᴏᴏꜱᴛ ʏᴏᴜʀ ʙᴀʟᴀɴᴄᴇ ꜰᴏʀ ꜰʀᴇᴇ!  
-
-📌 <b>Pʀᴏ Tɪᴘ:</b> Sʜᴀʀᴇ ʏᴏᴜʀ ʟɪɴᴋ ɪɴ ɢʀᴏᴜᴘꜱ/ᴄʜᴀᴛꜱ ᴡʜᴇʀᴇ ᴘᴇᴏᴘʟᴇ ɴᴇᴇᴅ ꜱᴏᴄɪᴀʟ ᴍᴇᴅɪᴀ ɢʀᴏᴡᴛʜ!
-
-📊 <b>Yᴏᴜʀ ᴄᴜʀʀᴇɴᴛ ʀᴇꜰᴇʀʀᴀʟꜱ:</b> {total_refs}
-</blockquote>
-"""
-    
-    bot.reply_to(
-        message,
-        referral_message,
-        parse_mode='HTML',
-        disable_web_page_preview=True
-    )
 
 #======================= Affiliate Program =======================#
-@bot.message_handler(func=lambda message: message.text == "💰 Affiliate")
+@bot.message_handler(func=lambda message: message.text == "💰 Refer&Earn")
 @check_ban
 def affiliate_program(message):
     user_id = str(message.chat.id)
@@ -2893,9 +2850,9 @@ def back_to_main(message):
         combined_markup = ReplyKeyboardMarkup(resize_keyboard=True)
         combined_markup.row("🛒 Buy Services", "👤 My Account")
         combined_markup.row("💳 Pricing", "📊 Order Stats")
-        combined_markup.row("🗣 Invite", "🏆 Leaderboard")
+        combined_markup.row("💰 Refer&Earn", "🏆 Leaderboard")
         combined_markup.row("📜 Help")
-        
+
         bot.reply_to(message,
             "🔄 *Rᴇᴛᴜʀɴɪɴɢ ᴛᴏ Mᴀɪɴ Mᴇɴᴜ*\n\n",
             parse_mode="Markdown",
