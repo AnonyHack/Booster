@@ -1241,6 +1241,7 @@ f"""⭐️ ｢Nᴇᴡ {service['name'].upper()} Oʀᴅᴇʀ 」⭐️
             markup.add(check_status_button)
             
             # Stylish confirmation message
+            # Stylish confirmation message
             bot.reply_to(
                 message,
 f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
@@ -1255,12 +1256,12 @@ f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
 ━━━━━━━━━━━━━━━━━━━━━━━
 😊 <b>Tʜᴀɴᴋꜱ ꜰᴏʀ ᴏʀᴅᴇʀɪɴɢ!</b>
 ━━━━━━━━•❅•°•❈•°•❅•━━━━━━━━
-⚠️ <b>𝙒𝙖𝙧𝙣𝙞𝙣𝙜:</b> Dᴏ ɴᴏᴛ ꜱᴇɴᴅ ᴛʜᴇ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏɴᴇ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ʏᴏᴜ ᴍɪɡʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!""",
+⚠️ <b>𝙒𝙖𝙧𝙣𝙞𝙣𝙜:</b> Dᴏ ɴᴏᴛ ꜱᴇɴᴅ ᴛʜᴇ ꜱᴀᴍᴇ ᴏʀᴅᴇʀ ᴏɴ ᴛʜᴇ ꜱᴀᴍᴇ ʟɪɴᴋ ʙᴇꜰᴏʀᴇ ᴛʜᴇ ꜰɪʀꜱᴛ ᴏɴᴇ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ᴏʀ ʏᴏᴜ ᴍɪɢʜᴛ ɴᴏᴛ ʀᴇᴄᴇɪᴠᴇ ᴛʜᴇ ꜱᴇʀᴠɪᴄᴇ!""",
                 reply_markup=markup,
                 disable_web_page_preview=True,
                 parse_mode='HTML'
             )
-            
+
             # Update orders count
             user_id = str(message.from_user.id)
             data = getData(user_id)
@@ -1286,7 +1287,7 @@ f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
                     )
                 except Exception as e:
                     print(f"Failed to send affiliate notification: {e}")
-            
+
         else:
             error_msg = result.get('error', 'Uɴᴋɴᴏᴡɴ ᴇʀʀᴏʀ ꜰʀᴏᴍ SMM ᴘᴀɴᴇʟ')
             raise Exception(error_msg)
@@ -1596,6 +1597,24 @@ f"""✅ <b>{service['name']} Oʀᴅᴇʀ Sᴜʙᴍɪᴛᴛᴇᴅ!</b>
                 data['orders_count'] = 0
             data['orders_count'] += 1
             updateUser(user_id, data)
+
+            # ✅ Affiliate Commission Tracking
+            if data.get('ref_by') and data['ref_by'] != "none":
+                try:
+                    commission = cost * 0.05  # 5% commission
+                    add_affiliate_earning(data['ref_by'], commission)
+
+                    bot.send_message(
+                        data['ref_by'],
+                        f"💰 <b>New Affiliate Commission!</b>\n\n"
+                        f"You earned ${commission:.2f} from {message.from_user.first_name}'s order!\n"
+                        f"📦 Service: {service['name']}\n"
+                        f"💵 Amount: ${cost:.2f}\n\n"
+                        f"Keep sharing your link to earn more!",
+                        parse_mode='HTML'
+                    )
+                except Exception as e:
+                    print(f"Failed to send affiliate notification: {e}")
             
         else:
             error_msg = result.get('error', 'Uɴᴋɴᴏᴡɴ ᴇʀʀᴏʀ ꜰʀᴏᴍ SMM ᴘᴀɴᴇʟ')
