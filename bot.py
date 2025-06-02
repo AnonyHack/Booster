@@ -581,39 +581,39 @@ def affiliate_program(message):
     # Enhanced affiliate message
     affiliate_message = f"""
 <blockquote>
-🏆 <b>Unlock Endless Earnings with SMM Menu Affiliate Program!</b>  
+🏆 <b>Uɴʟᴏᴄᴋ Eɴᴅʟᴇꜱꜱ Eᴀʀɴɪɴɢꜱ ᴡɪᴛʜ SMMHUB Booster ᴀꜰꜰɪʟɪᴀᴛᴇ ᴘʀᴏɢʀᴀᴍ!</b>  
 
-🌐 <b>What's the Affiliate Program?</b>  
-The SMM Menu Affiliate Program is your chance to earn money effortlessly by promoting our powerful Social Media Marketing bot. Whether you're a content creator, influencer, or just someone with a network, this is your opportunity to turn connections into cash – without any hard work!  
+🌐 <b>Wʜᴀᴛ'ꜱ ᴛʜᴇ ᴀꜰꜰɪʟɪᴀᴛᴇ ᴘʀᴏɢʀᴀᴍ?</b>  
+ᴛʜᴇ ꜱᴍᴍ ᴍᴇɴᴜ ᴀꜰꜰɪʟɪᴀᴛᴇ ᴘʀᴏɢʀᴀᴍ ɪꜱ ʏᴏᴜʀ ᴄʜᴀɴᴄᴇ ᴛᴏ ᴇᴀʀɴ ᴍᴏɴᴇʏ ᴇꜰꜰᴏʀᴛʟᴇꜱꜱʟʏ ʙʏ ᴘʀᴏᴍᴏᴛɪɴɢ ᴏᴜʀ ᴘᴏᴡᴇʀꜰᴜʟ ꜱᴏᴄɪᴀʟ ᴍᴇᴅɪᴀ ᴍᴀʀᴋᴇᴛɪɴɢ ʙᴏᴛ. ᴡʜᴇᴛʜᴇʀ ʏᴏᴜ'ʀᴇ ᴀ ᴄᴏɴᴛᴇɴᴛ ᴄʀᴇᴀᴛᴏʀ, ɪɴꜰʟᴜᴇɴᴄᴇʀ, ᴏʀ ᴊᴜꜱᴛ ꜱᴏᴍᴇᴏɴᴇ ᴡɪᴛʜ ᴀ ɴᴇᴛᴡᴏʀᴋ, ᴛʜɪꜱ ɪꜱ ʏᴏᴜʀ ᴏᴘᴘᴏʀᴛᴜɴɪᴛʏ ᴛᴏ ᴛᴜʀɴ ᴄᴏɴɴᴇᴄᴛɪᴏɴꜱ ɪɴᴛᴏ ᴄᴀꜱʜ – ᴡɪᴛʜᴏᴜᴛ ᴀɴʏ ʜᴀʀᴅ ᴡᴏʀᴋ!  
 
-🔍 <b>How Does It Work?</b>  
-1️⃣ <b>Get Your Link</b> - Use your personalized affiliate link below  
-2️⃣ <b>Spread the Word</b> - Share it on Telegram groups, social media, WhatsApp, or anywhere your audience hangs out  
-3️⃣ <b>Earn Forever</b> - Get 5% of every order your referrals make - for life!  
+🔍 <b>Hᴏᴡ ᴅᴏᴇꜱ ɪᴛ ᴡᴏʀᴋ?</b>  
+1️⃣ <b>Gᴇᴛ ʏᴏᴜʀ ʟɪɴᴋ</b> - Uꜱᴇ ʏᴏᴜʀ ᴘᴇʀꜱᴏɴᴀʟɪᴢᴇᴅ ᴀꜰꜰɪʟɪᴀᴛᴇ ʟɪɴᴋ ʙᴇʟᴏᴡ  
+2️⃣ <b>Sᴘʀᴇᴀᴅ ᴛʜᴇ ᴡᴏʀᴅ</b> - Sʜᴀʀᴇ ɪᴛ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ ɢʀᴏᴜᴘꜱ, ꜱᴏᴄɪᴀʟ ᴍᴇᴅɪᴀ, ᴡʜᴀᴛꜱᴀᴘᴘ, ᴏʀ ᴀɴʏᴡʜᴇʀᴇ ʏᴏᴜʀ ᴀᴜᴅɪᴇɴᴄᴇ ʜᴀɴɢꜱ ᴏᴜᴛ.  
+3️⃣ <b>Eᴀʀɴ ꜰᴏʀᴇᴠᴇʀ</b> - Gᴇᴛ 5% ᴏꜰ ᴇᴠᴇʀʏ ᴏʀᴅᴇʀ ʏᴏᴜʀ ʀᴇꜰᴇʀʀᴀʟꜱ ᴍᴀᴋᴇ - ꜰᴏʀ ʟɪꜰᴇ!  
 
-💰 <b>Your Affiliate Stats:</b>
-├ 👥 Total Referrals: <code>{total_refs}</code>
-└ 💰 Total Earnings: <code>UGX{affiliate_earnings:.2f}</code>
+💰 <b>Yᴏᴜʀ ᴀꜰꜰɪʟɪᴀᴛᴇ ꜱᴛᴀᴛꜱ:</b>
+├ 👥 Tᴏᴛᴀʟ ʀᴇꜰᴇʀʀᴀʟꜱ: <code>{total_refs}</code>
+└ 💰 Tᴏᴛᴀʟ ᴇᴀʀɴɪɴɢꜱ: <code>ᴜɢx {affiliate_earnings:.2f}</code>
 
-📈 <b>Earnings Breakdown:</b>  
-- A referral orders $50 worth of services → You earn $2.50 / ~9,100 UGX 
-- They order $500 over a month → You pocket $25.00 / ~91,008 UGX  
-- Imagine 20 active referrals spending $200 each → That's $200.00 / ~728,064 UGX in your wallet!  
+📈 <b>Eᴀʀɴɪɴɢꜱ ʙʀᴇᴀᴋᴅᴏᴡɴ:</b>  
+- A ʀᴇꜰᴇʀʀᴀʟ ᴏʀᴅᴇʀꜱ $50 ᴡᴏʀᴛʜ ᴏꜰ ꜱᴇʀᴠɪᴄᴇꜱ → Yᴏᴜ ᴇᴀʀɴ $2.50 / ~9,100 ᴜɢx
+- Tʜᴇʏ ᴏʀᴅᴇʀ $500 ᴏᴠᴇʀ ᴀ ᴍᴏɴᴛʜ → Yᴏᴜ ᴘᴏᴄᴋᴇᴛ $25.00 / ~91,008 ᴜɢx
+- Iᴍᴀɢɪɴᴇ 20 ᴀᴄᴛɪᴠᴇ ʀᴇꜰᴇʀʀᴀʟꜱ sᴘᴇɴᴅɪɴɢ $200 ᴇᴀᴄʜ → ᴛʜᴀᴛ'ꜱ $200.00 / ~728,064 ᴜɢx ɪɴ ʏᴏᴜʀ ᴡᴀʟʟᴇᴛ!
 
-🎁 <b>Extra Bonus:</b> You also earn <code>{welcome_bonus}</code> coins when someone signs up using your link!
+🎁 <b>Exᴛʀᴀ ʙᴏɴᴜꜱ:</b> Yᴏᴜ ᴀʟꜱᴏ ᴇᴀʀɴ <code>{welcome_bonus}</code> ᴄᴏɪɴꜱ ᴡʜᴇɴ ꜱᴏᴍᴇᴏɴᴇ ꜱɪɢɴꜱ ᴜᴘ ᴜꜱɪɴɢ ʏᴏᴜʀ ʟɪɴᴋ!
 
-🔗 <b>Your Unique Affiliate Link:</b>  
+🔗 <b>Yᴏᴜʀ ᴜɴɪqᴜᴇ ᴀꜰꜰɪʟɪᴀᴛᴇ ʟɪɴᴋ:</b>  
 <code>{affiliate_link}</code>
 
-📌 <b>Pro Tip:</b> Share to people who want Social Media growth for best results!
+📌 <b>Pʀᴏ ᴛɪᴘ:</b> Sʜᴀʀᴇ ᴛᴏ ᴘᴇᴏᴘʟᴇ ᴡʜᴏ ᴡᴀɴᴛ ꜱᴏᴄɪᴀʟ ᴍᴇᴅɪᴀ ɢʀᴏᴡᴛʜ ꜰᴏʀ ʙᴇꜱᴛ ʀᴇꜱᴜʟᴛꜱ!
 </blockquote>
 """
 
     # Create inline buttons for sharing
     markup = InlineKeyboardMarkup()
     markup.row(
-        InlineKeyboardButton("📤 Share Link", url=f"https://t.me/share/url?url={affiliate_link}&text=🚀 Earn money with this amazing SMM bot! Get social media growth services and earn 5% commission on all orders!"),
-        InlineKeyboardButton("📊 View Stats", callback_data="affiliate_stats")
+        InlineKeyboardButton("📤 ꜱʜᴀʀᴇ ʟɪɴᴋ", url=f"https://t.me/share/url?url={affiliate_link}&text=🚀 Earn money with this amazing SMM bot! Get social media growth services and earn 5% commission on all orders!"),
+        InlineKeyboardButton("📊 ᴠɪᴇᴡ ꜱᴛᴀᴛꜱ", callback_data="affiliate_stats")
     )
     
     bot.reply_to(
@@ -634,14 +634,13 @@ def show_affiliate_stats(call):
     
     stats_message = f"""
 <blockquote>
-📊 <b>Your Affiliate Stats</b>
+📊 <b>Yᴏᴜʀ ᴀꜰꜰɪʟɪᴀᴛᴇ ꜱᴛᴀᴛꜱ</b>
 
-👥 <b>Total Referrals:</b> {total_refs}
-💰 <b>Total Earnings:</b> UGX{affiliate_earnings:.2f}
+👥 <b>Tᴏᴛᴀʟ ʀᴇꜰᴇʀʀᴀʟꜱ:</b> {total_refs}
+💰 <b>Tᴏᴛᴀʟ ᴇᴀʀɴɪɴɢꜱ:</b> ᴜɢx {affiliate_earnings:.2f}
 
-⚠️ <b>Withdraw Rules:</b>
-You can withdraw your Affiliate Earnings to your Real Wallet. Withdrawals are processed manually by the admins.
-<b>Note:</b> Ensure you have at least UGX 1000 in earnings to withdraw.
+⚠️ <b>Wɪᴛʜᴅʀᴀᴡ ʀᴜʟᴇꜱ:</b>
+ʏᴏᴜ ᴄᴀɴ ᴡɪᴛʜᴅʀᴀᴡ ʏᴏᴜʀ ᴀꜰꜰɪʟɪᴀᴛᴇ ᴇᴀʀɴɪɴɢꜱ ᴛᴏ ʏᴏᴜʀ ʀᴇᴀʟ ᴡᴀʟʟᴇᴛ. ᴡɪᴛʜᴅʀᴀᴡᴀʟꜱ ᴀʀᴇ ᴘʀᴏᴄᴇꜱꜱᴇᴅ ᴍᴀɴᴜᴀʟʟʏ ʙʏ ᴛʜᴇ ᴀᴅᴍɪɴꜱ. <ʙ>ɴᴏᴛᴇ:</ʙ> ᴇɴꜱᴜʀᴇ ʏᴏᴜ ʜᴀᴠᴇ ᴀᴛ ʟᴇᴀꜱᴛ ᴜɢx 1000 ɪɴ ᴇᴀʀɴɪɴɢꜱ ᴛᴏ ᴡɪᴛʜᴅʀᴀᴡ.
 </blockquote>
 """
     
@@ -673,29 +672,31 @@ def back_to_affiliate(call):
 
     affiliate_message = f"""
 <blockquote>
-🏆 <b>Unlock Endless Earnings with SMM Menu Affiliate Program!</b>  
+🏆 <b>Uɴʟᴏᴄᴋ ᴇɴᴅʟᴇꜱꜱ ᴇᴀʀɴɪɴɢꜱ ᴡɪᴛʜ ꜱᴍᴍ ᴍᴇɴᴜ ᴀꜰꜰɪʟɪᴀᴛᴇ ᴘʀᴏɢʀᴀᴍ!</b>  
 
-🌐 <b>What's the Affiliate Program?</b>  
-The SMM Menu Affiliate Program is your chance to earn money effortlessly by promoting our powerful Social Media Marketing bot. Whether you're a content creator, influencer, or just someone with a network, this is your opportunity to turn connections into cash – without any hard work!  
+🌐 <b>Wʜᴀᴛ'ꜱ ᴛʜᴇ ᴀꜰꜰɪʟɪᴀᴛᴇ ᴘʀᴏɢʀᴀᴍ?</b>  
+Tʜᴇ SMMHUB Booster ᴀꜰꜰɪʟɪᴀᴛᴇ ᴘʀᴏɢʀᴀᴍ ɪꜱ ʏᴏᴜʀ ᴄʜᴀɴᴄᴇ ᴛᴏ ᴇᴀʀɴ ᴍᴏɴᴇʏ ᴇꜰꜰᴏʀᴛʟᴇꜱꜱʟʏ ʙʏ ᴘʀᴏᴍᴏᴛɪɴɢ ᴏᴜʀ ᴘᴏᴡᴇʀꜰᴜʟ ꜱᴏᴄɪᴀʟ ᴍᴇᴅɪᴀ ᴍᴀʀᴋᴇᴛɪɴɢ ʙᴏᴛ. ᴡʜᴇᴛʜᴇʀ ʏᴏᴜ'ʀᴇ ᴀ ᴄᴏɴᴛᴇɴᴛ ᴄʀᴇᴀᴛᴏʀ, ɪɴꜰʟᴜᴇɴᴄᴇʀ, ᴏʀ ᴊᴜꜱᴛ ꜱᴏᴍᴇᴏɴᴇ ᴡɪᴛʜ ᴀ ɴᴇᴛᴡᴏʀᴋ, ᴛʜɪꜱ ɪꜱ ʏᴏᴜʀ ᴏᴘᴘᴏʀᴛᴜɴɪᴛʏ ᴛᴏ ᴛᴜʀɴ ᴄᴏɴɴᴇᴄᴛɪᴏɴꜱ ɪɴᴛᴏ ᴄᴀꜱʜ – ᴡɪᴛʜᴏᴜᴛ ᴀɴʏ ʜᴀʀᴅ ᴡᴏʀᴋ!  !    
 
-🔍 <b>How Does It Work?</b>  
-1️⃣ <b>Get Your Link</b> - Use your personalized affiliate link below  
-2️⃣ <b>Spread the Word</b> - Share it on Telegram groups, social media, WhatsApp, or anywhere your audience hangs out  
-3️⃣ <b>Earn Forever</b> - Get 5% of every order your referrals make - for life!  
+🔍 <b>Hᴏᴡ ᴅᴏᴇꜱ ɪᴛ ᴡᴏʀᴋ?</b>  
+1️⃣ <b>Gᴇᴛ Yᴏᴜʀ Lɪɴᴋ</b> - Uꜱᴇ ʏᴏᴜʀ ᴘᴇʀꜱᴏɴᴀʟɪᴢᴇᴅ ᴀꜰꜰɪʟɪᴀᴛᴇ ʟɪɴᴋ ʙᴇʟᴏᴡ  
+2️⃣ <b>Sᴘʀᴇᴀᴅ ᴛʜᴇ Wᴏʀᴅ</b> - Sʜᴀʀᴇ ɪᴛ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ ɢʀᴏᴜᴘꜱ, ꜱᴏᴄɪᴀʟ ᴍᴇᴅɪᴀ, ᴡʜᴀᴛꜱᴀᴘᴘ, ᴏʀ ᴀɴʏᴡʜᴇʀᴇ ʏᴏᴜʀ ᴀᴜᴅɪᴇɴᴄᴇ ʜᴀɴɢꜱ ᴏᴜᴛ.  
+3️⃣ <b>Eᴀʀɴ ꜰᴏʀᴇᴠᴇʀ</b> - Gᴇᴛ 5% ᴏꜰ ᴇᴠᴇʀʏ ᴏʀᴅᴇʀ ʏᴏᴜʀ ʀᴇꜰᴇʀʀᴀʟꜱ ᴍᴀᴋᴇ - ꜰᴏʀ ʟɪꜰᴇ!  
 
-💰 <b>Your Affiliate Stats:</b>
-├ 👥 Total Referrals: <code>{total_refs}</code>
-└ 💰 Total Earnings: <code>${affiliate_earnings:.2f}</code>
+💰 <b>Yᴏᴜʀ ᴀꜰꜰɪʟɪᴀᴛᴇ ꜱᴛᴀᴛꜱ:</b>
+├ 👥 Tᴏᴛᴀʟ ʀᴇꜰᴇʀʀᴀʟꜱ: <code>{total_refs}</code>
+└ 💰 Tᴏᴛᴀʟ ᴇᴀʀɴɪɴɢꜱ: <code>ᴜɢx {affiliate_earnings:.2f}</code>
 
-📈 <b>Earnings Breakdown:</b>  
-- A referral orders $50 worth of services → You earn $2.50  
-- They order $500 over a month → You pocket $50  
-- Imagine 20 active referrals spending $200 each → That's $200 in your wallet!  
+📈 <b>Eᴀʀɴɪɴɢꜱ ʙʀᴇᴀᴋᴅᴏᴡɴ:</b>  
+- A ʀᴇꜰᴇʀʀᴀʟ ᴏʀᴅᴇʀꜱ $50 ᴡᴏʀᴛʜ ᴏꜰ ꜱᴇʀᴠɪᴄᴇꜱ → Yᴏᴜ ᴇᴀʀɴ $2.50 / ~9,100 ᴜɢx
+- Tʜᴇʏ ᴏʀᴅᴇʀ $500 ᴏᴠᴇʀ ᴀ ᴍᴏɴᴛʜ → Yᴏᴜ ᴘᴏᴄᴋᴇᴛ $25.00 / ~91,008 ᴜɢx
+- Iᴍᴀɢɪɴᴇ 20 ᴀᴄᴛɪᴠᴇ ʀᴇꜰᴇʀʀᴀʟꜱ sᴘᴇɴᴅɪɴɢ $200 ᴇᴀᴄʜ → ᴛʜᴀᴛ'ꜱ $200.00 / ~728,064 ᴜɢx ɪɴ ʏᴏᴜʀ ᴡᴀʟʟᴇᴛ!
 
-🔗 <b>Your Unique Affiliate Link:</b>  
+🎁 <b>Exᴛʀᴀ ʙᴏɴᴜꜱ:</b> Yᴏᴜ ᴀʟꜱᴏ ᴇᴀʀɴ <code>{welcome_bonus}</code> ᴄᴏɪɴꜱ ᴡʜᴇɴ ꜱᴏᴍᴇᴏɴᴇ ꜱɪɢɴꜱ ᴜᴘ ᴜꜱɪɴɢ ʏᴏᴜʀ ʟɪɴᴋ!
+
+🔗 <b>Yᴏᴜʀ ᴜɴɪqᴜᴇ ᴀꜰꜰɪʟɪᴀᴛᴇ ʟɪɴᴋ:</b>  
 <code>{affiliate_link}</code>
 
-📌 <b>Pro Tip:</b> Share in Telegram groups about social media growth for best results!
+📌 <b>Pʀᴏ ᴛɪᴘ:</b> Sʜᴀʀᴇ ᴛᴏ ᴘᴇᴏᴘʟᴇ ᴡʜᴏ ᴡᴀɴᴛ ꜱᴏᴄɪᴀʟ ᴍᴇᴅɪᴀ ɢʀᴏᴡᴛʜ ꜰᴏʀ ʙᴇꜱᴛ ʀᴇꜱᴜʟᴛꜱ!
 </blockquote>
 """
 
@@ -731,6 +732,9 @@ def help_command(message):
 
 <b>• Wʜᴀᴛ'ꜱ ᴛʜᴇ ᴀᴠᴇʀᴀɢᴇ ꜱᴇʀᴠɪᴄᴇ ꜱᴘᴇᴇᴅ?</b>
 Dᴇʟɪᴠᴇʀʏ ꜱᴘᴇᴇᴅ ᴠᴀʀɪᴇꜱ ʙᴀꜱᴇᴅ ᴏɴ ɴᴇᴛᴡᴏʀᴋ ᴄᴏɴᴅɪᴛɪᴏɴꜱ ᴀɴᴅ ᴏʀᴅᴇʀ ᴠᴏʟᴜᴍᴇ, ʙᴜᴛ ᴡᴇ ᴇɴꜱᴜʀᴇ ꜰᴀꜱᴛ ᴅᴇʟɪᴠᴇʀʏ.
+
+<b>• Wɪʟʟ ɪ ʀᴇᴄᴇɪᴠᴇ ʀᴇᴀʟ ᴍᴏɴᴇʏ ꜰʀᴏᴍ ᴀꜰꜰɪʟɪᴀᴛᴇ ᴍᴀʀᴋᴇᴛɪɴɢ?</b>
+Yᴇꜱ, ᴀꜰᴛᴇʀ ʀᴇᴀᴄʜɪɴɢ 1000 ᴜɢx, ʏᴏᴜ ᴄᴀɴ ᴄᴏɴᴛᴀᴄᴛ ᴛʜᴇ ᴀᴅᴍɪɴ ᴡɪᴛʜ ᴛʜᴇ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ ᴏꜰ ʏᴏᴜʀ ᴀꜰꜰɪʟɪᴀᴛᴇ ʙᴀʟᴀɴᴄᴇ ᴀɴᴅ ʏᴏᴜ ᴡɪʟʟ ʀᴇᴄᴇɪᴠᴇ ʏᴏᴜʀ ᴍᴏɴᴇʏ.
 
 <b>• Hᴏᴡ ᴛᴏ ɪɴᴄʀᴇᴀꜱᴇ ʏᴏᴜʀ ᴄᴏɪɴꜱ?</b>
 1️⃣ Iɴᴠɪᴛᴇ ꜰʀɪᴇɴᴅꜱ - Eᴀʀɴ {ref_bonus} ᴄᴏɪɴꜱ ᴘᴇʀ ʀᴇꜰᴇʀʀᴀʟ
@@ -768,20 +772,20 @@ def pricing_command(message):
 <i> Cʜᴏᴏꜱᴇ Oɴᴇ Oꜰ Tʜᴇ Cᴏɪɴꜱ Pᴀᴄᴋᴀɢᴇꜱ Aɴᴅ Pᴀʏ Iᴛꜱ Cᴏꜱᴛ Vɪᴀ Pʀᴏᴠɪᴅᴇᴅ Pᴀʏᴍᴇɴᴛ Mᴇᴛʜᴏᴅꜱ.</i>
 <blockquote>
 <b><u>📜 𝐍𝐨𝐫𝐦𝐚𝐥 𝐏𝐚𝐜𝐤𝐚𝐠𝐞𝐬:</u></b>
-<b>➊ 📦 1K coins – 1k UGX
-➋ 📦 2K coins – 2k UGX
-➌ 📦 3K coins – 3k UGX
-➍ 📦 4K coins – 4k UGX
-➎ 📦 5K coins – 5k UGX </b>
+<b>➊ 📦 1K coins – 1k ᴜɢx
+➋ 📦 2K coins – 2k ᴜɢx
+➌ 📦 3K coins – 3k ᴜɢx
+➍ 📦 4K coins – 4k ᴜɢx
+➎ 📦 5K coins – 5k ᴜɢx </b>
 </blockquote>
 
 <blockquote>
 <b><u>👑 𝐏𝐫𝐞𝐦𝐢𝐮𝐦 𝐏𝐚𝐜𝐤𝐚𝐠𝐞𝐬:</u></b>
-<b>➊ 📦 10K coins – $2.8 - 10k UGX
-➋ 📦 20K coins – $5.5 - 20k UGX
-➌ 📦 40K coins – $11 - 40k UGX
-➍ 📦 60K coins – $17 - 60k UGX
-➎ 📦 100K coins – $28 - 100k UGX </b>
+<b>➊ 📦 10K coins – $2.8 - 10k ᴜɢx
+➋ 📦 20K coins – $5.5 - 20k ᴜɢx
+➌ 📦 40K coins – $11 - 40k ᴜɢx
+➍ 📦 60K coins – $17 - 60k ᴜɢx
+➎ 📦 100K coins – $28 - 100k ᴜɢx </b>
 </blockquote>
 
 <b>💡NOTE: 𝘙𝘦𝘮𝘦𝘮𝘣𝘦𝘳 𝘵𝘰 𝘴𝘦𝘯𝘥 𝘺𝘰𝘶𝘳 𝘈𝘤𝘤𝘰𝘶𝘯𝘵 𝘐𝘋 𝘵𝘰 𝘳𝘦𝘤𝘦𝘪𝘷𝘦 𝘤𝘰𝘪𝘯𝘴</b>
